@@ -3,7 +3,7 @@ import numpy as np
 import random
 from tqdm import tqdm
 import torch
-from typing import List
+from typing import List, Tuple
 
 import gzip
 import pickle
@@ -20,7 +20,7 @@ class FindCatSentence(Sentence):
 
 @dataclass
 class FindCatExample(ExampleWithSentences):
-    target_tokens: List[int]
+    target_tokens: Tuple[int]
     label: int = 0
 
 

@@ -22,7 +22,7 @@ if __name__ == '__main__':
     parser.add_argument("--test_seed", type=int, default=1234, help='random seed for testing data generation')
 
     args = parser.parse_args()
-    for key, value in vars(args):
+    for key, value in vars(args).items():
         print('Parameter: {}\t{}'.format(key, value))
 
     os.makedirs(args.data_dir, exist_ok=True)
