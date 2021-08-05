@@ -20,7 +20,7 @@ class FindCatSentence(Sentence):
 
 @dataclass
 class FindCatExample(ExampleWithSentences):
-    target_tokens: Tuple[int]
+    target_tokens: List[int]
     label: int = 0
 
 
