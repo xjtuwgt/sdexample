@@ -26,7 +26,6 @@ if __name__ == '__main__':
         print('Parameter: {}\t{}'.format(key, value))
 
     os.makedirs(args.data_dir, exist_ok=True)
-
     # train_seq_len = args.train_seq_len
     # train_seq_len = tuple([int(x) for x in train_seq_len.split(',')])
     # train_data_set = FindCatDataset(total_examples=args.train_data_size,
