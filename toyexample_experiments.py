@@ -159,9 +159,9 @@ if __name__ == "__main__":
                         pred = logits.max(1)[1]
                         total += len(pred)
                         correct += (pred == batch['labels']).sum()
-                print(f"Step {step}: dev accuracy={correct / total:.6f}", flush=True)
+                print("Step {}: dev accuracy={:.6f}".format((epoch, step), correct*1.0/total), flush=True)
                 if correct / total > best_dev_acc:
                     best_dev_acc = correct / total
                     best_step = (epoch, step)
         print('Train accuracy = {} at {}'.format(train_correct *1.0 /train_total, epoch))
-    print(f"Best dev result: dev accuracy={best_dev_acc:.6f} at step {best_step}")
+    print("Best dev result at {} dev accuracy={:.6f} at step".format(best_step, best_dev_acc))
