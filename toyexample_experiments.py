@@ -96,6 +96,7 @@ if __name__ == "__main__":
 
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--test_batch_size', type=int, default=64)
+    parser.add_argument('--eval_interval_ratio', type=float, default=0.25)
 
     parser.add_argument('--model_name', type=str, default='bert-base-uncased')
     parser.add_argument('--validate_examples', action='store_true')
