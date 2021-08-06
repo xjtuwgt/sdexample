@@ -26,24 +26,24 @@ if __name__ == '__main__':
         print('Parameter: {}\t{}'.format(key, value))
 
     os.makedirs(args.data_dir, exist_ok=True)
-    train_seq_len = args.train_seq_len
-    train_seq_len = tuple([int(x) for x in train_seq_len.split(',')])
-    train_data_set = FindCatDataset(total_examples=args.train_data_size,
-                                    target_tokens=args.target_tokens,
-                                    seqlen=train_seq_len,
-                                    seed=args.train_seed)
-    train_data_file_name = join(args.data_dir, 'train_' + args.target_tokens + '_' + str(args.train_data_size)
-                                + '_' + str(args.train_seed) + '_' + str(args.train_seq_len) + '_' +
-                                str(args.train_pos_label_ratio) + '.pkl.gz')
-    train_data_set.save_data_into_file(data_file_name=train_data_file_name)
+    # train_seq_len = args.train_seq_len
+    # train_seq_len = tuple([int(x) for x in train_seq_len.split(',')])
+    # train_data_set = FindCatDataset(total_examples=args.train_data_size,
+    #                                 target_tokens=args.target_tokens,
+    #                                 seqlen=train_seq_len,
+    #                                 seed=args.train_seed)
+    # train_data_file_name = join(args.data_dir, 'train_' + args.target_tokens + '_' + str(args.train_data_size)
+    #                             + '_' + str(args.train_seed) + '_' + str(args.train_seq_len) + '_' +
+    #                             str(args.train_pos_label_ratio) + '.pkl.gz')
+    # train_data_set.save_data_into_file(data_file_name=train_data_file_name)
     # ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    # test_seq_len = args.test_seq_len
-    # test_seq_len = tuple([int(x) for x in test_seq_len.split(',')])
-    # test_data_set = FindCatDataset(total_examples=args.test_data_size,
-    #                                target_tokens=args.target_tokens,
-    #                                seqlen=test_seq_len,
-    #                                seed=args.test_seed)
-    # test_data_file_name = join(args.data_dir, 'test_' + args.target_tokens + '_' + str(args.test_data_size)
-    #                             + '_' + str(args.test_seed) + '_' + args.test_seq_len + '_' +
-    #                            str(args.test_pos_label_ratio) + '.pkl.gz')
-    # test_data_set.save_data_into_file(data_file_name=test_data_file_name)
+    test_seq_len = args.test_seq_len
+    test_seq_len = tuple([int(x) for x in test_seq_len.split(',')])
+    test_data_set = FindCatDataset(total_examples=args.test_data_size,
+                                   target_tokens=args.target_tokens,
+                                   seqlen=test_seq_len,
+                                   seed=args.test_seed)
+    test_data_file_name = join(args.data_dir, 'test_' + args.target_tokens + '_' + str(args.test_data_size)
+                                + '_' + str(args.test_seed) + '_' + args.test_seq_len + '_' +
+                               str(args.test_pos_label_ratio) + '.pkl.gz')
+    test_data_set.save_data_into_file(data_file_name=test_data_file_name)
