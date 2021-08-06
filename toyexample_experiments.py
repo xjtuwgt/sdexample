@@ -163,4 +163,4 @@ if __name__ == "__main__":
                     best_step = (epoch + 1, step + 1)
             step = step + 1
         print('Train accuracy = {:.6f} at {}'.format(train_correct *1.0 /train_total, epoch))
-    print("Best dev result at {} dev accuracy={:.6f} at step".format(best_step, best_dev_acc))
+    print("Best dev result at {} dev accuracy={:.6f}".format(best_step, best_dev_acc))
