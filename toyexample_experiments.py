@@ -97,7 +97,6 @@ if __name__ == "__main__":
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--test_batch_size', type=int, default=64)
     parser.add_argument('--eval_batch_interval_num', type=int, default=100)
-    parser.add_argument('--num_train_epochs', type=float, default=10)
 
     parser.add_argument('--model_name', type=str, default='bert-base-uncased')
     parser.add_argument('--validate_examples', action='store_true')
@@ -121,7 +120,7 @@ if __name__ == "__main__":
     best_dev_acc = -1
     best_step = None
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    train_iterator = trange(start_epoch, start_epoch + int(args.num_train_epochs), desc="Epoch")
+    train_iterator = trange(start_epoch, start_epoch + int(args.epochs), desc="Epoch")
     for epoch in train_iterator:
         epoch_iterator = tqdm(train_dataloader, desc="Iteration")
         train_correct = 0
