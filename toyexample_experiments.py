@@ -89,7 +89,7 @@ if __name__ == "__main__":
     parser.add_argument('--test_examples', type=int, default=10000)
     parser.add_argument('--vocab_size', type=int, default=100) ## 100
     parser.add_argument('--test_seq_len', type=str, default='300')
-    parser.add_argument('--epochs', type=int, default=500)
+    parser.add_argument('--epochs', type=int, default=300)
     parser.add_argument('--steps', type=int, default=1000)
     parser.add_argument('--eval_every', type=int, default=300)
     parser.add_argument('--test_file_name', type=str, default='test_cat_10000_1234_300_0.5.pkl.gz')
