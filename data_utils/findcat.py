@@ -47,6 +47,12 @@ SEP = 2
 MASK = 3
 VOCAB = tuple(range(RESERVED_TOKENS, RESERVED_TOKENS + VOCAB_SIZE))
 
+def neg_example_generation(target_tokens, vocab, exam_seq_len):
+    retval = random.choices(vocab, k=exam_seq_len)
+    while contains_subsequence(target_tokens, retval):
+        retval = random.choices(vocab, k=exam_seq_len)
+    return retval
+
 class FindCatDataset(TokenizedDataset):
     def __init__(self, tokenizer_class="bert-base-uncased",
                  total_examples=1000, seqlen=(300,), vocab=VOCAB,
@@ -77,7 +83,8 @@ class FindCatDataset(TokenizedDataset):
             while contains_subsequence(self.target_tokens, retval):
                 retval = random.choices(self.vocab, k=exam_seq_len)
         else:
-            retval = random.choices(self.vocab, k=exam_seq_len)
+            # retval = random.choices(self.vocab, k=exam_seq_len)
+            retval = neg_example_generation(target_tokens=self.target_tokens, exam_seq_len=exam_seq_len, vocab=self.vocab)
             if self.fixed_positions is not None:
                 assert len(self.fixed_positions) == len(self.target_tokens)
                 positions = self.fixed_positions
