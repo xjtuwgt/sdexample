@@ -9,6 +9,7 @@ import random
 import numpy as np
 from os.path import join
 from envs import HOME_DATA_FOLDER
+from utils.gpu_utils import get_single_free_gpu
 
 from data_utils.findcat import FindCatDataset, find_cat_validation_fn, find_cat_collate_fn
 from data_utils.dataset import SentenceDropDataset
@@ -74,7 +75,8 @@ def complete_default_parser(args):
         os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu_id)
     # set n_gpu
     if args.local_rank == -1:
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        idx, used_memory = get_single_free_gpu()
+        device = torch.device("cuda:{}".format(idx) if torch.cuda.is_available() else "cpu")
         if args.data_parallel:
             args.n_gpu = torch.cuda.device_count()
         else:
