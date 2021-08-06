@@ -83,7 +83,7 @@ if __name__ == "__main__":
     ##train data set
     parser.add_argument('--target_tokens', type=str, default='cat')
     parser.add_argument('--sent_dropout', type=float, default=0.1)
-    parser.add_argument('--train_examples', type=int, default=500)
+    parser.add_argument('--train_examples', type=int, default=300)
     parser.add_argument('--multi_target', type=str, default='multi')
     parser.add_argument('--train_seq_len', type=str, default='300')
     parser.add_argument('--train_file_name', type=str, default='train_single_cat_500_42_300_0.5.pkl.gz')
@@ -99,6 +99,7 @@ if __name__ == "__main__":
 
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--test_batch_size', type=int, default=64)
+    parser.add_argument('--window_size', type=int, default=20)
     parser.add_argument('--eval_batch_interval_num', type=int, default=100)
 
     parser.add_argument('--model_name', type=str, default='bert-base-uncased')
@@ -122,6 +123,7 @@ if __name__ == "__main__":
     start_epoch = 0
     best_dev_acc = -1
     best_step = None
+    window_step = 0
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     train_iterator = trange(start_epoch, start_epoch + int(args.epochs), desc="Epoch")
     for epoch in train_iterator:
@@ -161,6 +163,13 @@ if __name__ == "__main__":
                 if dev_acc > best_dev_acc:
                     best_dev_acc = dev_acc
                     best_step = (epoch + 1, step + 1)
+                else:
+                    window_step = window_step + 1
+
+            if window_step >= args.window_size:
+                break
             step = step + 1
         print('Train accuracy = {:.6f} at {}'.format(train_correct *1.0 /train_total, epoch))
+        if window_step >= args.window_size:
+            break
     print("Best dev result at {} dev accuracy={:.6f}".format(best_step, best_dev_acc))
