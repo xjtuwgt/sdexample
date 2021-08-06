@@ -35,9 +35,9 @@ if __name__ == '__main__':
                                     seqlen=train_seq_len,
                                     multi_target=args.multi_target in ['multi'],
                                     seed=args.train_seed)
-    train_data_file_name = join(args.data_dir, 'train_' + args.target_tokens + '_' + str(args.train_data_size)
+    train_data_file_name = join(args.data_dir, 'train_' + args.multi_target + '_' + args.target_tokens + '_' + str(args.train_data_size)
                                 + '_' + str(args.train_seed) + '_' + str(args.train_seq_len) + '_' +
-                                str(args.train_pos_label_ratio) + '_' + args.multi_target + '.pkl.gz')
+                                str(args.train_pos_label_ratio) + '.pkl.gz')
     train_data_set.save_data_into_file(data_file_name=train_data_file_name)
     # ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # test_seq_len = args.test_seq_len
@@ -47,7 +47,7 @@ if __name__ == '__main__':
     #                                seqlen=test_seq_len,
     #                                multi_target=args.multi_target in ['multi'],
     #                                seed=args.test_seed)
-    # test_data_file_name = join(args.data_dir, 'test_' + args.target_tokens + '_' + str(args.test_data_size)
+    # test_data_file_name = join(args.data_dir, 'test_' + args.multi_target + '_' + args.target_tokens + '_' + str(args.test_data_size)
     #                             + '_' + str(args.test_seed) + '_' + args.test_seq_len + '_' +
-    #                            str(args.test_pos_label_ratio) + '_' + args.multi_target + '.pkl.gz')
+    #                            str(args.test_pos_label_ratio) + '.pkl.gz')
     # test_data_set.save_data_into_file(data_file_name=test_data_file_name)

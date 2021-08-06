@@ -49,6 +49,7 @@ def train_data_loader(args):
                              target_tokens=args.target_tokens,
                              seqlen=train_seq_len,
                              total_examples=args.train_examples,
+                             multi_target=args.multi_target in ['multi'],
                              data_file_name=train_file_name)
     validation_fn = find_cat_validation_fn if args.validate_examples else lambda ex: True
     sdrop_dataset = SentenceDropDataset(dataset, sent_drop_prob=args.sent_dropout,
@@ -66,6 +67,7 @@ def dev_data_loader(args):
     dataset = FindCatDataset(seed=1234,
                              seqlen=dev_seq_len,
                              total_examples=args.test_examples,
+                             multi_target=args.multi_target in ['multi'],
                              data_file_name=dev_file_name)
     dev_dataloader = DataLoader(dataset, batch_size=args.test_batch_size, collate_fn=find_cat_collate_fn)
     return dev_dataloader
@@ -82,6 +84,7 @@ if __name__ == "__main__":
     parser.add_argument('--target_tokens', type=str, default='cat')
     parser.add_argument('--sent_dropout', type=float, default=0.1)
     parser.add_argument('--train_examples', type=int, default=100)
+    parser.add_argument('--multi_target', type=str, default='multi')
     parser.add_argument('--train_seq_len', type=str, default='300')
     parser.add_argument('--train_file_name', type=str, default='train_cat_100_42_300_0.5.pkl.gz')
 
@@ -89,7 +92,7 @@ if __name__ == "__main__":
     parser.add_argument('--test_examples', type=int, default=10000)
     parser.add_argument('--vocab_size', type=int, default=100) ## 100
     parser.add_argument('--test_seq_len', type=str, default='300')
-    parser.add_argument('--epochs', type=int, default=300)
+    parser.add_argument('--epochs', type=int, default=500)
     parser.add_argument('--steps', type=int, default=1000)
     parser.add_argument('--eval_every', type=int, default=300)
     parser.add_argument('--test_file_name', type=str, default='test_cat_10000_1234_300_0.5.pkl.gz')
