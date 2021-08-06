@@ -89,14 +89,14 @@ if __name__ == "__main__":
     parser.add_argument('--test_examples', type=int, default=10000)
     parser.add_argument('--vocab_size', type=int, default=100) ## 100
     parser.add_argument('--test_seq_len', type=str, default='300')
-    parser.add_argument('--epochs', type=int, default=100)
+    parser.add_argument('--epochs', type=int, default=1000)
     parser.add_argument('--steps', type=int, default=1000)
     parser.add_argument('--eval_every', type=int, default=300)
     parser.add_argument('--test_file_name', type=str, default='test_cat_10000_1234_300_0.5.pkl.gz')
 
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--test_batch_size', type=int, default=64)
-    parser.add_argument('--eval_interval_ratio', type=float, default=0.25)
+    parser.add_argument('--eval_batch_interval_num', type=int, default=100)
     parser.add_argument('--num_train_epochs', type=float, default=10)
 
     parser.add_argument('--model_name', type=str, default='bert-base-uncased')
@@ -116,11 +116,6 @@ if __name__ == "__main__":
     model = model.to(args.device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-2)
     #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    total_batch_num = len(train_dataloader)
-    print('Total number of batches = {}'.format(total_batch_num))
-    eval_batch_interval_num = int(total_batch_num * args.eval_interval_ratio) + 1
-    print('Evaluate the model by = {} batches'.format(eval_batch_interval_num))
-
     step = 0
     start_epoch = 0
     best_dev_acc = -1
@@ -131,7 +126,7 @@ if __name__ == "__main__":
         epoch_iterator = tqdm(train_dataloader, desc="Iteration")
         train_correct = 0
         train_total = 0
-        for step, batch in enumerate(epoch_iterator):
+        for batch_idx, batch in enumerate(epoch_iterator):
             model.train()
             batch = {k: batch[k].to(args.device) for k in batch}
             input = batch['input'].clamp(min=0)
@@ -164,5 +159,6 @@ if __name__ == "__main__":
                 if dev_acc > best_dev_acc:
                     best_dev_acc = dev_acc
                     best_step = (epoch, step)
-        print('Train accuracy = {} at {}'.format(train_correct *1.0 /train_total, epoch))
+            step = step + 1
+        print('Train accuracy = {:.6f} at {}'.format(train_correct *1.0 /train_total, epoch))
     print("Best dev result at {} dev accuracy={:.6f} at step".format(best_step, best_dev_acc))
