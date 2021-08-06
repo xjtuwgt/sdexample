@@ -68,7 +68,7 @@ class FindCatDataset(TokenizedDataset):
             self.data = self.load_data_from_file(data_file_name=data_file_name)
 
     def _generate_example(self):
-        target = int(random.random() > self.prob)
+        target = int(random.random() < self.prob)
         ##=========
         exam_seq_len = np.random.choice(self.seqlen, 1)[0]
         ##=========
