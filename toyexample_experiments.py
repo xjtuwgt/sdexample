@@ -40,12 +40,15 @@ def model_builder(args):
 def train_data_loader(args):
     train_seq_len = args.train_seq_len
     train_seq_len = [int(_) for _ in train_seq_len.split(',')]
-    # if args.train_file_name is not None:
-    #     train_file_name =
+    if args.train_file_name is not None:
+        train_file_name = args.train_file_name
+    else:
+        train_file_name = None
     dataset = FindCatDataset(seed=args.seed,
                              target_tokens=args.target_tokens,
                              seqlen=train_seq_len,
-                             total_examples=args.train_examples)
+                             total_examples=args.train_examples,
+                             data_file_name=train_file_name)
     validation_fn = find_cat_validation_fn if args.validate_examples else lambda ex: True
     sdrop_dataset = SentenceDropDataset(dataset, sent_drop_prob=args.sent_dropout,
         example_validate_fn=validation_fn)
@@ -53,9 +56,16 @@ def train_data_loader(args):
     return dataloader
 
 def dev_data_loader(args):
-    dataset = FindCatDataset(seed=314,
-                   seqlen=args.seq_len,
-                   total_examples=args.test_examples)
+    dev_seq_len = args.train_seq_len
+    dev_seq_len = [int(_) for _ in dev_seq_len.split(',')]
+    if args.test_file_name is not None:
+        dev_file_name = args.test_file_name
+    else:
+        dev_file_name = None
+    dataset = FindCatDataset(seed=1234,
+                             seqlen=dev_seq_len,
+                             total_examples=args.test_examples,
+                             data_file_name=dev_file_name)
     dev_dataloader = DataLoader(dataset, batch_size=args.test_batch_size, collate_fn=find_cat_collate_fn)
     return dev_dataloader
 
@@ -89,7 +99,7 @@ if __name__ == "__main__":
     parser.add_argument('--sent_dropout', type=float, default=.1)
     parser.add_argument('--train_examples', type=int, default=1000)
     parser.add_argument('--train_seq_len', type=str, default='300')
-    parser.add_argument('--train_file_name', type=str, default='test_cat_10000_1234_300_0.5.pkl.gz')
+    parser.add_argument('--train_file_name', type=str, default='train_cat_100_42_300_0.5.pkl.gz')
 
     ##test data set
     parser.add_argument('--test_examples', type=int, default=10000)
@@ -125,59 +135,59 @@ if __name__ == "__main__":
     correct = 0
     total_loss = 0
 
-    while True:
-        model.train()
-        for batch in tqdm(dataloader):
-            batch = {k: batch[k].to(args.device) for k in batch}
-            step += 1
-            input = batch['input'].clamp(min=0)
-            attn_mask = (input >= 0)
-            loss, logits = model(input, attention_mask=attn_mask, labels=batch['labels'])
-            # print(output)
-
-            # total_loss += output[0].loss.item()
-            total_loss += loss.item()
-            print(f"Step {step:6d}: loss={loss.item()}")
-            optimizer.zero_grad()
-            # output.loss.backward()
-            loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-            optimizer.step()
-
-            pred = logits.max(1)[1]
-            total += len(pred)
-            correct += (pred == batch['labels']).sum()
-
-            if step % args.eval_every == 0:
-                print(f"Step {step}: train accuracy={correct / total:.6f}, train loss={total_loss / total}", flush=True)
-                model.eval()
-                total = 0
-                correct = 0
-                with torch.no_grad():
-                    for batch in tqdm(dev_dataloader):
-                        batch = {k: batch[k].to(args.device) for k in batch}
-                        input = batch['input'].clamp(min=0)
-                        attn_mask = (input >= 0)
-                        _, logits = model(input, attention_mask=attn_mask, labels=batch['labels'])
-                        pred = logits.max(1)[1]
-
-                        total += len(pred)
-                        correct += (pred == batch['labels']).sum()
-
-                print(f"Step {step}: dev accuracy={correct / total:.6f}", flush=True)
-
-                if correct / total > best_dev_acc:
-                    best_dev_acc = correct / total
-                    best_step = step
-
-                total = 0
-                correct = 0
-                total_loss = 0
-
-            if step >= args.steps:
-                break
-
-        if step >= args.steps:
-            break
-
-    print(f"Best dev result: dev accuracy={best_dev_acc:.6f} at step {best_step}")
+    # while True:
+    #     model.train()
+    #     for batch in tqdm(dataloader):
+    #         batch = {k: batch[k].to(args.device) for k in batch}
+    #         step += 1
+    #         input = batch['input'].clamp(min=0)
+    #         attn_mask = (input >= 0)
+    #         loss, logits = model(input, attention_mask=attn_mask, labels=batch['labels'])
+    #         # print(output)
+    #
+    #         # total_loss += output[0].loss.item()
+    #         total_loss += loss.item()
+    #         print(f"Step {step:6d}: loss={loss.item()}")
+    #         optimizer.zero_grad()
+    #         # output.loss.backward()
+    #         loss.backward()
+    #         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+    #         optimizer.step()
+    #
+    #         pred = logits.max(1)[1]
+    #         total += len(pred)
+    #         correct += (pred == batch['labels']).sum()
+    #
+    #         if step % args.eval_every == 0:
+    #             print(f"Step {step}: train accuracy={correct / total:.6f}, train loss={total_loss / total}", flush=True)
+    #             model.eval()
+    #             total = 0
+    #             correct = 0
+    #             with torch.no_grad():
+    #                 for batch in tqdm(dev_dataloader):
+    #                     batch = {k: batch[k].to(args.device) for k in batch}
+    #                     input = batch['input'].clamp(min=0)
+    #                     attn_mask = (input >= 0)
+    #                     _, logits = model(input, attention_mask=attn_mask, labels=batch['labels'])
+    #                     pred = logits.max(1)[1]
+    #
+    #                     total += len(pred)
+    #                     correct += (pred == batch['labels']).sum()
+    #
+    #             print(f"Step {step}: dev accuracy={correct / total:.6f}", flush=True)
+    #
+    #             if correct / total > best_dev_acc:
+    #                 best_dev_acc = correct / total
+    #                 best_step = step
+    #
+    #             total = 0
+    #             correct = 0
+    #             total_loss = 0
+    #
+    #         if step >= args.steps:
+    #             break
+    #
+    #     if step >= args.steps:
+    #         break
+    #
+    # print(f"Best dev result: dev accuracy={best_dev_acc:.6f} at step {best_step}")
