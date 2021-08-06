@@ -160,8 +160,9 @@ if __name__ == "__main__":
                         total += len(pred)
                         correct += (pred == batch['labels']).sum()
                 print("Step {}: dev accuracy={:.6f}".format((epoch, step), correct*1.0/total), flush=True)
-                if correct / total > best_dev_acc:
-                    best_dev_acc = correct / total
+                dev_acc = correct*1.0 / total
+                if dev_acc > best_dev_acc:
+                    best_dev_acc = dev_acc
                     best_step = (epoch, step)
         print('Train accuracy = {} at {}'.format(train_correct *1.0 /train_total, epoch))
     print("Best dev result at {} dev accuracy={:.6f} at step".format(best_step, best_dev_acc))
