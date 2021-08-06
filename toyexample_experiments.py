@@ -7,6 +7,8 @@ from tqdm import tqdm
 import transformers
 import random
 import numpy as np
+from os.path import join
+from envs import HOME_DATA_FOLDER
 
 from data_utils.findcat import FindCatDataset, find_cat_validation_fn, find_cat_collate_fn
 from data_utils.dataset import SentenceDropDataset
@@ -36,9 +38,13 @@ def model_builder(args):
     return model
 
 def train_data_loader(args):
+    train_seq_len = args.train_seq_len
+    train_seq_len = [int(_) for _ in train_seq_len.split(',')]
+    # if args.train_file_name is not None:
+    #     train_file_name =
     dataset = FindCatDataset(seed=args.seed,
                              target_tokens=args.target_tokens,
-                             seqlen=args.seq_len,
+                             seqlen=train_seq_len,
                              total_examples=args.train_examples)
     validation_fn = find_cat_validation_fn if args.validate_examples else lambda ex: True
     sdrop_dataset = SentenceDropDataset(dataset, sent_drop_prob=args.sent_dropout,
@@ -82,15 +88,18 @@ if __name__ == "__main__":
     parser.add_argument('--target_tokens', type=str, default='cat')
     parser.add_argument('--sent_dropout', type=float, default=.1)
     parser.add_argument('--train_examples', type=int, default=1000)
-    parser.add_argument('--seq_len', type=int, default=300)
+    parser.add_argument('--train_seq_len', type=str, default='300')
+    parser.add_argument('--train_file_name', type=str, default='test_cat_10000_1234_300_0.5.pkl.gz')
 
     ##test data set
     parser.add_argument('--test_examples', type=int, default=10000)
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--test_batch_size', type=int, default=64)
     parser.add_argument('--vocab_size', type=int, default=100) ## 100
+    parser.add_argument('--test_seq_len', type=str, default='300')
     parser.add_argument('--steps', type=int, default=1000)
     parser.add_argument('--eval_every', type=int, default=300)
+    parser.add_argument('--test_file_name', type=str, default='test_cat_10000_1234_300_0.5.pkl.gz')
 
     parser.add_argument('--model_name', type=str, default='bert-base-uncased')
     parser.add_argument('--validate_examples', action='store_true')
