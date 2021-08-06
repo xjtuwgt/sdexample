@@ -41,7 +41,7 @@ def train_data_loader(args):
     train_seq_len = args.train_seq_len
     train_seq_len = [int(_) for _ in train_seq_len.split(',')]
     if args.train_file_name is not None:
-        train_file_name = args.train_file_name
+        train_file_name = join(HOME_DATA_FOLDER, 'toy_data', args.train_file_name)
     else:
         train_file_name = None
     dataset = FindCatDataset(seed=args.seed,
@@ -59,7 +59,7 @@ def dev_data_loader(args):
     dev_seq_len = args.train_seq_len
     dev_seq_len = [int(_) for _ in dev_seq_len.split(',')]
     if args.test_file_name is not None:
-        dev_file_name = args.test_file_name
+        dev_file_name = join(HOME_DATA_FOLDER, 'toy_data', args.test_file_name)
     else:
         dev_file_name = None
     dataset = FindCatDataset(seed=1234,
