@@ -83,10 +83,10 @@ if __name__ == "__main__":
     ##train data set
     parser.add_argument('--target_tokens', type=str, default='cat')
     parser.add_argument('--sent_dropout', type=float, default=0.1)
-    parser.add_argument('--train_examples', type=int, default=100)
+    parser.add_argument('--train_examples', type=int, default=500)
     parser.add_argument('--multi_target', type=str, default='multi')
     parser.add_argument('--train_seq_len', type=str, default='300')
-    parser.add_argument('--train_file_name', type=str, default='train_cat_100_42_300_0.5.pkl.gz')
+    parser.add_argument('--train_file_name', type=str, default='train_single_cat_500_42_300_0.5.pkl.gz')
 
     ##test data set
     parser.add_argument('--test_examples', type=int, default=10000)
@@ -95,7 +95,7 @@ if __name__ == "__main__":
     parser.add_argument('--epochs', type=int, default=500)
     parser.add_argument('--steps', type=int, default=1000)
     parser.add_argument('--eval_every', type=int, default=300)
-    parser.add_argument('--test_file_name', type=str, default='test_cat_10000_1234_300_0.5.pkl.gz')
+    parser.add_argument('--test_file_name', type=str, default='test_single_cat_10000_1234_300_0.5.pkl.gz')
 
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--test_batch_size', type=int, default=64)
