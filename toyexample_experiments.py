@@ -141,7 +141,7 @@ if __name__ == "__main__":
             train_total = train_total + pred.shape[0]
             train_correct += (pred == batch['labels']).sum()
 
-            if (step + 1) % eval_batch_interval_num == 0:
+            if (step + 1) % args.eval_batch_interval_num == 0:
                 model.eval()
                 total = 0
                 correct = 0
