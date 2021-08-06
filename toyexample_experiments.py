@@ -137,59 +137,59 @@ if __name__ == "__main__":
     correct = 0
     total_loss = 0
 
-    # while True:
-    #     model.train()
-    #     for batch in tqdm(dataloader):
-    #         batch = {k: batch[k].to(args.device) for k in batch}
-    #         step += 1
-    #         input = batch['input'].clamp(min=0)
-    #         attn_mask = (input >= 0)
-    #         loss, logits = model(input, attention_mask=attn_mask, labels=batch['labels'])
-    #         # print(output)
-    #
-    #         # total_loss += output[0].loss.item()
-    #         total_loss += loss.item()
-    #         print(f"Step {step:6d}: loss={loss.item()}")
-    #         optimizer.zero_grad()
-    #         # output.loss.backward()
-    #         loss.backward()
-    #         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-    #         optimizer.step()
-    #
-    #         pred = logits.max(1)[1]
-    #         total += len(pred)
-    #         correct += (pred == batch['labels']).sum()
-    #
-    #         if step % args.eval_every == 0:
-    #             print(f"Step {step}: train accuracy={correct / total:.6f}, train loss={total_loss / total}", flush=True)
-    #             model.eval()
-    #             total = 0
-    #             correct = 0
-    #             with torch.no_grad():
-    #                 for batch in tqdm(dev_dataloader):
-    #                     batch = {k: batch[k].to(args.device) for k in batch}
-    #                     input = batch['input'].clamp(min=0)
-    #                     attn_mask = (input >= 0)
-    #                     _, logits = model(input, attention_mask=attn_mask, labels=batch['labels'])
-    #                     pred = logits.max(1)[1]
-    #
-    #                     total += len(pred)
-    #                     correct += (pred == batch['labels']).sum()
-    #
-    #             print(f"Step {step}: dev accuracy={correct / total:.6f}", flush=True)
-    #
-    #             if correct / total > best_dev_acc:
-    #                 best_dev_acc = correct / total
-    #                 best_step = step
-    #
-    #             total = 0
-    #             correct = 0
-    #             total_loss = 0
-    #
-    #         if step >= args.steps:
-    #             break
-    #
-    #     if step >= args.steps:
-    #         break
-    #
-    # print(f"Best dev result: dev accuracy={best_dev_acc:.6f} at step {best_step}")
+    while True:
+        model.train()
+        for batch in tqdm(dataloader):
+            batch = {k: batch[k].to(args.device) for k in batch}
+            step += 1
+            input = batch['input'].clamp(min=0)
+            attn_mask = (input >= 0)
+            loss, logits = model(input, attention_mask=attn_mask, labels=batch['labels'])
+            # print(output)
+
+            # total_loss += output[0].loss.item()
+            total_loss += loss.item()
+            print(f"Step {step:6d}: loss={loss.item()}")
+            optimizer.zero_grad()
+            # output.loss.backward()
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            optimizer.step()
+
+            pred = logits.max(1)[1]
+            total += len(pred)
+            correct += (pred == batch['labels']).sum()
+
+            if step % args.eval_every == 0:
+                print(f"Step {step}: train accuracy={correct / total:.6f}, train loss={total_loss / total}", flush=True)
+                model.eval()
+                total = 0
+                correct = 0
+                with torch.no_grad():
+                    for batch in tqdm(dev_dataloader):
+                        batch = {k: batch[k].to(args.device) for k in batch}
+                        input = batch['input'].clamp(min=0)
+                        attn_mask = (input >= 0)
+                        _, logits = model(input, attention_mask=attn_mask, labels=batch['labels'])
+                        pred = logits.max(1)[1]
+
+                        total += len(pred)
+                        correct += (pred == batch['labels']).sum()
+
+                print(f"Step {step}: dev accuracy={correct / total:.6f}", flush=True)
+
+                if correct / total > best_dev_acc:
+                    best_dev_acc = correct / total
+                    best_step = step
+
+                total = 0
+                correct = 0
+                total_loss = 0
+
+            if step >= args.steps:
+                break
+
+        if step >= args.steps:
+            break
+
+    print(f"Best dev result: dev accuracy={best_dev_acc:.6f} at step {best_step}")
