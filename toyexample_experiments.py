@@ -80,7 +80,7 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     ##train data set
     parser.add_argument('--target_tokens', type=str, default='cat')
-    parser.add_argument('--sent_dropout', type=float, default=.1)
+    parser.add_argument('--sent_dropout', type=float, default=.0)
     parser.add_argument('--train_examples', type=int, default=1000)
     parser.add_argument('--train_seq_len', type=str, default='300')
     parser.add_argument('--train_file_name', type=str, default='train_cat_100_42_300_0.5.pkl.gz')
