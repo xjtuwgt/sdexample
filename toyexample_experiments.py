@@ -3,7 +3,7 @@ import torch
 import os
 import torch.nn as nn
 from torch.utils.data import DataLoader
-from tqdm import tqdm
+from tqdm import tqdm, trange
 import transformers
 import random
 import numpy as np
@@ -71,31 +71,13 @@ def dev_data_loader(args):
     return dev_dataloader
 
 def complete_default_parser(args):
-    if args.gpu_id:
-        os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu_id)
-    # set n_gpu
-    if args.local_rank == -1:
-        idx, used_memory = get_single_free_gpu()
-        device = torch.device("cuda:{}".format(idx) if torch.cuda.is_available() else "cpu")
-        if args.data_parallel:
-            args.n_gpu = torch.cuda.device_count()
-        else:
-            args.n_gpu = 1
-    else:
-        torch.cuda.set_device(args.local_rank)
-        device = torch.device("cuda", args.local_rank)
-        torch.distributed.init_process_group(backend="nccl")
-        args.n_gpu = 1
+    idx, used_memory = get_single_free_gpu()
+    device = torch.device("cuda:{}".format(idx) if torch.cuda.is_available() else "cpu")
     args.device = device
     return args
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-
-    parser.add_argument("--gpu_id", default=None, type=str, help="GPU id")
-    parser.add_argument("--local_rank", type=int, default=-1,
-                        help="For distributed training: local_rank")
-    parser.add_argument("--data_parallel", type=bool, default=False)
     ##train data set
     parser.add_argument('--target_tokens', type=str, default='cat')
     parser.add_argument('--sent_dropout', type=float, default=.1)
@@ -105,13 +87,15 @@ if __name__ == "__main__":
 
     ##test data set
     parser.add_argument('--test_examples', type=int, default=10000)
-    parser.add_argument('--batch_size', type=int, default=32)
-    parser.add_argument('--test_batch_size', type=int, default=64)
     parser.add_argument('--vocab_size', type=int, default=100) ## 100
     parser.add_argument('--test_seq_len', type=str, default='300')
+    parser.add_argument('--epochs', type=int, default=100)
     parser.add_argument('--steps', type=int, default=1000)
     parser.add_argument('--eval_every', type=int, default=300)
     parser.add_argument('--test_file_name', type=str, default='test_cat_10000_1234_300_0.5.pkl.gz')
+
+    parser.add_argument('--batch_size', type=int, default=32)
+    parser.add_argument('--test_batch_size', type=int, default=64)
 
     parser.add_argument('--model_name', type=str, default='bert-base-uncased')
     parser.add_argument('--validate_examples', action='store_true')
@@ -121,7 +105,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     args = complete_default_parser(args=args)
-    dataloader = train_data_loader(args=args)
+    train_dataloader = train_data_loader(args=args)
     dev_dataloader = dev_data_loader(args=args)
     #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # torch.cuda.manual_seed_all(args.seed)
@@ -129,39 +113,38 @@ if __name__ == "__main__":
     model = model_builder(args=args)
     model = model.to(args.device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-2)
+    #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    total_batch_num = len(train_dataloader)
+    print('Total number of batches = {}'.format(total_batch_num))
+    eval_batch_interval_num = int(total_batch_num * args.eval_interval_ratio) + 1
+    print('Evaluate the model by = {} batches'.format(eval_batch_interval_num))
+
     step = 0
+    start_epoch = 0
     best_dev_acc = -1
-    best_step = -1
-
-    total = 0
-    correct = 0
-    total_loss = 0
-
-    while True:
-        model.train()
-        for batch in tqdm(dataloader):
+    best_step = None
+    # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    train_iterator = trange(start_epoch, start_epoch + int(args.num_train_epochs), desc="Epoch")
+    for epoch in train_iterator:
+        epoch_iterator = tqdm(train_dataloader, desc="Iteration")
+        train_correct = 0
+        train_total = 0
+        for step, batch in enumerate(epoch_iterator):
+            model.train()
             batch = {k: batch[k].to(args.device) for k in batch}
-            step += 1
             input = batch['input'].clamp(min=0)
             attn_mask = (input >= 0)
             loss, logits = model(input, attention_mask=attn_mask, labels=batch['labels'])
-            # print(output)
 
-            # total_loss += output[0].loss.item()
-            total_loss += loss.item()
-            print(f"Step {step:6d}: loss={loss.item()}")
             optimizer.zero_grad()
-            # output.loss.backward()
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             optimizer.step()
-
             pred = logits.max(1)[1]
-            total += len(pred)
-            correct += (pred == batch['labels']).sum()
+            train_total = train_total + pred.shape[0]
+            train_correct += (pred == batch['labels']).sum()
 
-            if step % args.eval_every == 0:
-                print(f"Step {step}: train accuracy={correct / total:.6f}, train loss={total_loss / total}", flush=True)
+            if (step + 1) % eval_batch_interval_num == 0:
                 model.eval()
                 total = 0
                 correct = 0
@@ -172,24 +155,11 @@ if __name__ == "__main__":
                         attn_mask = (input >= 0)
                         _, logits = model(input, attention_mask=attn_mask, labels=batch['labels'])
                         pred = logits.max(1)[1]
-
                         total += len(pred)
                         correct += (pred == batch['labels']).sum()
-
                 print(f"Step {step}: dev accuracy={correct / total:.6f}", flush=True)
-
                 if correct / total > best_dev_acc:
                     best_dev_acc = correct / total
-                    best_step = step
-
-                total = 0
-                correct = 0
-                total_loss = 0
-
-            if step >= args.steps:
-                break
-
-        if step >= args.steps:
-            break
-
+                    best_step = (epoch, step)
+        print('Train accuracy = {} at {}'.format(train_correct *1.0 /train_total, epoch))
     print(f"Best dev result: dev accuracy={best_dev_acc:.6f} at step {best_step}")
