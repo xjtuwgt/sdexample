@@ -57,11 +57,12 @@ class FindCatDataset(TokenizedDataset):
     def __init__(self, tokenizer_class="bert-base-uncased",
                  total_examples=1000, seqlen=(300,), vocab=VOCAB,
                  target_tokens='cat', prob=0.5,
-                 fixed_positions=None, eval=False, seed=42, data_file_name=None):
+                 fixed_positions=None, eval=False, multi_target=True, seed=42, data_file_name=None):
         super().__init__(tokenizer_class=tokenizer_class)
         random.seed(seed)
 
         self.prob = prob
+        self.multi_target = multi_target
         self.seqlen = seqlen
         self.vocab = vocab
         self.target_tokens = [ord(x) - ord('a') + RESERVED_TOKENS for x in target_tokens]
@@ -83,8 +84,10 @@ class FindCatDataset(TokenizedDataset):
             while contains_subsequence(self.target_tokens, retval):
                 retval = random.choices(self.vocab, k=exam_seq_len)
         else:
-            # retval = random.choices(self.vocab, k=exam_seq_len)
-            retval = neg_example_generation(target_tokens=self.target_tokens, exam_seq_len=exam_seq_len, vocab=self.vocab)
+            if self.multi_target:
+                retval = random.choices(self.vocab, k=exam_seq_len)
+            else:
+                retval = neg_example_generation(target_tokens=self.target_tokens, exam_seq_len=exam_seq_len, vocab=self.vocab)
             if self.fixed_positions is not None:
                 assert len(self.fixed_positions) == len(self.target_tokens)
                 positions = self.fixed_positions
