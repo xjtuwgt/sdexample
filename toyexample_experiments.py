@@ -163,6 +163,7 @@ if __name__ == "__main__":
                 if dev_acc > best_dev_acc:
                     best_dev_acc = dev_acc
                     best_step = (epoch + 1, step + 1)
+                    window_step = 0
                 else:
                     window_step = window_step + 1
 
