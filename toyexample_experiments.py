@@ -108,6 +108,8 @@ if __name__ == "__main__":
     parser.add_argument('--lr', type=float, default=1e-5)
 
     args = parser.parse_args()
+    for key, value in vars(args).items():
+        print('{}\t{}'.format(key, value))
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     args = complete_default_parser(args=args)
     train_dataloader = train_data_loader(args=args)
@@ -167,6 +169,8 @@ if __name__ == "__main__":
                 else:
                     window_step = window_step + 1
 
+                if window_step >= args.window_size:
+                    break
             if window_step >= args.window_size:
                 break
             step = step + 1
