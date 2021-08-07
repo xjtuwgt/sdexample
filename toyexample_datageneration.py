@@ -33,6 +33,7 @@ if __name__ == '__main__':
     train_data_set = FindCatDataset(total_examples=args.train_data_size,
                                     target_tokens=args.target_tokens,
                                     seqlen=train_seq_len,
+                                    prob=args.train_pos_label_ratio,
                                     multi_target=args.multi_target in ['multi'],
                                     seed=args.train_seed)
     train_data_file_name = join(args.data_dir, 'train_' + args.multi_target + '_' + args.target_tokens + '_' + str(args.train_data_size)
