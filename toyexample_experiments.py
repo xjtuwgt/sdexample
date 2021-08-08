@@ -160,7 +160,7 @@ if __name__ == "__main__":
                         pred = logits.max(1)[1]
                         total += len(pred)
                         correct += (pred == batch['labels']).sum()
-                print("Step {}: dev accuracy={:.6f}".format((epoch + 1, step + 1), correct*1.0/total), flush=True)
+
                 dev_acc = correct*1.0 / total
                 if dev_acc > best_dev_acc:
                     best_dev_acc = dev_acc
@@ -168,7 +168,7 @@ if __name__ == "__main__":
                     window_step = 0
                 else:
                     window_step = window_step + 1
-
+                print("Step {}: dev accuracy={:.6f}, current best dev accuracy={:.6f}".format((epoch + 1, step + 1), dev_acc, best_dev_acc), flush=True)
                 if window_step >= args.window_size:
                     break
             if window_step >= args.window_size:
