@@ -178,3 +178,7 @@ if __name__ == "__main__":
         if window_step >= args.window_size:
             break
     print("Best dev result at {} dev accuracy={:.6f}".format(best_step, best_dev_acc))
+    print('*'*25)
+    for key, value in vars(args).items():
+        print('{}\t{}'.format(key, value))
+    print('*' * 25)
