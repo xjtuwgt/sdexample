@@ -23,8 +23,7 @@ if __name__ == '__main__':
     parser.add_argument('--test_seq_len', type=str, default='300')
     parser.add_argument('--test_pos_label_ratio', type=float, default=0.5, help='test label distribution')
     parser.add_argument("--test_seed", type=int, default=1234, help='random seed for testing data generation')
-
-
+    ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     args = parser.parse_args()
     for key, value in vars(args).items():
         print('Parameter: {}\t{}'.format(key, value))
