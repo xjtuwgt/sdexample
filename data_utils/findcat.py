@@ -58,7 +58,8 @@ class FindCatDataset(TokenizedDataset):
                  total_examples=1000, seqlen=(300,), vocab=VOCAB,
                  target_tokens='cat', prob=0.5,
                  top_position=None,
-                 fixed_positions=None, eval=False, multi_target=True, seed=42, data_file_name=None):
+                 fixed_positions=None,
+                 eval=False, multi_target=True, seed=42, data_file_name=None):
         super().__init__(tokenizer_class=tokenizer_class)
         random.seed(seed)
 

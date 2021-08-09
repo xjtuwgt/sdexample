@@ -15,7 +15,8 @@ if __name__ == '__main__':
     parser.add_argument('--train_pos_label_ratio', type=float, default=0.5, help='label distribution')
     parser.add_argument('--target_tokens', type=str, default='cat')
     parser.add_argument('--train_seq_len', type=str, default='300')
-    parser.add_argument('--train_target_position', type=str, default='3,10,20')
+    parser.add_argument('--train_target_position', type=str, default=None)
+    parser.add_argument('--train_top_position', type=int, default=None)
     parser.add_argument('--train_seed', type=int, default=42, help='random seed for training data generation')
 
     parser.add_argument('--test_data_size', type=int, default=10000, help='test data size')
@@ -27,10 +28,15 @@ if __name__ == '__main__':
     args = parser.parse_args()
     for key, value in vars(args).items():
         print('Parameter: {}\t{}'.format(key, value))
-
+    ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     os.makedirs(args.data_dir, exist_ok=True)
     train_seq_len = args.train_seq_len
     train_seq_len = tuple([int(x) for x in train_seq_len.split(',')])
+    top_position = args.train_top_position
+    target_position = args.train_target_position
+    if target_position is not None:
+        target_position = tuple([int(x) for x in target_position.split(',')])
+    ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     train_data_set = FindCatDataset(total_examples=args.train_data_size,
                                     target_tokens=args.target_tokens,
                                     seqlen=train_seq_len,
