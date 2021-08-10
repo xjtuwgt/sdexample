@@ -40,6 +40,8 @@ if __name__ == '__main__':
                                     target_tokens=args.target_tokens,
                                     seqlen=train_seq_len,
                                     prob=args.train_pos_label_ratio,
+                                    fixed_positions=target_position,
+                                    top_position=top_position,
                                     multi_target=args.multi_target in ['multi'],
                                     seed=args.train_seed)
     train_data_file_name = join(args.data_dir, 'train_' + args.multi_target + '_' + args.target_tokens + '_' + str(args.train_data_size)
