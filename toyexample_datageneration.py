@@ -50,11 +50,7 @@ if __name__ == '__main__':
 
     if top_position is not None:
         train_data_file_name = train_data_file_name + '_' + str(args.train_top_position)
-
     train_data_file_name = train_data_file_name + '.pkl.gz'
-    # train_data_file_name = join(args.data_dir, 'train_' + args.multi_target + '_' + args.target_tokens + '_' + str(args.train_data_size)
-    #                             + '_' + str(args.train_seed) + '_' + str(args.train_seq_len) + '_' +
-    #                             str(args.train_pos_label_ratio) + '.pkl.gz')
     train_data_set.save_data_into_file(data_file_name=train_data_file_name)
     ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # test_seq_len = args.test_seq_len
