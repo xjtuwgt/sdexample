@@ -86,7 +86,7 @@ if __name__ == "__main__":
     parser.add_argument('--train_examples', type=int, default=300)
     parser.add_argument('--multi_target', type=str, default='multi')
     parser.add_argument('--train_seq_len', type=str, default='300')
-    parser.add_argument('--train_file_name', type=str, default='train_multi_cat_500_42_300_0.5.pkl.gz')
+    parser.add_argument('--train_file_name', type=str, default='train_single_cat_500_42_300_0.5.pkl.gz')
 
     ##test data set
     parser.add_argument('--test_examples', type=int, default=10000)
