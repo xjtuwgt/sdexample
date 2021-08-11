@@ -70,6 +70,8 @@ class SentenceDropDataset(Dataset):
                  example_validate_fn=lambda example: True,
                  beta_drop=False,
                  beta_drop_scale=1,
+                 mask=False,
+                 mask_id=None,
                  **kwargs
                  ):
         super().__init__(*args, **kwargs)
@@ -89,6 +91,9 @@ class SentenceDropDataset(Dataset):
         self.beta_drop = beta_drop
         self.beta_drop_scale = beta_drop_scale
 
+        self.mask = mask
+        self.mask_id = mask_id
+
     def _sentence_drop_on_example(self, example):
         new_ex = deepcopy(example)
         if self.sent_drop_prob > 0 and self.beta_drop:
@@ -104,8 +109,17 @@ class SentenceDropDataset(Dataset):
         # perform dataset-specific postprocessing to propagate the effect of sentence removal if necessary
         new_ex = self.sent_drop_postproc(new_ex)
 
-        new_ex.tokenized_sentences = list(
-            filter(lambda sentence: not sentence.marked_for_deletion, new_ex.tokenized_sentences))
+        if self.mask:
+            masked_sent_list = []
+            for sentence in new_ex.tokenized_sentences:
+                masked_sent = deepcopy(sentence)
+                if masked_sent.marked_for_deletion:
+                    masked_sent.token_ids = [self.mask_id] * len(sentence.token_ids)
+                masked_sent_list.append(masked_sent)
+            new_ex.tokenized_sentences = masked_sent_list
+        else:
+            new_ex.tokenized_sentences = list(
+                filter(lambda sentence: not sentence.marked_for_deletion, new_ex.tokenized_sentences))
 
         # renumber sentences
         for s_i, s in enumerate(new_ex.tokenized_sentences):
