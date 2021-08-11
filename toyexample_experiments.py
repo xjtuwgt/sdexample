@@ -10,6 +10,7 @@ import numpy as np
 from os.path import join
 from envs import HOME_DATA_FOLDER
 from utils.gpu_utils import get_single_free_gpu
+from data_utils.findcat import MASK
 
 from data_utils.findcat import FindCatDataset, find_cat_validation_fn, find_cat_collate_fn
 from data_utils.dataset import SentenceDropDataset
@@ -26,6 +27,11 @@ def seed_everything(seed: int) -> int:
         torch.cuda.manual_seed(seed)
         torch.cuda.manual_seed_all(seed)
     return seed
+
+def boolean_string(s):
+    if s.lower() not in {'false', 'true'}:
+        raise ValueError('Not a valid boolean string')
+    return s.lower() == 'true'
 
 def model_builder(args):
     model_config = transformers.AutoConfig.from_pretrained(args.model_name)
@@ -52,8 +58,12 @@ def train_data_loader(args):
                              multi_target=args.multi_target in ['multi'],
                              data_file_name=train_file_name)
     validation_fn = find_cat_validation_fn if args.validate_examples else lambda ex: True
-    sdrop_dataset = SentenceDropDataset(dataset, sent_drop_prob=args.sent_dropout,
-        example_validate_fn=validation_fn)
+    sdrop_dataset = SentenceDropDataset(dataset=dataset,
+                                        sent_drop_prob=args.sent_dropout,
+                                        beta_drop=args.beta_drop,
+                                        mask=args.mask,
+                                        mask_id=args.mask_id,
+                                        example_validate_fn=validation_fn)
     dataloader = DataLoader(sdrop_dataset, batch_size=args.batch_size, collate_fn=find_cat_collate_fn)
     return dataloader
 
@@ -83,6 +93,9 @@ if __name__ == "__main__":
     ##train data set
     parser.add_argument('--target_tokens', type=str, default='cat')
     parser.add_argument('--sent_dropout', type=float, default=0.1)
+    parser.add_argument('--beta_drop', type=boolean_string, default='false')
+    parser.add_argument('--mask', type=boolean_string, default='false')
+    parser.add_argument('--mask_id', type=int, default=MASK)
     parser.add_argument('--train_examples', type=int, default=300)
     parser.add_argument('--multi_target', type=str, default='multi')
     parser.add_argument('--train_seq_len', type=str, default='300')
