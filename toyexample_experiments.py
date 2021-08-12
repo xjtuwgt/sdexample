@@ -64,7 +64,10 @@ def train_data_loader(args):
                                         mask=args.mask,
                                         mask_id=args.mask_id,
                                         example_validate_fn=validation_fn)
-    dataloader = DataLoader(sdrop_dataset, batch_size=args.batch_size, collate_fn=find_cat_collate_fn)
+    dataloader = DataLoader(sdrop_dataset,
+                            shuffle=True,
+                            batch_size=args.batch_size,
+                            collate_fn=find_cat_collate_fn)
     return dataloader
 
 def dev_data_loader(args):
