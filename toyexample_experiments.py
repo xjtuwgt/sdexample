@@ -155,7 +155,6 @@ if __name__ == "__main__":
             ###
             if args.mask:
                 attn_mask = torch.logical_and(input >=0, (input != args.mask_id))
-                print('here')
             else:
                 attn_mask = (input >= 0)
             ###
