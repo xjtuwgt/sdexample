@@ -152,7 +152,6 @@ if __name__ == "__main__":
             model.train()
             batch = {k: batch[k].to(args.device) for k in batch}
             input = batch['input'].clamp(min=0)
-            print(batch['input'].shape)
             attn_mask = (input >= 0)
             loss, logits = model(input, attention_mask=attn_mask, labels=batch['labels'])
 
