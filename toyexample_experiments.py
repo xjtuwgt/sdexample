@@ -152,12 +152,7 @@ if __name__ == "__main__":
             model.train()
             batch = {k: batch[k].to(args.device) for k in batch}
             input = batch['input'].clamp(min=0)
-            ###
-            if args.mask:
-                attn_mask = torch.logical_and(input >=0, (input != args.mask_id))
-            else:
-                attn_mask = (input >= 0)
-            ###
+            attn_mask = (input >= 0)
             loss, logits = model(input, attention_mask=attn_mask, labels=batch['labels'])
 
             optimizer.zero_grad()
