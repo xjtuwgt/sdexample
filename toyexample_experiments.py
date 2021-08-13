@@ -97,7 +97,7 @@ if __name__ == "__main__":
     parser.add_argument('--target_tokens', type=str, default='cat')
     parser.add_argument('--sent_dropout', type=float, default=0.1)
     parser.add_argument('--beta_drop', type=boolean_string, default='true')
-    parser.add_argument('--mask', type=boolean_string, default='false')
+    parser.add_argument('--mask', type=boolean_string, default='true')
     parser.add_argument('--mask_id', type=int, default=MASK)
     parser.add_argument('--train_examples', type=int, default=300)
     parser.add_argument('--multi_target', type=str, default='multi')
