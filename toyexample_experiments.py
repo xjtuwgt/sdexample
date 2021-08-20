@@ -129,7 +129,7 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     ##train data set
     parser.add_argument('--target_tokens', type=str, default='cat')
-    parser.add_argument('--sent_dropout', type=float, default=0.1)
+    parser.add_argument('--sent_dropout', type=float, default=0.0)
     parser.add_argument('--beta_drop', type=boolean_string, default='false')
     parser.add_argument('--mask', type=boolean_string, default='false')
     parser.add_argument('--mask_id', type=int, default=MASK)
