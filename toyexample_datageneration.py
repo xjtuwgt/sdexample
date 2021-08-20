@@ -49,7 +49,6 @@ if __name__ == '__main__':
          str(args.train_pos_label_ratio))
     if target_position is not None:
         train_data_file_name = train_data_file_name + '_' + args.train_target_position
-
     if top_position is not None:
         train_data_file_name = train_data_file_name + '_' + str(args.train_top_position)
     train_data_file_name = train_data_file_name + '.pkl.gz'
