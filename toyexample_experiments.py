@@ -71,13 +71,14 @@ def train_data_loader(args):
     return dataloader
 
 def dev_data_loader(args):
-    dev_seq_len = args.train_seq_len
+    dev_seq_len = args.eval_test_seq_len
     dev_seq_len = [int(_) for _ in dev_seq_len.split(',')]
     if args.test_file_name is not None:
-        dev_file_name = join(HOME_DATA_FOLDER, 'toy_data', args.test_file_name)
+        dev_file_name = join(HOME_DATA_FOLDER, 'toy_data', args.dev_file_name)
+        print('Dev data file name = {}'.format(dev_file_name))
     else:
         dev_file_name = None
-    dataset = FindCatDataset(seed=1234,
+    dataset = FindCatDataset(seed=2345,
                              seqlen=dev_seq_len,
                              total_examples=args.test_examples,
                              multi_target=args.multi_target in ['multi'],
@@ -85,11 +86,44 @@ def dev_data_loader(args):
     dev_dataloader = DataLoader(dataset, batch_size=args.test_batch_size, collate_fn=find_cat_collate_fn)
     return dev_dataloader
 
+def test_data_loader(args):
+    test_seq_len = args.eval_test_seq_len
+    test_seq_len = [int(_) for _ in test_seq_len.split(',')]
+    if args.test_file_name is not None:
+        test_file_name = join(HOME_DATA_FOLDER, 'toy_data', args.test_file_name)
+        print('test data file name = {}'.format(test_file_name))
+    else:
+        test_file_name = None
+    dataset = FindCatDataset(seed=1234,
+                             seqlen=test_seq_len,
+                             total_examples=args.test_examples,
+                             multi_target=args.multi_target in ['multi'],
+                             data_file_name=test_file_name)
+    test_dataloader = DataLoader(dataset, batch_size=args.test_batch_size, collate_fn=find_cat_collate_fn)
+    return test_dataloader
+
 def complete_default_parser(args):
     idx, used_memory = get_single_free_gpu()
     device = torch.device("cuda:{}".format(idx) if torch.cuda.is_available() else "cpu")
     args.device = device
     return args
+
+def model_evaluation(model, data_loader, args):
+    model.eval()
+    total = 0
+    correct = 0
+    with torch.no_grad():
+        for batch in tqdm(data_loader):
+            batch = {k: batch[k].to(args.device) for k in batch}
+            input = batch['input'].clamp(min=0)
+            attn_mask = (input >= 0)
+            _, logits = model(input, attention_mask=attn_mask, labels=batch['labels'])
+            pred = logits.max(1)[1]
+            total += len(pred)
+            correct += (pred == batch['labels']).sum()
+    dev_acc = correct * 1.0 / total
+    return dev_acc
+
 
 if __name__ == "__main__":
     parser = ArgumentParser()
@@ -107,11 +141,11 @@ if __name__ == "__main__":
     ##test data set
     parser.add_argument('--test_examples', type=int, default=10000)
     parser.add_argument('--vocab_size', type=int, default=100) ## 100
-    parser.add_argument('--test_seq_len', type=str, default='300')
+    parser.add_argument('--eval_test_seq_len', type=str, default='300')
     parser.add_argument('--epochs', type=int, default=400)
     parser.add_argument('--steps', type=int, default=1000)
     parser.add_argument('--eval_every', type=int, default=300)
-    parser.add_argument('--eval_file_name', type=str, default='test_single_cat_10000_1234_300_0.5.pkl.gz')
+    parser.add_argument('--eval_file_name', type=str, default='eval_single_cat_10000_2345_300_0.5.pkl.gz')
     parser.add_argument('--test_file_name', type=str, default='test_single_cat_10000_1234_300_0.5.pkl.gz')
 
     parser.add_argument('--batch_size', type=int, default=64)
@@ -131,6 +165,7 @@ if __name__ == "__main__":
     args = complete_default_parser(args=args)
     train_dataloader = train_data_loader(args=args)
     dev_dataloader = dev_data_loader(args=args)
+    test_dataloader = test_data_loader(args=args)
     #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # torch.cuda.manual_seed_all(args.seed)
     seed_everything(seed=args.seed)
@@ -141,6 +176,7 @@ if __name__ == "__main__":
     step = 0
     start_epoch = 0
     best_dev_acc = -1
+    test_acc = -1
     best_step = None
     window_step = 0
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -165,27 +201,27 @@ if __name__ == "__main__":
             train_correct += (pred == batch['labels']).sum()
 
             if (step + 1) % args.eval_batch_interval_num == 0:
-                model.eval()
-                total = 0
-                correct = 0
-                with torch.no_grad():
-                    for batch in tqdm(dev_dataloader):
-                        batch = {k: batch[k].to(args.device) for k in batch}
-                        input = batch['input'].clamp(min=0)
-                        attn_mask = (input >= 0)
-                        _, logits = model(input, attention_mask=attn_mask, labels=batch['labels'])
-                        pred = logits.max(1)[1]
-                        total += len(pred)
-                        correct += (pred == batch['labels']).sum()
-
-                dev_acc = correct*1.0 / total
+                # model.eval()
+                # total = 0
+                # correct = 0
+                # with torch.no_grad():
+                #     for batch in tqdm(dev_dataloader):
+                #         batch = {k: batch[k].to(args.device) for k in batch}
+                #         input = batch['input'].clamp(min=0)
+                #         attn_mask = (input >= 0)
+                #         _, logits = model(input, attention_mask=attn_mask, labels=batch['labels'])
+                #         pred = logits.max(1)[1]
+                #         total += len(pred)
+                #         correct += (pred == batch['labels']).sum()
+                dev_acc = model_evaluation(model=model, data_loader=dev_dataloader, args=args)
                 if dev_acc > best_dev_acc:
                     best_dev_acc = dev_acc
+                    test_acc = model_evaluation(model=model, data_loader=test_dataloader, args=args)
                     best_step = (epoch + 1, step + 1)
                     window_step = 0
                 else:
                     window_step = window_step + 1
-                print("Step {}: dev accuracy={:.6f}, current best dev accuracy={:.6f}".format((epoch + 1, step + 1), dev_acc, best_dev_acc), flush=True)
+                print("Step {}: dev accuracy={:.6f}, current best dev accuracy={:.6f} and test accuracy = {:.6f}".format((epoch + 1, step + 1), dev_acc, best_dev_acc, test_acc), flush=True)
                 if window_step >= args.window_size:
                     break
             if window_step >= args.window_size:
@@ -194,7 +230,7 @@ if __name__ == "__main__":
         print('Train accuracy = {:.6f} at {}'.format(train_correct *1.0 /train_total, epoch))
         if window_step >= args.window_size:
             break
-    print("Best dev result at {} dev accuracy={:.6f}".format(best_step, best_dev_acc))
+    print("Best dev result at {} dev accuracy={:.6f} test accuracy = {:.6f}".format(best_step, best_dev_acc, test_acc))
     print('*'*25)
     for key, value in vars(args).items():
         print('{}\t{}'.format(key, value))
