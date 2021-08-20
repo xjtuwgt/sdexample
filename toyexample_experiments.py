@@ -74,7 +74,7 @@ def dev_data_loader(args):
     dev_seq_len = args.eval_test_seq_len
     dev_seq_len = [int(_) for _ in dev_seq_len.split(',')]
     if args.test_file_name is not None:
-        dev_file_name = join(HOME_DATA_FOLDER, 'toy_data', args.dev_file_name)
+        dev_file_name = join(HOME_DATA_FOLDER, 'toy_data', args.eval_file_name)
         print('Dev data file name = {}'.format(dev_file_name))
     else:
         dev_file_name = None
