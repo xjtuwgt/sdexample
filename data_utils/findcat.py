@@ -57,7 +57,7 @@ def neg_example_generation(target_tokens, vocab, exam_seq_len):
 class FindCatDataset(TokenizedDataset):
     def __init__(self, tokenizer_class="bert-base-uncased",
                  total_examples=1000, seqlen=(300,), vocab=VOCAB,
-                 target_tokens='cat/dog', prob=0.5,
+                 target_tokens='cat', prob=0.5,
                  top_position=None,
                  fixed_positions=None,
                  eval=False, multi_target=True, seed=42, data_file_name=None):
