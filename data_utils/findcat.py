@@ -21,6 +21,7 @@ class FindCatSentence(Sentence):
 @dataclass
 class FindCatExample(ExampleWithSentences):
     target_tokens: List[int]
+    positions: List[int]
     label: int = 0
 
 
@@ -83,6 +84,7 @@ class FindCatDataset(TokenizedDataset):
         ##=========
         exam_seq_len = np.random.choice(self.seqlen, 1)[0]
         ##=========
+        positions = []
         if target == 0:
             retval = random.choices(self.vocab, k=exam_seq_len)
             while contains_subsequence(target_tokens, retval):
@@ -107,7 +109,7 @@ class FindCatDataset(TokenizedDataset):
 
         return FindCatExample(
             tokenized_sentences=[FindCatSentence(sentence_idx=s_i, token_ids=[s]) for s_i, s in enumerate(retval)],
-            target_tokens=target_tokens, label=target)
+            target_tokens=target_tokens, positions=positions, label=target)
 
     def __len__(self):
         return len(self.data)
