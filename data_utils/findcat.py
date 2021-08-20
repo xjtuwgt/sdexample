@@ -56,7 +56,7 @@ def neg_example_generation(target_tokens, vocab, exam_seq_len):
 class FindCatDataset(TokenizedDataset):
     def __init__(self, tokenizer_class="bert-base-uncased",
                  total_examples=1000, seqlen=(300,), vocab=VOCAB,
-                 target_tokens='cat', prob=0.5,
+                 target_tokens='cat/dog', prob=0.5,
                  top_position=None,
                  fixed_positions=None,
                  eval=False, multi_target=True, seed=42, data_file_name=None):
@@ -67,7 +67,7 @@ class FindCatDataset(TokenizedDataset):
         self.multi_target = multi_target
         self.seqlen = seqlen
         self.vocab = vocab
-        self.target_tokens = [ord(x) - ord('a') + RESERVED_TOKENS for x in target_tokens]
+        self.target_tokens = [[ord(x) - ord('a') + RESERVED_TOKENS for x in y] for y in target_tokens.split('/')]
         self.fixed_positions = fixed_positions
         self.total_examples = total_examples
         self.top_position = top_position
@@ -79,34 +79,35 @@ class FindCatDataset(TokenizedDataset):
 
     def _generate_example(self):
         target = int(random.random() < self.prob)
+        target_tokens = random.choice(self.target_tokens)
         ##=========
         exam_seq_len = np.random.choice(self.seqlen, 1)[0]
         ##=========
         if target == 0:
             retval = random.choices(self.vocab, k=exam_seq_len)
-            while contains_subsequence(self.target_tokens, retval):
+            while contains_subsequence(target_tokens, retval):
                 retval = random.choices(self.vocab, k=exam_seq_len)
         else:
             if self.multi_target:
                 retval = random.choices(self.vocab, k=exam_seq_len)
             else:
-                retval = neg_example_generation(target_tokens=self.target_tokens, exam_seq_len=exam_seq_len, vocab=self.vocab)
+                retval = neg_example_generation(target_tokens=target_tokens, exam_seq_len=exam_seq_len, vocab=self.vocab)
             if self.fixed_positions is not None:
-                assert len(self.fixed_positions) == len(self.target_tokens)
+                assert len(self.fixed_positions) == len(target_tokens)
                 positions = self.fixed_positions
             else:
                 if self.top_position is None:
-                    positions = sorted(random.choices(list(range(exam_seq_len)), k=len(self.target_tokens)))
+                    positions = sorted(random.choices(list(range(exam_seq_len)), k=len(target_tokens)))
                 else:
                     top_len = self.top_position if self.top_position < exam_seq_len else exam_seq_len
-                    positions = sorted(random.choices(list(range(top_len)), k=len(self.target_tokens)))
+                    positions = sorted(random.choices(list(range(top_len)), k=len(target_tokens)))
 
             for p_i, p in enumerate(positions):
-                retval[p] = self.target_tokens[p_i]
+                retval[p] = target_tokens[p_i]
 
         return FindCatExample(
             tokenized_sentences=[FindCatSentence(sentence_idx=s_i, token_ids=[s]) for s_i, s in enumerate(retval)],
-            target_tokens=self.target_tokens, label=target)
+            target_tokens=target_tokens, label=target)
 
     def __len__(self):
         return len(self.data)
