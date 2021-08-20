@@ -27,7 +27,7 @@ if __name__ == '__main__':
     parser.add_argument('--eval_data_size', type=int, default=10000, help='eval data size')
     parser.add_argument('--eval_seq_len', type=str, default='300')
     parser.add_argument('--eval_pos_label_ratio', type=float, default=0.5, help='eval label distribution')
-    parser.add_argument("--eval_seed", type=int, default=12345, help='random seed for evaluation data generation')
+    parser.add_argument("--eval_seed", type=int, default=2345, help='random seed for evaluation data generation')
     ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     args = parser.parse_args()
     for key, value in vars(args).items():
