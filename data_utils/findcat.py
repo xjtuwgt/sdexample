@@ -49,17 +49,17 @@ MASK = 3
 VOCAB = tuple(range(RESERVED_TOKENS, RESERVED_TOKENS + VOCAB_SIZE))
 
 def neg_example_generation(target_tokens, vocab, exam_seq_len):
-    # retval = random.choices(vocab, k=exam_seq_len)
-    # while contains_subsequence(target_tokens, retval):
-    #     retval = random.choices(vocab, k=exam_seq_len)
-    # return retval
-
-    retval = []
-    for _ in range(exam_seq_len):
-        retval += [random.choice(vocab)]
-        while contains_subsequence(target_tokens, retval):
-            retval[-1] = random.choice(vocab)
+    retval = random.choices(vocab, k=exam_seq_len)
+    while contains_subsequence(target_tokens, retval):
+        retval = random.choices(vocab, k=exam_seq_len)
     return retval
+
+    # retval = []
+    # for _ in range(exam_seq_len):
+    #     retval += [random.choice(vocab)]
+    #     while contains_subsequence(target_tokens, retval):
+    #         retval[-1] = random.choice(vocab)
+    # return retval
 
 class FindCatDataset(TokenizedDataset):
     def __init__(self, tokenizer_class="bert-base-uncased",
