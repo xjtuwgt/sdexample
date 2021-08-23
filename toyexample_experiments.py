@@ -8,7 +8,7 @@ import transformers
 import random
 import numpy as np
 from os.path import join
-from envs import HOME_DATA_FOLDER
+from envs import HOME_DATA_FOLDER, OUTPUT_FOLDER
 from utils.gpu_utils import get_single_free_gpu
 from data_utils.findcat import MASK
 
@@ -108,6 +108,13 @@ def complete_default_parser(args):
     args.device = device
     return args
 
+def save_match_model(model, model_name):
+    if isinstance(model, torch.nn.parallel.DistributedDataParallel):
+        torch.save({k: v.cpu() for k, v in model.module.model.state_dict().items()}, model_name)
+    else:
+        torch.save({k: v.cpu() for k, v in model.model.state_dict().items()}, model_name)
+    print('Saving model at {}'.format(model_name))
+
 def model_evaluation(model, data_loader, args):
     model.eval()
     total = 0
@@ -157,6 +164,7 @@ if __name__ == "__main__":
     parser.add_argument('--validate_examples', action='store_true')
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--lr', type=float, default=1e-5)
+    parser.add_argument('--save_model', type=bool, default=False)
 
     args = parser.parse_args()
     for key, value in vars(args).items():
@@ -199,24 +207,14 @@ if __name__ == "__main__":
             pred = logits.max(1)[1]
             train_total = train_total + pred.shape[0]
             train_correct += (pred == batch['labels']).sum()
-
             if (step + 1) % args.eval_batch_interval_num == 0:
-                # model.eval()
-                # total = 0
-                # correct = 0
-                # with torch.no_grad():
-                #     for batch in tqdm(dev_dataloader):
-                #         batch = {k: batch[k].to(args.device) for k in batch}
-                #         input = batch['input'].clamp(min=0)
-                #         attn_mask = (input >= 0)
-                #         _, logits = model(input, attention_mask=attn_mask, labels=batch['labels'])
-                #         pred = logits.max(1)[1]
-                #         total += len(pred)
-                #         correct += (pred == batch['labels']).sum()
                 dev_acc = model_evaluation(model=model, data_loader=dev_dataloader, args=args)
                 if dev_acc > best_dev_acc:
                     best_dev_acc = dev_acc
                     test_acc = model_evaluation(model=model, data_loader=test_dataloader, args=args)
+                    if args.save_model:
+                        model_name = join(OUTPUT_FOLDER, 'model_dev_{:.4f}_test_{:.4f}.pkl'.format(dev_acc, test_acc))
+                        save_match_model(model=model, model_name=model_name)
                     best_step = (epoch + 1, step + 1)
                     window_step = 0
                 else:
