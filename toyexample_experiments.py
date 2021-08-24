@@ -144,7 +144,7 @@ if __name__ == "__main__":
     parser.add_argument('--multi_target', type=str, default='multi')
     parser.add_argument('--train_seq_len', type=str, default='300')
     # parser.add_argument('--train_file_name', type=str, default='train_single_cat_500_42_300_0.5.pkl.gz')
-    parser.add_argument('--train_file_name', type=str, default='train_single_ant_bear_cat_dog_eagle_fox_goat_horse_indri_jaguar_koala_lion_moose_numbat_otter_pig_quail_rabbit_shark_tiger_uguisu_wolf_xerus_yak_zebra_10000_42_300_0.5.pkl.gz')
+    parser.add_argument('--train_file_name', type=str, default='train_single_ant_bear_cat_dog_eagle_fox_goat_horse_indri_jaguar_koala_lion_moose_numbat_otter_pig_quail_rabbit_shark_tiger_uguisu_wolf_xerus_yak_zebra_15000_42_300_0.5.pkl.gz')
 
     ##test data set
     parser.add_argument('--test_examples', type=int, default=10000)
