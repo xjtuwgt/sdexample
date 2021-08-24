@@ -50,8 +50,6 @@ if __name__ == '__main__':
 
     ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     args = parser.parse_args()
-    for key, value in vars(args).items():
-        print('Parameter: {}\t{}'.format(key, value))
     ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     os.makedirs(args.data_dir, exist_ok=True)
     train_seq_len = args.train_seq_len
@@ -60,11 +58,14 @@ if __name__ == '__main__':
     target_position = args.train_target_position
     if target_position is not None:
         target_position = tuple([int(x) for x in target_position.split(',')])
-
+    ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     if args.zero_shot:
         train_targets, test_targets = zero_shot_split()
         args.train_target_tokens = train_targets
         args.test_target_tokens = test_targets
+
+    for key, value in vars(args).items():
+        print('Parameter: {}\t{}'.format(key, value))
     ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     train_data_set = FindCatDataset(total_examples=args.train_data_size,
                                     target_tokens=args.train_target_tokens,
