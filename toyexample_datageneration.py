@@ -4,6 +4,11 @@ from os.path import join
 import os
 import argparse
 
+animal_vocab = ['ant', 'bear', 'cat', 'dog', 'eagle', 'fox', 'goat', 'horse',
+                'indri', 'jaguar', 'koala', 'lion', 'moose', 'numbat', 'otter',
+                'pig', 'quail', 'rabbit', 'shark', 'tiger', 'uguisu', 'wolf',
+                'xerus', 'yak', 'zebra']
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_dir',

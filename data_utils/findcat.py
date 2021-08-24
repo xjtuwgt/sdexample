@@ -75,7 +75,7 @@ class FindCatDataset(TokenizedDataset):
         self.multi_target = multi_target
         self.seqlen = seqlen
         self.vocab = vocab
-        self.target_tokens = [[ord(x) - ord('a') + RESERVED_TOKENS for x in y] for y in target_tokens.split('/')]
+        self.target_tokens = [[ord(x) - ord('a') + RESERVED_TOKENS for x in y] for y in target_tokens.split('_')]
         self.fixed_positions = fixed_positions
         self.total_examples = total_examples
         self.top_position = top_position
