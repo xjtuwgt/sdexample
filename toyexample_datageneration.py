@@ -83,7 +83,7 @@ if __name__ == '__main__':
     if top_position is not None:
         train_data_file_name = train_data_file_name + '_' + str(args.train_top_position)
     train_data_file_name = train_data_file_name + '.pkl.gz'
-    # train_data_set.save_data_into_file(data_file_name=train_data_file_name)
+    train_data_set.save_data_into_file(data_file_name=train_data_file_name)
     ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # test_seq_len = args.test_seq_len
     # test_seq_len = tuple([int(x) for x in test_seq_len.split(',')])
