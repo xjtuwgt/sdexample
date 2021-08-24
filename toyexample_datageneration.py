@@ -31,7 +31,7 @@ if __name__ == '__main__':
     parser.add_argument('--train_data_size', type=int, default=500, help='train data size')
     parser.add_argument('--train_pos_label_ratio', type=float, default=0.5, help='label distribution')
     parser.add_argument('--train_target_tokens', type=str, default='cat')
-    parser.add_argument('--zero_shot', type=boolean_string, default='true')
+    parser.add_argument('--zero_shot', type=boolean_string, default='false')
     parser.add_argument('--train_seq_len', type=str, default='300')
     parser.add_argument('--train_target_position', type=str, default=None)
     parser.add_argument('--train_top_position', type=int, default=None)
