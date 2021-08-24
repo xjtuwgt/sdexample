@@ -143,7 +143,8 @@ if __name__ == "__main__":
     parser.add_argument('--train_examples', type=int, default=500)
     parser.add_argument('--multi_target', type=str, default='multi')
     parser.add_argument('--train_seq_len', type=str, default='300')
-    parser.add_argument('--train_file_name', type=str, default='train_single_cat_500_42_300_0.5.pkl.gz')
+    # parser.add_argument('--train_file_name', type=str, default='train_single_cat_500_42_300_0.5.pkl.gz')
+    parser.add_argument('--train_file_name', type=str, default='train_single_ant_bear_cat_dog_eagle_fox_goat_horse_indri_jaguar_koala_lion_moose_numbat_otter_pig_quail_rabbit_shark_tiger_uguisu_wolf_xerus_yak_zebra_10000_42_300_0.5.pkl.gz')
 
     ##test data set
     parser.add_argument('--test_examples', type=int, default=10000)
@@ -152,8 +153,11 @@ if __name__ == "__main__":
     parser.add_argument('--epochs', type=int, default=400)
     parser.add_argument('--steps', type=int, default=1000)
     parser.add_argument('--eval_every', type=int, default=300)
-    parser.add_argument('--eval_file_name', type=str, default='eval_single_cat_10000_2345_300_0.5.pkl.gz')
-    parser.add_argument('--test_file_name', type=str, default='test_single_cat_10000_1234_300_0.5.pkl.gz')
+    # parser.add_argument('--eval_file_name', type=str, default='eval_single_cat_10000_2345_300_0.5.pkl.gz')
+    # parser.add_argument('--test_file_name', type=str, default='test_single_cat_10000_1234_300_0.5.pkl.gz')
+
+    parser.add_argument('--eval_file_name', type=str, default='eval_single_snake_robin_puma_oyster_ibis_10000_2345_300_0.5.pkl.gz')
+    parser.add_argument('--test_file_name', type=str, default='test_single_snake_robin_puma_oyster_ibis_10000_1234_300_0.5.pkl.gz')
 
     parser.add_argument('--batch_size', type=int, default=64)
     parser.add_argument('--test_batch_size', type=int, default=128)
