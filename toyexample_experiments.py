@@ -114,7 +114,7 @@ def complete_default_parser(args):
     return args
 
 def save_match_model(model, model_name):
-    if isinstance(model, torch.nn.parallel.DistributedDataParallel):
+    if isinstance(model, torch.nn.parallel.DistributedDataParallel) or isinstance(model, torch.nn.DataParallel):
         torch.save({k: v.cpu() for k, v in model.module.model.state_dict().items()}, model_name)
     else:
         torch.save({k: v.cpu() for k, v in model.model.state_dict().items()}, model_name)
