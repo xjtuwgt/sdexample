@@ -105,7 +105,8 @@ def test_data_loader(args):
 
 def complete_default_parser(args):
     if torch.cuda.is_available():
-        idx, used_memory = get_single_free_gpu()
+        # idx, used_memory = get_single_free_gpu()
+        idx = 0
         device = torch.device("cuda:{}".format(idx) if torch.cuda.is_available() else "cpu")
     else:
         device = torch.device("cpu")
@@ -168,6 +169,10 @@ def default_argparser():
     parser.add_argument('--window_size', type=int, default=10000000000)
     parser.add_argument('--eval_batch_interval_num', type=int, default=100)
 
+    parser.add_argument("--data_parallel",
+                        default='false',
+                        type=boolean_string,
+                        help="use data parallel or not")
     parser.add_argument('--model_name', type=str, default='bert-base-uncased')
     parser.add_argument('--validate_examples', action='store_true')
     parser.add_argument('--seed', type=int, default=42)
