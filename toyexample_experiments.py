@@ -11,9 +11,15 @@ from os.path import join
 from envs import HOME_DATA_FOLDER, OUTPUT_FOLDER
 from utils.gpu_utils import get_single_free_gpu
 from data_utils.findcat import MASK
+import logging
 
 from data_utils.findcat import FindCatDataset, find_cat_validation_fn, find_cat_collate_fn
 from data_utils.dataset import SentenceDropDataset
+
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
+                    datefmt='%m/%d/%Y %H:%M:%S',
+                    level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def seed_everything(seed: int) -> int:
     random.seed(seed)
@@ -38,10 +44,10 @@ def model_builder(args):
     model_config.num_hidden_layers = 3
     model_config.vocab_size = args.vocab_size
     model = transformers.AutoModelForSequenceClassification.from_config(model_config)
-    print('Model Parameter Configuration:')
+    logging.info('Model Parameter Configuration:')
     for name, param in model.named_parameters():
         print('Parameter {}: {}, require_grad = {}'.format(name, str(param.size()), str(param.requires_grad)))
-    print('*' * 75)
+    logging.info('*' * 75)
     return model
 
 def train_data_loader(args):
@@ -75,7 +81,7 @@ def dev_data_loader(args):
     dev_seq_len = [int(_) for _ in dev_seq_len.split(',')]
     if args.test_file_name is not None:
         dev_file_name = join(HOME_DATA_FOLDER, 'toy_data', args.eval_file_name)
-        print('Dev data file name = {}'.format(dev_file_name))
+        logging.info('Dev data file name = {}'.format(dev_file_name))
     else:
         dev_file_name = None
     dataset = FindCatDataset(seed=2345,
@@ -91,7 +97,7 @@ def test_data_loader(args):
     test_seq_len = [int(_) for _ in test_seq_len.split(',')]
     if args.test_file_name is not None:
         test_file_name = join(HOME_DATA_FOLDER, 'toy_data', args.test_file_name)
-        print('test data file name = {}'.format(test_file_name))
+        logging.info('test data file name = {}'.format(test_file_name))
     else:
         test_file_name = None
     dataset = FindCatDataset(seed=1234,
@@ -113,7 +119,7 @@ def save_match_model(model, model_name):
         torch.save({k: v.cpu() for k, v in model.module.model.state_dict().items()}, model_name)
     else:
         torch.save({k: v.cpu() for k, v in model.model.state_dict().items()}, model_name)
-    print('Saving model at {}'.format(model_name))
+    logging.info('Saving model at {}'.format(model_name))
 
 def model_evaluation(model, data_loader, args):
     model.eval()
@@ -144,7 +150,7 @@ if __name__ == "__main__":
     parser.add_argument('--multi_target', type=str, default='multi')
     parser.add_argument('--train_seq_len', type=str, default='300')
     # parser.add_argument('--train_file_name', type=str, default='train_single_cat_500_42_300_0.5.pkl.gz')
-    parser.add_argument('--train_file_name', type=str, default='train_single_ant_bear_cat_dog_eagle_fox_goat_horse_indri_jaguar_koala_lion_moose_numbat_otter_pig_quail_rabbit_shark_tiger_uguisu_wolf_xerus_yak_zebra_20000_42_300_0.5.pkl.gz')
+    parser.add_argument('--train_file_name', type=str, default='train_single_ant_bear_cat_dog_eagle_fox_goat_horse_indri_jaguar_koala_lion_moose_numbat_otter_pig_quail_rabbit_shark_tiger_uguisu_wolf_xerus_yak_zebra_30000_42_300_0.5.pkl.gz')
 
     ##test data set
     parser.add_argument('--test_examples', type=int, default=10000)
@@ -223,17 +229,17 @@ if __name__ == "__main__":
                     window_step = 0
                 else:
                     window_step = window_step + 1
-                print("Step {}: dev accuracy={:.6f}, current best dev accuracy={:.6f} and test accuracy = {:.6f}".format((epoch + 1, step + 1), dev_acc, best_dev_acc, test_acc), flush=True)
+                logging.info("Step {}: dev accuracy={:.6f}, current best dev accuracy={:.6f} and test accuracy = {:.6f}".format((epoch + 1, step + 1), dev_acc, best_dev_acc, test_acc), flush=True)
                 if window_step >= args.window_size:
                     break
             if window_step >= args.window_size:
                 break
             step = step + 1
-        print('Train accuracy = {:.6f} at {}'.format(train_correct *1.0 /train_total, epoch))
+        logging.info('Train accuracy = {:.6f} at {}'.format(train_correct *1.0 /train_total, epoch))
         if window_step >= args.window_size:
             break
-    print("Best dev result at {} dev accuracy={:.6f} test accuracy = {:.6f}".format(best_step, best_dev_acc, test_acc))
-    print('*'*25)
+    logging.info("Best dev result at {} dev accuracy={:.6f} test accuracy = {:.6f}".format(best_step, best_dev_acc, test_acc))
+    logging.info('*'*25)
     for key, value in vars(args).items():
-        print('{}\t{}'.format(key, value))
-    print('*' * 25)
+        logging.info('{}\t{}'.format(key, value))
+    logging.info('*' * 25)
