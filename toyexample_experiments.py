@@ -104,8 +104,11 @@ def test_data_loader(args):
     return test_dataloader
 
 def complete_default_parser(args):
-    idx, used_memory = get_single_free_gpu()
-    device = torch.device("cuda:{}".format(idx) if torch.cuda.is_available() else "cpu")
+    if torch.cuda.is_available():
+        idx, used_memory = get_single_free_gpu()
+        device = torch.device("cuda:{}".format(idx) if torch.cuda.is_available() else "cpu")
+    else:
+        device = torch.device("cpu")
     args.device = device
     return args
 
