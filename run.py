@@ -1,18 +1,11 @@
 from toyexample_experiments import default_argparser, complete_default_parser
 from toyexample_experiments import train_data_loader, dev_data_loader, test_data_loader
 from toyexample_experiments import seed_everything, model_builder, model_evaluation, save_match_model
-import logging
 import torch
 from envs import OUTPUT_FOLDER
 from tqdm import tqdm, trange
 from os.path import join
 from torch import nn
-
-
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
-                    datefmt='%m/%d/%Y %H:%M:%S',
-                    level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 parser = default_argparser()
 args = parser.parse_args()
@@ -68,17 +61,17 @@ for epoch in train_iterator:
                 window_step = 0
             else:
                 window_step = window_step + 1
-            logging.info("Step {}: dev accuracy={:.6f}, current best dev accuracy={:.6f} and test accuracy = {:.6f}".format((epoch + 1, step + 1), dev_acc, best_dev_acc, test_acc), flush=True)
+            print("Step {}: dev accuracy={:.6f}, current best dev accuracy={:.6f} and test accuracy = {:.6f}".format((epoch + 1, step + 1), dev_acc, best_dev_acc, test_acc), flush=True)
             if window_step >= args.window_size:
                 break
         if window_step >= args.window_size:
             break
         step = step + 1
-    logging.info('Train accuracy = {:.6f} at {}'.format(train_correct *1.0 /train_total, epoch))
+    print('Train accuracy = {:.6f} at {}'.format(train_correct *1.0 /train_total, epoch))
     if window_step >= args.window_size:
         break
-logging.info("Best dev result at {} dev accuracy={:.6f} test accuracy = {:.6f}".format(best_step, best_dev_acc, test_acc))
-logging.info('*'*25)
+print("Best dev result at {} dev accuracy={:.6f} test accuracy = {:.6f}".format(best_step, best_dev_acc, test_acc))
+print('*'*25)
 for key, value in vars(args).items():
-    logging.info('{}\t{}'.format(key, value))
-logging.info('*' * 25)
+    print('{}\t{}'.format(key, value))
+print('*' * 25)

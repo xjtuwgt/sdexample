@@ -1,7 +1,6 @@
 from argparse import ArgumentParser
 import torch
 import os
-import torch.nn as nn
 from torch.utils.data import DataLoader
 from tqdm import tqdm, trange
 import transformers
@@ -11,7 +10,6 @@ from os.path import join
 from envs import HOME_DATA_FOLDER, OUTPUT_FOLDER
 from utils.gpu_utils import get_single_free_gpu
 from data_utils.findcat import MASK
-import logging
 
 from data_utils.findcat import FindCatDataset, find_cat_validation_fn, find_cat_collate_fn
 from data_utils.dataset import SentenceDropDataset
@@ -39,10 +37,10 @@ def model_builder(args):
     model_config.num_hidden_layers = 3
     model_config.vocab_size = args.vocab_size
     model = transformers.AutoModelForSequenceClassification.from_config(model_config)
-    logging.info('Model Parameter Configuration:')
+    print('Model Parameter Configuration:')
     for name, param in model.named_parameters():
         print('Parameter {}: {}, require_grad = {}'.format(name, str(param.size()), str(param.requires_grad)))
-    logging.info('*' * 75)
+    print('*' * 75)
     return model
 
 def train_data_loader(args):
@@ -76,7 +74,7 @@ def dev_data_loader(args):
     dev_seq_len = [int(_) for _ in dev_seq_len.split(',')]
     if args.test_file_name is not None:
         dev_file_name = join(HOME_DATA_FOLDER, 'toy_data', args.eval_file_name)
-        logging.info('Dev data file name = {}'.format(dev_file_name))
+        print('Dev data file name = {}'.format(dev_file_name))
     else:
         dev_file_name = None
     dataset = FindCatDataset(seed=2345,
@@ -92,7 +90,7 @@ def test_data_loader(args):
     test_seq_len = [int(_) for _ in test_seq_len.split(',')]
     if args.test_file_name is not None:
         test_file_name = join(HOME_DATA_FOLDER, 'toy_data', args.test_file_name)
-        logging.info('test data file name = {}'.format(test_file_name))
+        print('test data file name = {}'.format(test_file_name))
     else:
         test_file_name = None
     dataset = FindCatDataset(seed=1234,
@@ -118,7 +116,7 @@ def save_match_model(model, model_name):
         torch.save({k: v.cpu() for k, v in model.module.model.state_dict().items()}, model_name)
     else:
         torch.save({k: v.cpu() for k, v in model.model.state_dict().items()}, model_name)
-    logging.info('Saving model at {}'.format(model_name))
+    print('Saving model at {}'.format(model_name))
 
 def model_evaluation(model, data_loader, args):
     model.eval()
