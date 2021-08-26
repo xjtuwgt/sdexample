@@ -68,10 +68,10 @@ if __name__ == '__main__':
         print('Parameter: {}\t{}'.format(key, value))
     ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     if args.fast_mode:
-        from data_utils.findcat import FindCatDataset
-    else:
         from data_utils.findcat_fast import FindCatDataset
         args.multi_target = 'single'
+    else:
+        from data_utils.findcat import FindCatDataset
     ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     train_data_set = FindCatDataset(total_examples=args.train_data_size,
                                     target_tokens=args.train_target_tokens,
