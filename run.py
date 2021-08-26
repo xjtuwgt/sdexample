@@ -29,8 +29,6 @@ seed_everything(seed=args.seed)
 model = model_builder(args=args)
 model = model.to(args.device)
 optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-2)
-if torch.cuda.is_available():
-    model = nn.DataParallel(model)
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 step = 0
 start_epoch = 0
