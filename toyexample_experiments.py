@@ -105,8 +105,8 @@ def test_data_loader(args):
 
 def complete_default_parser(args):
     if torch.cuda.is_available():
-        # idx, used_memory = get_single_free_gpu()
-        idx = 0
+        idx, used_memory = get_single_free_gpu()
+        # idx = 0
         device = torch.device("cuda:{}".format(idx) if torch.cuda.is_available() else "cpu")
     else:
         device = torch.device("cpu")
