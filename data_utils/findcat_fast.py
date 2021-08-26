@@ -128,7 +128,8 @@ class FindCatDataset(TokenizedDataset):
         exam_seq_len = self.seqlen
         pos_count_over_V_n = self.pos_count_over_V_n_array[target_tokens_idx]
         ##=========
-        retval = neg_example_generation(target_tokens=target_tokens, exam_seq_len=exam_seq_len, pos_count_over_V_n=pos_count_over_V_n)
+        retval = neg_example_generation(target_tokens=target_tokens, exam_seq_len=exam_seq_len,
+                                        pos_count_over_V_n=pos_count_over_V_n, vocab=self.vocab)
         positions = []
         if target == 1:
             if self.fixed_positions is not None:
