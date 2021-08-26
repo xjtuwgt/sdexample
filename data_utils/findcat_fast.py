@@ -122,7 +122,7 @@ class FindCatDataset(TokenizedDataset):
 
     def _generate_example(self):
         target = int(random.random() < self.prob)
-        target_tokens_idx = random.choice(list(range(len(self.target_tokens))), 1)[0]
+        target_tokens_idx = random.choice(list(range(len(self.target_tokens))))
         target_tokens = self.target_tokens[target_tokens_idx]
         ##=========
         exam_seq_len = self.seqlen
