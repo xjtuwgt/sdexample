@@ -24,22 +24,6 @@ class FindCatExample(ExampleWithSentences):
     positions: List[int]
     label: int = 0
 
-
-def contains_subsequence_old(target, sequence):
-    if len(target) == 0:
-        return True
-
-    if target[0] not in sequence:
-        return False
-    else:
-        for i in range(len(sequence) - len(target) + 1):
-            if sequence[i] == target[0]:
-                subresult = contains_subsequence(target[1:], sequence[i + 1:])
-                if subresult:
-                    return True
-        return False
-
-
 def contains_subsequence(target, sequence):
     if len(target) == 0:
         return True
@@ -66,11 +50,46 @@ SEP = 2
 MASK = 3
 VOCAB = tuple(range(RESERVED_TOKENS, RESERVED_TOKENS + VOCAB_SIZE))
 
-def neg_example_generation(target_tokens, vocab, exam_seq_len):
-    retval = random.choices(vocab, k=exam_seq_len)
-    while contains_subsequence(target_tokens, retval):
-        retval = random.choices(vocab, k=exam_seq_len)
+def pos_count_over_V_n_generation(target_tokens, vocab, exam_seq_len):
+    V = len(vocab)
+    pos_count_over_V_n = np.zeros((exam_seq_len + 1, len(target_tokens) + 1))
+    for n in range(1, exam_seq_len + 1):
+        for m in range(1, min(n + 1, max(len(t) for t in target_tokens) + 1)):
+            if m == n:
+                pos_count_over_V_n[n, m] = 1 - V ** (-n)
+            elif m == 1:
+                pos_count_over_V_n[n, m] = ((V - 1) / V) ** n
+            else:
+                pos_count_over_V_n[n, m] = (pos_count_over_V_n[n - 1, m - 1] + (V - 1) * pos_count_over_V_n[
+                    n - 1, m]) / V
+    return pos_count_over_V_n
+
+def neg_example_generation(target_tokens, vocab, exam_seq_len, pos_count_over_V_n):
+    retval = []
+    matched = 0
+    V = len(vocab)
+    for i in range(exam_seq_len):
+        n = exam_seq_len - i
+        m = len(target_tokens) - matched
+        if m > n:
+            # remaining target is shorter than remaining whole sequence
+            retval.append(random.choice(vocab))
+        else:
+            match_weight = pos_count_over_V_n[n-1, m-1]
+            unmatch_weight = pos_count_over_V_n[n-1, m]
+            p = np.full(V, unmatch_weight)
+            p[vocab.index(target_tokens[matched])] = match_weight
+            retval.extend(random.choices(vocab, weights=p))
+        if retval[-1] == target_tokens[matched]:
+            matched += 1
+    assert not contains_subsequence(target_tokens, retval)
     return retval
+
+def pos_count_over_V_n_array_generation(target_tokens_array: list, examp_seq_len, vocab):
+    pos_count_over_V_n_array = []
+    for target_tokens in target_tokens_array:
+        pos_count_over_V_n_array.append(pos_count_over_V_n_generation(target_tokens=target_tokens, vocab=vocab, exam_seq_len=examp_seq_len))
+    return pos_count_over_V_n_array
 
 class FindCatDataset(TokenizedDataset):
     def __init__(self, tokenizer_class="bert-base-uncased",
@@ -84,12 +103,15 @@ class FindCatDataset(TokenizedDataset):
 
         self.prob = prob
         self.multi_target = multi_target
-        self.seqlen = seqlen
+        self.seqlen = seqlen[0]
         self.vocab = vocab
         self.target_tokens = [[ord(x) - ord('a') + RESERVED_TOKENS for x in y] for y in target_tokens.split('_')]
         self.fixed_positions = fixed_positions
         self.total_examples = total_examples
         self.top_position = top_position
+        # self.data = [self._generate_example() for _ in tqdm(range(self.total_examples))]
+        self.pos_count_over_V_n_array = pos_count_over_V_n_array_generation(target_tokens_array=self.target_tokens,
+                                                                            examp_seq_len=self.seqlen, vocab=vocab)
         if data_file_name is None:
             self.data = self.data_generation()
         else:
@@ -97,16 +119,15 @@ class FindCatDataset(TokenizedDataset):
 
     def _generate_example(self):
         target = int(random.random() < self.prob)
-        target_tokens = random.choice(self.target_tokens)
+        target_tokens_idx = random.choice(len(self.target_tokens), 1)[0]
+        target_tokens = self.target_tokens[target_tokens_idx]
         ##=========
-        exam_seq_len = np.random.choice(self.seqlen, 1)[0]
-
+        exam_seq_len = self.seqlen
+        pos_count_over_V_n = self.pos_count_over_V_n_array[target_tokens_idx]
         ##=========
+        retval = neg_example_generation(target_tokens=target_tokens, exam_seq_len=exam_seq_len, pos_count_over_V_n=pos_count_over_V_n)
         positions = []
-        retval = neg_example_generation(target_tokens=target_tokens, exam_seq_len=exam_seq_len, vocab=self.vocab)
         if target == 1:
-            if self.multi_target:
-                retval = random.choices(self.vocab, k=exam_seq_len)
             if self.fixed_positions is not None:
                 assert len(self.fixed_positions) == len(target_tokens)
                 positions = self.fixed_positions
