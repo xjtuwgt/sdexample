@@ -112,6 +112,7 @@ class FindCatDataset(TokenizedDataset):
         # self.data = [self._generate_example() for _ in tqdm(range(self.total_examples))]
         self.pos_count_over_V_n_array = pos_count_over_V_n_array_generation(target_tokens_array=self.target_tokens,
                                                                             examp_seq_len=self.seqlen, vocab=vocab)
+        print('I am here')
         if data_file_name is None:
             self.data = self.data_generation()
         else:
