@@ -50,11 +50,11 @@ SEP = 2
 MASK = 3
 VOCAB = tuple(range(RESERVED_TOKENS, RESERVED_TOKENS + VOCAB_SIZE))
 
-def pos_count_over_V_n_generation(target_tokens, vocab, exam_seq_len):
+def pos_count_over_V_n_generation(target_tokens, vocab, target_tokens_array, exam_seq_len):
     V = len(vocab)
     pos_count_over_V_n = np.zeros((exam_seq_len + 1, len(target_tokens) + 1))
     for n in range(1, exam_seq_len + 1):
-        for m in range(1, min(n + 1, max(len(t) for t in target_tokens) + 1)):
+        for m in range(1, min(n + 1, max(len(t) for t in target_tokens_array) + 1)):
             if m == n:
                 pos_count_over_V_n[n, m] = 1 - V ** (-n)
             elif m == 1:
@@ -88,7 +88,9 @@ def neg_example_generation(target_tokens, vocab, exam_seq_len, pos_count_over_V_
 def pos_count_over_V_n_array_generation(target_tokens_array: list, examp_seq_len, vocab):
     pos_count_over_V_n_array = []
     for target_tokens in target_tokens_array:
-        pos_count_over_V_n_array.append(pos_count_over_V_n_generation(target_tokens=target_tokens, vocab=vocab, exam_seq_len=examp_seq_len))
+        pos_count_over_V_n_array.append(pos_count_over_V_n_generation(target_tokens=target_tokens,
+                                                                      target_tokens_array=target_tokens_array,
+                                                                      vocab=vocab, exam_seq_len=examp_seq_len))
     return pos_count_over_V_n_array
 
 class FindCatDataset(TokenizedDataset):
