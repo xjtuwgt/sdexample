@@ -53,7 +53,7 @@ for epoch in train_iterator:
             dev_acc = model_evaluation(model=model, data_loader=dev_dataloader, args=args)
             if dev_acc > best_dev_acc:
                 best_dev_acc = dev_acc
-                test_acc = model_evaluation(model=model, data_loader=test_dataloader, args=args)
+                # test_acc = model_evaluation(model=model, data_loader=test_dataloader, args=args)
                 if args.save_model:
                     model_name = join(OUTPUT_FOLDER, 'model_dev_{:.4f}_test_{:.4f}.pkl'.format(dev_acc, test_acc))
                     save_match_model(model=model, model_name=model_name)
