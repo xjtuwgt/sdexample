@@ -15,7 +15,7 @@ for key, value in vars(args).items():
 args = complete_default_parser(args=args)
 train_dataloader = train_data_loader(args=args)
 dev_dataloader = dev_data_loader(args=args)
-test_dataloader = test_data_loader(args=args)
+# test_dataloader = test_data_loader(args=args)
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # torch.cuda.manual_seed_all(args.seed)
 seed_everything(seed=args.seed)
