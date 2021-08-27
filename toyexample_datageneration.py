@@ -70,8 +70,10 @@ if __name__ == '__main__':
     if args.fast_mode:
         from data_utils.findcat_fast import FindCatDataset
         args.multi_target = 'single'
+        fast_mode = 'fast'
     else:
         from data_utils.findcat import FindCatDataset
+        fast_mode = ''
     ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     train_data_set = FindCatDataset(total_examples=args.train_data_size,
                                     target_tokens=args.train_target_tokens,
@@ -81,7 +83,7 @@ if __name__ == '__main__':
                                     top_position=top_position,
                                     multi_target=args.multi_target in ['multi'],
                                     seed=args.train_seed)
-    train_data_file_name = join(args.data_dir, 'train_' + args.multi_target + '_' + args.train_target_tokens + '_' + str(args.train_data_size)
+    train_data_file_name = join(args.data_dir, 'train_' + fast_mode + args.multi_target + '_' + args.train_target_tokens + '_' + str(args.train_data_size)
          + '_' + str(args.train_seed) + '_' + str(args.train_seq_len) + '_' +
          str(args.train_pos_label_ratio))
     if target_position is not None:
@@ -98,7 +100,7 @@ if __name__ == '__main__':
                                    seqlen=test_seq_len,
                                    multi_target=args.multi_target in ['multi'],
                                    seed=args.test_seed)
-    test_data_file_name = join(args.data_dir, 'test_' + args.multi_target + '_' + args.test_target_tokens + '_' + str(args.test_data_size)
+    test_data_file_name = join(args.data_dir, 'test_' + fast_mode + args.multi_target + '_' + args.test_target_tokens + '_' + str(args.test_data_size)
                                 + '_' + str(args.test_seed) + '_' + args.test_seq_len + '_' +
                                str(args.test_pos_label_ratio) + '.pkl.gz')
     test_data_set.save_data_into_file(data_file_name=test_data_file_name)
@@ -110,7 +112,7 @@ if __name__ == '__main__':
                                    seqlen=eval_seq_len,
                                    multi_target=args.multi_target in ['multi'],
                                    seed=args.eval_seed)
-    eval_data_file_name = join(args.data_dir, 'eval_' + args.multi_target + '_' + args.test_target_tokens + '_' + str(args.eval_data_size)
+    eval_data_file_name = join(args.data_dir, 'eval_' + fast_mode + args.multi_target + '_' + args.test_target_tokens + '_' + str(args.eval_data_size)
                                 + '_' + str(args.eval_seed) + '_' + args.eval_seq_len + '_' +
                                str(args.eval_pos_label_ratio) + '.pkl.gz')
     eval_data_set.save_data_into_file(data_file_name=eval_data_file_name)
