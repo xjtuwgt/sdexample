@@ -157,7 +157,7 @@ def default_argparser():
     parser.add_argument('--steps', type=int, default=1000)
     parser.add_argument('--eval_every', type=int, default=300)
     parser.add_argument('--eval_file_name', type=str, default='eval_fastsingle_cat_10000_2345_300_0.5.pkl.gz')
-    parser.add_argument('--test_file_name', type=str, default='test_fastsingle_cat_10000_2345_300_0.5.pkl.gz')
+    parser.add_argument('--test_file_name', type=str, default='test_fastsingle_cat_10000_1234_300_0.5.pkl.gz')
 
     # parser.add_argument('--eval_file_name', type=str, default='eval_single_snake_robin_puma_oyster_ibis_10000_2345_300_0.5.pkl.gz')
     # parser.add_argument('--test_file_name', type=str, default='test_single_snake_robin_puma_oyster_ibis_10000_1234_300_0.5.pkl.gz')
