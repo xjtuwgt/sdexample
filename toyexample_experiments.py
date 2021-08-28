@@ -143,7 +143,7 @@ def default_argparser():
     parser.add_argument('--beta_drop', type=boolean_string, default='false')
     parser.add_argument('--mask', type=boolean_string, default='false')
     parser.add_argument('--mask_id', type=int, default=MASK)
-    parser.add_argument('--train_examples', type=int, default=500)
+    parser.add_argument('--train_examples', type=int, default=800)
     parser.add_argument('--multi_target', type=str, default='multi')
     parser.add_argument('--train_seq_len', type=str, default='300')
     parser.add_argument('--train_file_name', type=str, default='train_fastsingle_cat_100_42_300_0.5.pkl.gz')
