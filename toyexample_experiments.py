@@ -175,6 +175,6 @@ def default_argparser():
     parser.add_argument('--validate_examples', action='store_true')
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--lr', type=float, default=1e-5)
-    parser.add_argument('--save_model', type=boolean_string, default='false')
+    parser.add_argument('--save_model', type=boolean_string, default='true')
 
     return parser
