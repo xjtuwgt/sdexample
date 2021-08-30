@@ -55,7 +55,8 @@ for epoch_idx, epoch in enumerate(train_iterator):
                 best_dev_acc = dev_acc
                 # test_acc = model_evaluation(model=model, data_loader=test_dataloader, args=args)
                 if args.save_model:
-                    model_name = join(OUTPUT_FOLDER, 'model_{}_{}_dev_{:.4f}.pkl'.format(epoch_idx+1, batch_idx+1, dev_acc))
+                    model_name = join(OUTPUT_FOLDER, 'model_{}_{}_{}_{}_dev_{:.4f}.pkl'.format(args.beta_drop, args.sent_dropout,
+                                                                                               epoch_idx+1, batch_idx+1, dev_acc))
                     save_match_model(model=model, model_name=model_name)
                 best_step = (epoch + 1, step + 1)
                 window_step = 0
