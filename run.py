@@ -31,7 +31,7 @@ best_step = None
 window_step = 0
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 train_iterator = trange(start_epoch, start_epoch + int(args.epochs), desc="Epoch")
-for epoch in train_iterator:
+for epoch_idx, epoch in enumerate(train_iterator):
     epoch_iterator = tqdm(train_dataloader, desc="Iteration")
     train_correct = 0
     train_total = 0
@@ -55,7 +55,7 @@ for epoch in train_iterator:
                 best_dev_acc = dev_acc
                 # test_acc = model_evaluation(model=model, data_loader=test_dataloader, args=args)
                 if args.save_model:
-                    model_name = join(OUTPUT_FOLDER, 'model_dev_{:.4f}_test_{:.4f}.pkl'.format(dev_acc, test_acc))
+                    model_name = join(OUTPUT_FOLDER, 'model_{}_{}_dev_{:.4f}.pkl'.format(epoch_idx+1, batch_idx+1, dev_acc))
                     save_match_model(model=model, model_name=model_name)
                 best_step = (epoch + 1, step + 1)
                 window_step = 0
