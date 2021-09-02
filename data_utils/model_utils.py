@@ -43,10 +43,10 @@ def model_builder(args):
     model_config.num_hidden_layers = 3
     model_config.vocab_size = args.vocab_size
     model = transformers.AutoModelForSequenceClassification.from_config(model_config)
-    print('Model Parameter Configuration:')
-    for name, param in model.named_parameters():
-        print('Parameter {}: {}, require_grad = {}'.format(name, str(param.size()), str(param.requires_grad)))
-    print('*' * 75)
+    # print('Model Parameter Configuration:')
+    # for name, param in model.named_parameters():
+    #     print('Parameter {}: {}, require_grad = {}'.format(name, str(param.size()), str(param.requires_grad)))
+    # print('*' * 75)
     return model
 
 def load_pretrained_model(model, args):

@@ -166,6 +166,29 @@ def find_cat_collate_fn(examples):
     return retval
 
 
+def find_cat_probe_collate_fn(examples):
+    ex_lens = [3 + len(ex.target_tokens) + len(ex.tokenized_sentences) for ex in examples]
+    max_ex_len = max(ex_lens)
+
+    batched_input = np.full((len(examples), max_ex_len), -1, dtype=np.int64)
+    batched_labels = np.zeros((len(examples),), dtype=np.int64)
+    batched_seq_labels = np.zeros((len(examples), max_ex_len), dtype=np.int64)
+
+    for ex_i, ex in enumerate(examples):
+        batched_input[ex_i, :ex_lens[ex_i]] = [CLS] + ex.target_tokens + [SEP] + [s.token_ids[0] for s in
+                                                                                  ex.tokenized_sentences] + [SEP]
+        batched_labels[ex_i] = ex.label
+        batched_seq_labels[ex.positions] = 1
+
+    retval = {
+        'input': batched_input,
+        'labels': batched_labels,
+        'seq_labels': batched_seq_labels
+    }
+    retval = {k: torch.from_numpy(retval[k]) for k in retval}
+    return retval
+
+
 def find_cat_validation_fn(ex):
     return (ex.label == 0) or contains_subsequence(ex.target_tokens, [s.token_ids[0] for s in ex.tokenized_sentences])
 
