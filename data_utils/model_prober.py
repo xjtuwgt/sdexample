@@ -5,7 +5,9 @@ from data_utils.model_utils import model_builder, load_pretrained_model
 from utils.gpu_utils import get_single_free_gpu
 from torch.autograd import Variable
 from tqdm import tqdm
-from transformers import BertTokenizer, BertForSequenceClassification, BertForTokenClassification
+from envs import OUTPUT_FOLDER
+from os.path import join
+
 
 def prober_default_parser():
     parser = argparse.ArgumentParser()
@@ -48,7 +50,7 @@ class ProberModel(nn.Module):
         self.model = model_builder(args=self.config)
         self.model.bert.register_forward_hook(get_activation('bert'))
         if self.config.pre_trained_file_name is not None:
-            self.encoder.load_state_dict(torch.load(self.config.pre_trained_file_name))
+            self.encoder.load_state_dict(torch.load(join(OUTPUT_FOLDER, self.config.pre_trained_file_name)))
         for param in self.model.parameters():
             param.requires_grad = False
         self.dropout = nn.Dropout(self.config.dropout_prob)
@@ -74,7 +76,6 @@ def loss_computation(scores, labels):
 
 def probe_model_evaluation(model, data_loader, args):
     model.eval()
-    total = 0
     em = []
     f1 = []
     with torch.no_grad():
