@@ -1,5 +1,5 @@
 from data_utils.model_utils import load_pretrained_model, model_builder
-from data_utils.model_prober import prober_default_parser, complete_default_parser
+from data_utils.argument_parser import prober_default_parser, complete_default_parser
 from data_utils.model_prober import ProberModel
 import torch
 from envs import OUTPUT_FOLDER, HOME_DATA_FOLDER

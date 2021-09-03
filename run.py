@@ -1,11 +1,10 @@
-from toyexample_experiments import default_argparser, complete_default_parser
+from data_utils.argument_parser import default_argparser, complete_default_parser
 from toyexample_experiments import train_data_loader, dev_data_loader, test_data_loader
 from toyexample_experiments import seed_everything, model_builder, model_evaluation, save_match_model
 import torch
 from envs import OUTPUT_FOLDER
 from tqdm import tqdm, trange
 from os.path import join
-from torch import nn
 
 parser = default_argparser()
 args = parser.parse_args()
