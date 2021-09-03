@@ -38,6 +38,24 @@ def prober_default_parser():
     parser.add_argument('--topk', type=int, default=len('cat'))
     return parser
 
+def data_aug_default_parser():
+    parser = ArgumentParser()
+    parser.add_argument('--model_name', type=str, default='bert-base-uncased')
+    parser.add_argument('--train_file_name', type=str, default='train_fastsingle_cat_100_42_300_0.5.pkl.gz')
+    # parser.add_argument('--train_file_name', type=str, default='train_single_ant_bear_cat_dog_eagle_fox_goat_horse_indri_jaguar_koala_lion_moose_numbat_otter_pig_quail_rabbit_shark_tiger_uguisu_wolf_xerus_yak_zebra_30000_42_300_0.5.pkl.gz')
+    parser.add_argument('--vocab_size', type=int, default=100) ## 100
+    parser.add_argument('--epochs', type=int, default=500)
+    parser.add_argument('--steps', type=int, default=1000)
+    parser.add_argument('--eval_every', type=int, default=300)
+    parser.add_argument('--eval_file_name', type=str, default='eval_fastsingle_cat_10000_2345_300_0.5.pkl.gz')
+    parser.add_argument('--test_file_name', type=str, default='test_fastsingle_cat_10000_1234_300_0.5.pkl.gz')
+    parser.add_argument('--pre_trained_file_name', type=str, default=None)
+    parser.add_argument('--dropout_prob', type=float, default=0.1)
+    parser.add_argument('--hidden_dim', type=int, default=768)
+    parser.add_argument('--num_labels', type=int, default=1)
+    parser.add_argument('--topk', type=int, default=len('cat'))
+    return parser
+
 
 def default_argparser():
     parser = ArgumentParser()
