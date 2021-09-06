@@ -8,10 +8,15 @@ from os.path import join
 
 parser = default_argparser()
 args = parser.parse_args()
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+args = complete_default_parser(args=args)
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+if args.exp_name is None:
+    args.exp_name = '_'.join([args.train_file_name,
+                              '.dr.' + str(args.sent_dropout)])
 for key, value in vars(args).items():
     print('{}\t{}'.format(key, value))
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-args = complete_default_parser(args=args)
 train_dataloader = train_data_loader(args=args)
 dev_dataloader = dev_data_loader(args=args)
 # test_dataloader = test_data_loader(args=args)
