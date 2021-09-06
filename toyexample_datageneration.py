@@ -27,7 +27,7 @@ if __name__ == '__main__':
                         default=join(HOME_DATA_FOLDER, 'toy_data'),
                         help='Directory to save row_data')
     parser.add_argument('--multi_target', type=str, default='single')
-    parser.add_argument('--fast_mode', type=bool, default='true')
+    parser.add_argument('--fast_mode', type=boolean_string, default='true')
     parser.add_argument('--train_data_size', type=int, default=500, help='train data size')
     parser.add_argument('--train_pos_label_ratio', type=float, default=0.5, help='label distribution')
     parser.add_argument('--train_target_tokens', type=str, default='cat')
