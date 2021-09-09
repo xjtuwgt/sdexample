@@ -71,3 +71,30 @@ def probe_model_evaluation(model, data_loader, args):
     em = sum(em)/len(em)
     f1 = sum(f1)/len(f1)
     return em, f1
+
+def probe_model_evaluation_(model, data_loader, args):
+    model.eval()
+    em = []
+    f1 = []
+    with torch.no_grad():
+        for batch in tqdm(data_loader):
+            batch = {k: batch[k].to(args.device) for k in batch}
+            input = batch['input'].clamp(min=0)
+            seq_mask = batch['seq_mask']
+            attn_mask = (input >= 0)
+            _, logits = model(input, attention_mask=attn_mask, labels=batch['seq_labels'])
+            _, pred_topk_idxes = torch.topk(input=logits, k=args.topk)
+            batch_size = logits.shape[0]
+            for idx in range(batch_size):
+                pred_topk_i = pred_topk_idxes[idx]
+                true_label_i = batch['seq_labels'][idx]
+                inter_count = true_label_i[pred_topk_i].sum().item()
+                if inter_count == args.topk:
+                    em.append(1.0)
+                else:
+                    em.append(0.0)
+                f1.append(inter_count * 1.0 / args.topk)
+    assert len(em) == len(f1)
+    em = sum(em)/len(em)
+    f1 = sum(f1)/len(f1)
+    return em, f1
