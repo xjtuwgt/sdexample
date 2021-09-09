@@ -86,7 +86,7 @@ for epoch_idx, epoch in enumerate(train_iterator):
         model.train()
         batch = {k: batch[k].to(args.device) for k in batch}
         input = batch['input'].clamp(min=0)
-        print(batch)
+        print(batch['seq_labels'].sum(dim=-1))
         break
 #         attn_mask = (input >= 0)
 #         loss, logits = model(input, attention_mask=attn_mask, labels=batch['seq_labels'], label_mask=batch['seq_mask'])
