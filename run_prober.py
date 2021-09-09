@@ -60,8 +60,6 @@ for name, param in model.named_parameters():
 print('*' * 75)
 ########################################################################################################################
 seed_everything(seed=args.seed)
-model = model_builder(args=args)
-model = model.to(args.device)
 optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-2)
 train_dataloader = train_data_loader(args=args)
 dev_dataloader = dev_data_loader(args=args)
@@ -84,8 +82,7 @@ for epoch_idx, epoch in enumerate(train_iterator):
         batch = {k: batch[k].to(args.device) for k in batch}
         input = batch['input'].clamp(min=0)
         attn_mask = (input >= 0)
-        loss, logits = model(input, attention_mask=attn_mask, labels=batch['seq_labels'])
-
+        loss, logits = model(input, attention_mask=attn_mask, labels=batch['seq_labels'], label_mask=batch['seq_mask'])
         optimizer.zero_grad()
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)

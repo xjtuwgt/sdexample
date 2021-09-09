@@ -8,6 +8,9 @@ from tqdm import tqdm
 from envs import OUTPUT_FOLDER
 from os.path import join
 
+ORIG_PROBE_MODEL_NAME = join(OUTPUT_FOLDER, 'model_False_0.0_384_221_dev_0.9792.pkl')
+DROP_PROBE_MODEL_NAME = join(OUTPUT_FOLDER, 'model_True_0.1_97_52_dev_0.9901.pkl')
+
 activation = {}
 def get_activation(name):
     def hook(model, input, output):
