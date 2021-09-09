@@ -173,17 +173,21 @@ def find_cat_probe_collate_fn(examples):
     batched_input = np.full((len(examples), max_ex_len), -1, dtype=np.int64)
     batched_labels = np.zeros((len(examples),), dtype=np.int64)
     batched_seq_labels = np.zeros((len(examples), max_ex_len), dtype=np.int64)
+    batched_seq_mask = np.ones((len(examples), max_ex_len), dtype=np.int64)
 
     for ex_i, ex in enumerate(examples):
         batched_input[ex_i, :ex_lens[ex_i]] = [CLS] + ex.target_tokens + [SEP] + [s.token_ids[0] for s in
                                                                                   ex.tokenized_sentences] + [SEP]
         batched_labels[ex_i] = ex.label
-        batched_seq_labels[ex.positions] = 1
+        ex_mask_len = 2 + len(ex.target_tokens)
+        batched_seq_labels[ex_i, ex.positions + ex_mask_len] = 1
+        batched_seq_mask[ex_i, :ex_mask_len] = 0
 
     retval = {
         'input': batched_input,
         'labels': batched_labels,
-        'seq_labels': batched_seq_labels
+        'seq_labels': batched_seq_labels,
+        'seq_mask': batched_seq_mask
     }
     retval = {k: torch.from_numpy(retval[k]) for k in retval}
     return retval

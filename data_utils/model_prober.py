@@ -27,16 +27,16 @@ class ProberModel(nn.Module):
         self.dropout = nn.Dropout(self.config.dropout_prob)
         self.classifier = nn.Linear(self.config.hidden_dim, self.config.num_labels)
 
-    def forward(self, input, attn_mask, labels):
+    def forward(self, input, attn_mask, labels, label_mask):
         self.model(input, attn_mask)
         bert_output = activation['bert']
         seq_output = bert_output[0]
         seq_output = self.dropout(seq_output)
         seq_scores = self.classifier(seq_output)
-        loss = loss_computation(scores=seq_scores, labels=labels)
+        loss = loss_computation(scores=seq_scores, labels=labels, mask=label_mask)
         return loss, seq_scores
 
-def loss_computation(scores, labels):
+def loss_computation(scores, labels, mask):
     criterion = nn.CrossEntropyLoss(reduction='mean')
     logits_aux = Variable(scores.data.new(scores.size(0), scores.size(1), 1).zero_())
     predictions = torch.cat([logits_aux, scores], dim=-1).contiguous()
@@ -53,6 +53,7 @@ def probe_model_evaluation(model, data_loader, args):
         for batch in tqdm(data_loader):
             batch = {k: batch[k].to(args.device) for k in batch}
             input = batch['input'].clamp(min=0)
+            seq_mask = batch['seq_mask']
             attn_mask = (input >= 0)
             _, logits = model(input, attention_mask=attn_mask, labels=batch['seq_labels'])
             _, pred_topk_idxes = torch.topk(input=logits, k=args.topk)
