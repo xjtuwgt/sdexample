@@ -25,6 +25,7 @@ def prober_default_parser():
     parser.add_argument('--train_seq_len', type=str, default='300')
     parser.add_argument('--test_examples', type=int, default=10000)
     parser.add_argument('--eval_test_seq_len', type=str, default='300')
+    parser.add_argument('--target_tokens', type=str, default='cat')
 
     parser.add_argument('--model_name', type=str, default='bert-base-uncased')
     parser.add_argument('--train_file_name', type=str, default='train_fastsingle_cat_20000_42_300_0.5.pkl.gz')
