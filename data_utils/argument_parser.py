@@ -20,6 +20,13 @@ def complete_default_parser(args):
 
 def prober_default_parser():
     parser = ArgumentParser()
+    parser.add_argument('--train_examples', type=int, default=800)
+    parser.add_argument('--multi_target', type=str, default='multi')
+    parser.add_argument('--train_seq_len', type=str, default='300')
+    parser.add_argument('--test_examples', type=int, default=10000)
+    parser.add_argument('--vocab_size', type=int, default=100) ## 100
+    parser.add_argument('--eval_test_seq_len', type=str, default='300')
+
     parser.add_argument('--model_name', type=str, default='bert-base-uncased')
     parser.add_argument('--train_file_name', type=str, default='train_fastsingle_cat_20000_42_300_0.5.pkl.gz')
     parser.add_argument('--vocab_size', type=int, default=100) ## 100
