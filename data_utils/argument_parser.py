@@ -42,6 +42,9 @@ def prober_default_parser():
     parser.add_argument('--num_labels', type=int, default=1)
     parser.add_argument('--topk', type=int, default=len('cat'))
     parser.add_argument('--threshold', type=float, default=0.5)
+
+    parser.add_argument('--batch_size', type=int, default=64)
+    parser.add_argument('--test_batch_size', type=int, default=128)
     parser.add_argument('--lr', type=float, default=1e-5)
     parser.add_argument('--seed', type=int, default=1234)
     return parser
