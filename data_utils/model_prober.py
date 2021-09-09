@@ -70,7 +70,7 @@ def probe_model_evaluation(model, data_loader, args):
                 pred_topk_i = pred_topk_idxes[idx]
                 pred_ids = input[idx][pred_topk_i].tolist()
                 true_target_ids = input[idx][batch['seq_labels'][idx]==1].tolist()
-                print(true_target_ids)
+                # print(true_target_ids)
                 em, f1 = em_f1_computation(pred_ids=pred_ids, true_ids=true_target_ids)
                 em_list.append(em)
                 f1_list.append(f1)

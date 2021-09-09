@@ -36,7 +36,7 @@ def prober_default_parser():
     parser.add_argument('--eval_file_name', type=str, default='eval_fastsingle_cat_10000_2345_300_0.5.pkl.gz')
     parser.add_argument('--test_file_name', type=str, default='test_fastsingle_cat_10000_1234_300_0.5.pkl.gz')
     parser.add_argument('--pre_trained_file_name', type=str, default=None)
-    parser.add_argument('--drop_model', type=boolean_string, default='false')
+    parser.add_argument('--drop_model', type=boolean_string, default='true')
     parser.add_argument('--dropout_prob', type=float, default=0.25)
     parser.add_argument('--hidden_dim', type=int, default=768)
     parser.add_argument('--num_labels', type=int, default=1)
