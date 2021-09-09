@@ -189,10 +189,11 @@ def find_cat_probe_collate_fn(examples):
 
         batched_labels[ex_i] = ex.label
         ex_mask_len = 2 + len(ex.target_tokens)
+        mask_position = [_ for _ in range(ex_mask_len)] + [len(ex.tokenized_sentences) - 1]
 
         target_position = [_ + ex_mask_len for _ in ex.positions]
         batched_seq_labels[ex_i, target_position] = 1
-        batched_seq_mask[ex_i, :ex_mask_len] = 0
+        batched_seq_mask[ex_i, mask_position] = 0
 
     retval = {
         'input': batched_input,
