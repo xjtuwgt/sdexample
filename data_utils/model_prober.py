@@ -23,7 +23,7 @@ class ProberModel(nn.Module):
         self.config = config
         self.model = model_builder(args=self.config)
         if self.config.pre_trained_file_name is not None:
-            self.model.load_state_dict(self.config.pre_trained_file_name)
+            self.model.load_state_dict(torch.load(self.config.pre_trained_file_name))
         self.model.bert.register_forward_hook(get_activation('bert'))
         for param in self.model.parameters():
             param.requires_grad = False
