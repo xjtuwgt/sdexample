@@ -117,16 +117,4 @@ for epoch_idx, epoch in enumerate(train_iterator):
     if window_step >= args.window_size:
         break
 print("Best dev result at {} dev f1 ={:.6f} best em = {:.6f}".format(best_step, best_dev_f1, best_metrics[0]))
-# print('*'*25)
-# for key, value in vars(args).items():
-#     print('{}\t{}'.format(key, value))
-# print('*' * 25)
-# input = torch.LongTensor([1,2,3,5]).view(1, -1)
-# attn_mask = (input >= 0)
-# x = model(input, attn_mask)
-# print(x.shape, x)
-
-# print(type(activation['bert']))
-# for _ in activation['bert']:
-#     print(_.shape)
-# print(x)
+print('*'*25)
