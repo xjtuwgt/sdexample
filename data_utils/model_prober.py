@@ -62,9 +62,8 @@ def probe_model_evaluation(model, data_loader, args):
             seq_mask = batch['seq_mask']
             attn_mask = (input >= 0)
             _, logits = model(input=input, attn_mask=attn_mask, labels=batch['seq_labels'], label_mask=seq_mask)
+            logits = logits.squeeze(-1)
             sig_logits = torch.sigmoid(logits)
-            print(logits.shape)
-            print(sig_logits.shape)
             _, pred_topk_idxes = torch.topk(input=sig_logits, k=args.topk)
             batch_size = logits.shape[0]
             for idx in range(batch_size):
