@@ -7,6 +7,7 @@ from torch.autograd import Variable
 from tqdm import tqdm
 from envs import OUTPUT_FOLDER
 from os.path import join
+from collections import Counter
 
 ORIG_PROBE_MODEL_NAME = join(OUTPUT_FOLDER, 'model_False_0.0_384_221_dev_0.9792.pkl')
 DROP_PROBE_MODEL_NAME = join(OUTPUT_FOLDER, 'model_True_0.1_97_52_dev_0.9901.pkl')
@@ -52,54 +53,50 @@ def loss_computation(scores, labels):
 
 def probe_model_evaluation(model, data_loader, args):
     model.eval()
-    em = []
-    f1 = []
+    em_list = []
+    f1_list = []
     with torch.no_grad():
         for batch in tqdm(data_loader):
             batch = {k: batch[k].to(args.device) for k in batch}
             input = batch['input'].clamp(min=0)
             seq_mask = batch['seq_mask']
             attn_mask = (input >= 0)
-            _, logits = model(input, attention_mask=attn_mask, labels=batch['seq_labels'])
-            _, pred_topk_idxes = torch.topk(input=logits, k=args.topk)
+            _, logits = model(input=input, attn_mask=attn_mask, labels=batch['seq_labels'], seq_mask=seq_mask)
+            sig_logits = torch.sigmoid(logits)
+            _, pred_topk_idxes = torch.topk(input=sig_logits, k=args.topk)
             batch_size = logits.shape[0]
             for idx in range(batch_size):
                 pred_topk_i = pred_topk_idxes[idx]
-                true_label_i = batch['seq_labels'][idx]
-                inter_count = true_label_i[pred_topk_i].sum().item()
-                if inter_count == args.topk:
-                    em.append(1.0)
-                else:
-                    em.append(0.0)
-                f1.append(inter_count * 1.0 / args.topk)
-    assert len(em) == len(f1)
-    em = sum(em)/len(em)
-    f1 = sum(f1)/len(f1)
+                pred_ids = input[idx][pred_topk_i].tolist()
+                true_target_ids = input[idx][batch['seq_labels'][idx]==1].tolist()
+                em, f1 = em_f1_computation(pred_ids=pred_ids, true_ids=true_target_ids)
+                em_list.append(em)
+                f1_list.append(f1)
+    assert len(em_list) == len(f1_list)
+    em_ = sum(em_list)/len(em_list)
+    f1_ = sum(f1_list)/len(f1_list)
+    return em_, f1_
+
+def em_f1_computation(pred_ids: list, true_ids: list):
+    em = em_score(prediction_tokens=pred_ids, groud_truth_tokens=true_ids)
+    f1, recall, prediction = f1_score(prediction_tokens=pred_ids, ground_truth_tokens=true_ids)
     return em, f1
 
-def probe_model_evaluation_(model, data_loader, args):
-    model.eval()
-    em = []
-    f1 = []
-    with torch.no_grad():
-        for batch in tqdm(data_loader):
-            batch = {k: batch[k].to(args.device) for k in batch}
-            input = batch['input'].clamp(min=0)
-            seq_mask = batch['seq_mask']
-            attn_mask = (input >= 0)
-            _, logits = model(input, attention_mask=attn_mask, labels=batch['seq_labels'])
-            _, pred_topk_idxes = torch.topk(input=logits, k=args.topk)
-            batch_size = logits.shape[0]
-            for idx in range(batch_size):
-                pred_topk_i = pred_topk_idxes[idx]
-                true_label_i = batch['seq_labels'][idx]
-                inter_count = true_label_i[pred_topk_i].sum().item()
-                if inter_count == args.topk:
-                    em.append(1.0)
-                else:
-                    em.append(0.0)
-                f1.append(inter_count * 1.0 / args.topk)
-    assert len(em) == len(f1)
-    em = sum(em)/len(em)
-    f1 = sum(f1)/len(f1)
-    return em, f1
+def em_score(prediction_tokens, groud_truth_tokens):
+    if len(prediction_tokens) != len(groud_truth_tokens):
+        return 0.0
+    for idx in range(len(prediction_tokens)):
+        if prediction_tokens[idx] != groud_truth_tokens[idx]:
+            return 0.0
+    return 1.0
+
+def f1_score(prediction_tokens, ground_truth_tokens):
+    ZERO_METRIC = (0, 0, 0)
+    common = Counter(prediction_tokens) & Counter(ground_truth_tokens)
+    num_same = sum(common.values())
+    if num_same == 0:
+        return ZERO_METRIC
+    precision = 1.0 * num_same / len(prediction_tokens)
+    recall = 1.0 * num_same / len(ground_truth_tokens)
+    f1 = (2 * precision * recall) / (precision + recall)
+    return f1, precision, recall

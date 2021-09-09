@@ -76,6 +76,7 @@ test_f1 = -1
 best_metrics = (-1, -1)
 best_step = None
 window_step = 0
+training_logs = []
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 train_iterator = trange(start_epoch, start_epoch + int(args.epochs), desc="Epoch")
 for epoch_idx, epoch in enumerate(train_iterator):
@@ -92,26 +93,30 @@ for epoch_idx, epoch in enumerate(train_iterator):
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         optimizer.step()
-#         if (step + 1) % args.eval_batch_interval_num == 0:
-#             dev_em, dev_f1 = probe_model_evaluation(model=model, data_loader=dev_dataloader, args=args)
-#             if dev_f1 > best_dev_f1:
-#                 best_dev_f1 = dev_f1
-#                 best_metrics = (dev_em, dev_f1)
-#                 best_step = (epoch + 1, step + 1)
-#                 window_step = 0
-#             else:
-#                 window_step = window_step + 1
-#             print("Step {}: dev f1 ={:.6f}, current best dev f1={:.6f} and dev em = {:.6f}".format((epoch + 1, step + 1), dev_f1, best_dev_f1, best_metrics[0]), flush=True)
-#             if window_step >= args.window_size:
-#                 break
-#         if window_step >= args.window_size:
-#             break
-#         step = step + 1
-#         if step % 200 == 0:
-#             print('Train loss = {:.6f} at {}/{}'.format(loss.item(), epoch, batch_idx))
-#     if window_step >= args.window_size:
-#         break
-# print("Best dev result at {} dev f1 ={:.6f} best em = {:.6f}".format(best_step, best_dev_f1, best_metrics[0]))
+        if (step + 1) % args.eval_batch_interval_num == 0:
+            dev_em, dev_f1 = probe_model_evaluation(model=model, data_loader=dev_dataloader, args=args)
+            if dev_f1 > best_dev_f1:
+                best_dev_f1 = dev_f1
+                best_metrics = (dev_em, dev_f1)
+                best_step = (epoch + 1, step + 1)
+                window_step = 0
+            else:
+                window_step = window_step + 1
+            print("Step {}: dev f1 ={:.6f}, current best dev f1={:.6f} and dev em = {:.6f}".format((epoch + 1, step + 1), dev_f1, best_dev_f1, best_metrics[0]), flush=True)
+            if window_step >= args.window_size:
+                break
+        if window_step >= args.window_size:
+            break
+        step = step + 1
+        training_logs.append({'loss': loss.item()})
+        if step % 200 == 0:
+            avg_train_loss = sum([_['loss'] for _ in training_logs])/len(training_logs)
+            print('Train loss = {:.6f} at {}/{}'.format(avg_train_loss, epoch, batch_idx))
+            training_logs=[]
+
+    if window_step >= args.window_size:
+        break
+print("Best dev result at {} dev f1 ={:.6f} best em = {:.6f}".format(best_step, best_dev_f1, best_metrics[0]))
 # print('*'*25)
 # for key, value in vars(args).items():
 #     print('{}\t{}'.format(key, value))
