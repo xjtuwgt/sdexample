@@ -8,7 +8,6 @@ def boolean_string(s):
         raise ValueError('Not a valid boolean string')
     return s.lower() == 'true'
 
-
 def complete_default_parser(args):
     if torch.cuda.is_available():
         idx, used_memory = get_single_free_gpu()
@@ -18,7 +17,6 @@ def complete_default_parser(args):
         device = torch.device("cpu")
     args.device = device
     return args
-
 
 def prober_default_parser():
     parser = ArgumentParser()

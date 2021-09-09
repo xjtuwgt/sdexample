@@ -9,10 +9,15 @@ from os.path import join
 from data_utils.findcat import FindCatDataset, find_cat_probe_collate_fn
 from torch.utils.data import DataLoader
 from data_utils.model_prober import probe_model_evaluation
+from data_utils.model_prober import DROP_PROBE_MODEL_NAME, ORIG_PROBE_MODEL_NAME
 ########################################################################################################################
 parser = prober_default_parser()
 args = parser.parse_args()
 args = complete_default_parser(args=args)
+if args.drop_model:
+    args.pre_trained_file_name = DROP_PROBE_MODEL_NAME
+else:
+    args.pre_trained_file_name = ORIG_PROBE_MODEL_NAME
 for key, value in vars(args).items():
     print('{}\t{}'.format(key, value))
 ########################################################################################################################
@@ -81,43 +86,39 @@ for epoch_idx, epoch in enumerate(train_iterator):
         model.train()
         batch = {k: batch[k].to(args.device) for k in batch}
         input = batch['input'].clamp(min=0)
-        attn_mask = (input >= 0)
-        loss, logits = model(input, attention_mask=attn_mask, labels=batch['seq_labels'], label_mask=batch['seq_mask'])
-        optimizer.zero_grad()
-        loss.backward()
-        torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-        optimizer.step()
-        # pred = logits.max(1)[1]
-        # train_total = train_total + pred.shape[0]
-        # train_correct += (pred == batch['labels']).sum()
-        if (step + 1) % args.eval_batch_interval_num == 0:
-            dev_em, dev_f1 = probe_model_evaluation(model=model, data_loader=dev_dataloader, args=args)
-            if dev_f1 > best_dev_f1:
-                best_dev_f1 = dev_f1
-                best_metrics = (dev_em, dev_f1)
-                # test_acc = model_evaluation(model=model, data_loader=test_dataloader, args=args)
-                if args.save_model:
-                    model_name = join(OUTPUT_FOLDER, 'model_{}_{}_{}_{}_dev_{:.4f}.pkl'.format(args.beta_drop, args.sent_dropout,
-                                                                                               epoch_idx+1, batch_idx+1, dev_f1))
-                best_step = (epoch + 1, step + 1)
-                window_step = 0
-            else:
-                window_step = window_step + 1
-            print("Step {}: dev f1 ={:.6f}, current best dev f1={:.6f} and dev em = {:.6f}".format((epoch + 1, step + 1), dev_f1, best_dev_f1, best_metrics[0]), flush=True)
-            if window_step >= args.window_size:
-                break
-        if window_step >= args.window_size:
-            break
-        step = step + 1
-        if step % 200 == 0:
-            print('Train loss = {:.6f} at {}/{}'.format(loss.item(), epoch, batch_idx))
-    if window_step >= args.window_size:
-        break
-print("Best dev result at {} dev f1 ={:.6f} best em = {:.6f}".format(best_step, best_dev_f1, best_metrics[0]))
-print('*'*25)
-for key, value in vars(args).items():
-    print('{}\t{}'.format(key, value))
-print('*' * 25)
+#         attn_mask = (input >= 0)
+#         loss, logits = model(input, attention_mask=attn_mask, labels=batch['seq_labels'], label_mask=batch['seq_mask'])
+#         optimizer.zero_grad()
+#         loss.backward()
+#         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+#         optimizer.step()
+#         # pred = logits.max(1)[1]
+#         # train_total = train_total + pred.shape[0]
+#         # train_correct += (pred == batch['labels']).sum()
+#         if (step + 1) % args.eval_batch_interval_num == 0:
+#             dev_em, dev_f1 = probe_model_evaluation(model=model, data_loader=dev_dataloader, args=args)
+#             if dev_f1 > best_dev_f1:
+#                 best_dev_f1 = dev_f1
+#                 best_metrics = (dev_em, dev_f1)
+#                 best_step = (epoch + 1, step + 1)
+#                 window_step = 0
+#             else:
+#                 window_step = window_step + 1
+#             print("Step {}: dev f1 ={:.6f}, current best dev f1={:.6f} and dev em = {:.6f}".format((epoch + 1, step + 1), dev_f1, best_dev_f1, best_metrics[0]), flush=True)
+#             if window_step >= args.window_size:
+#                 break
+#         if window_step >= args.window_size:
+#             break
+#         step = step + 1
+#         if step % 200 == 0:
+#             print('Train loss = {:.6f} at {}/{}'.format(loss.item(), epoch, batch_idx))
+#     if window_step >= args.window_size:
+#         break
+# print("Best dev result at {} dev f1 ={:.6f} best em = {:.6f}".format(best_step, best_dev_f1, best_metrics[0]))
+# print('*'*25)
+# for key, value in vars(args).items():
+#     print('{}\t{}'.format(key, value))
+# print('*' * 25)
 # input = torch.LongTensor([1,2,3,5]).view(1, -1)
 # attn_mask = (input >= 0)
 # x = model(input, attn_mask)
