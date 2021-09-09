@@ -92,9 +92,6 @@ for epoch_idx, epoch in enumerate(train_iterator):
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         optimizer.step()
-#         # pred = logits.max(1)[1]
-#         # train_total = train_total + pred.shape[0]
-#         # train_correct += (pred == batch['labels']).sum()
 #         if (step + 1) % args.eval_batch_interval_num == 0:
 #             dev_em, dev_f1 = probe_model_evaluation(model=model, data_loader=dev_dataloader, args=args)
 #             if dev_f1 > best_dev_f1:
