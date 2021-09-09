@@ -22,9 +22,9 @@ class ProberModel(nn.Module):
         super(ProberModel, self).__init__()
         self.config = config
         self.model = model_builder(args=self.config)
-        self.model.bert.register_forward_hook(get_activation('bert'))
         if self.config.pre_trained_file_name is not None:
-            self.encoder.load_state_dict(torch.load(join(OUTPUT_FOLDER, self.config.pre_trained_file_name)))
+            self.model.load_state_dict(self.config.pre_trained_file_name)
+        self.model.bert.register_forward_hook(get_activation('bert'))
         for param in self.model.parameters():
             param.requires_grad = False
         self.dropout = nn.Dropout(self.config.dropout_prob)
