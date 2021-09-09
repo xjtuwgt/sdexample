@@ -180,7 +180,8 @@ def find_cat_probe_collate_fn(examples):
                                                                                   ex.tokenized_sentences] + [SEP]
         batched_labels[ex_i] = ex.label
         ex_mask_len = 2 + len(ex.target_tokens)
-        batched_seq_labels[ex_i, ex.positions + ex_mask_len] = 1
+        target_position = [_ + ex_mask_len for _ in ex.positions]
+        batched_seq_labels[ex_i, target_position] = 1
         batched_seq_mask[ex_i, :ex_mask_len] = 0
 
     retval = {
