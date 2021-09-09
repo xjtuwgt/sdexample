@@ -37,10 +37,11 @@ class ProberModel(nn.Module):
         seq_output = bert_output[0]
         seq_output = self.dropout(seq_output)
         seq_scores = self.classifier(seq_output)
-        loss = loss_computation(scores=seq_scores, labels=labels, mask=label_mask)
+        seq_scores[label_mask==0] = -1e30
+        loss = loss_computation(scores=seq_scores, labels=labels)
         return loss, seq_scores
 
-def loss_computation(scores, labels, mask):
+def loss_computation(scores, labels):
     criterion = nn.CrossEntropyLoss(reduction='mean')
     logits_aux = Variable(scores.data.new(scores.size(0), scores.size(1), 1).zero_())
     predictions = torch.cat([logits_aux, scores], dim=-1).contiguous()
