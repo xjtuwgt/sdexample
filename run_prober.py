@@ -88,12 +88,10 @@ for epoch_idx, epoch in enumerate(train_iterator):
         input = batch['input'].clamp(min=0)
         attn_mask = (input >= 0)
         loss, logits = model(input=input, attn_mask=attn_mask, labels=batch['seq_labels'], label_mask=batch['seq_mask'])
-        print(loss)
-        break
-#         optimizer.zero_grad()
-#         loss.backward()
-#         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-#         optimizer.step()
+        optimizer.zero_grad()
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+        optimizer.step()
 #         # pred = logits.max(1)[1]
 #         # train_total = train_total + pred.shape[0]
 #         # train_correct += (pred == batch['labels']).sum()
