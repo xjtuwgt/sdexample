@@ -44,7 +44,7 @@ def prober_default_parser():
     parser.add_argument('--threshold', type=float, default=0.5)
 
     parser.add_argument('--batch_size', type=int, default=64)
-    parser.add_argument('--test_batch_size', type=int, default=128)
+    parser.add_argument('--test_batch_size', type=int, default=256)
     parser.add_argument('--eval_batch_interval_num', type=int, default=100)
     parser.add_argument('--lr', type=float, default=1e-5)
     parser.add_argument('--seed', type=int, default=1234)
