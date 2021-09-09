@@ -178,7 +178,7 @@ def find_cat_probe_collate_fn(examples):
     for ex_i, ex in enumerate(examples):
         ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         if ex.label == 0:
-            positions = sorted(random.choices(list(range(ex.tokenized_sentences)), k=len(ex.target_tokens)))
+            positions = sorted(random.choices(list(range(len(ex.tokenized_sentences))), k=len(ex.target_tokens)))
             for p_i, p in enumerate(positions):
                 ex.tokenized_sentences[p].token_ids[0] = ex.target_tokens[p_i]
             ex.positions = positions
