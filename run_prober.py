@@ -90,6 +90,7 @@ for epoch_idx, epoch in enumerate(train_iterator):
         loss, logits = model(input=input, attn_mask=attn_mask, labels=batch['seq_labels'], label_mask=batch['seq_mask'])
         print(loss)
         print(logits)
+        print(batch['seq_mask'].sum(dim=-1))
         break
 #         optimizer.zero_grad()
 #         loss.backward()
