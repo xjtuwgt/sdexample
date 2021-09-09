@@ -184,7 +184,6 @@ def find_cat_probe_collate_fn(examples):
             ex.positions = positions
             ex.label = 1
         ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
         batched_input[ex_i, :ex_lens[ex_i]] = [CLS] + ex.target_tokens + [SEP] + [s.token_ids[0] for s in
                                                                                   ex.tokenized_sentences] + [SEP]
 
