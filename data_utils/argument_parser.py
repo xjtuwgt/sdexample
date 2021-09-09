@@ -24,7 +24,6 @@ def prober_default_parser():
     parser.add_argument('--multi_target', type=str, default='multi')
     parser.add_argument('--train_seq_len', type=str, default='300')
     parser.add_argument('--test_examples', type=int, default=10000)
-    parser.add_argument('--vocab_size', type=int, default=100) ## 100
     parser.add_argument('--eval_test_seq_len', type=str, default='300')
 
     parser.add_argument('--model_name', type=str, default='bert-base-uncased')
