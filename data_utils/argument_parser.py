@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 from data_utils.findcat import MASK
 import torch
 from utils.gpu_utils import get_single_free_gpu
+from utils.env_utils import seed_everything
 
 def boolean_string(s):
     if s.lower() not in {'false', 'true'}:
@@ -9,6 +10,7 @@ def boolean_string(s):
     return s.lower() == 'true'
 
 def complete_default_parser(args):
+    seed_everything(seed=args.seed)
     if torch.cuda.is_available():
         idx, used_memory = get_single_free_gpu()
         # idx = 0

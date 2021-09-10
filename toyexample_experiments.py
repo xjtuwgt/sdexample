@@ -7,22 +7,10 @@ import random
 import numpy as np
 from os.path import join
 from envs import HOME_DATA_FOLDER, OUTPUT_FOLDER
+from utils.env_utils import seed_everything
 
 from data_utils.findcat import FindCatDataset, find_cat_validation_fn, find_cat_collate_fn
 from data_utils.dataset import SentenceDropDataset
-
-def seed_everything(seed: int) -> int:
-    random.seed(seed)
-    os.environ['PYTHONHASHSEED'] = str(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    # some cudnn methods can be random even after fixing the seed
-    # unless you tell it to be deterministic
-    if torch.cuda.is_available():
-        torch.backends.cudnn.deterministic = True
-        torch.cuda.manual_seed(seed)
-        torch.cuda.manual_seed_all(seed)
-    return seed
 
 def model_builder(args):
     model_config = transformers.AutoConfig.from_pretrained(args.model_name)
