@@ -103,7 +103,7 @@ for epoch_idx, epoch in enumerate(train_iterator):
                 window_step = window_step + 1
             print('Metrics at step {}/{}:'.format(epoch_idx+1, batch_idx + 1))
             for key, value in metrics.items():
-                print('Metric = {}, value = {}'.format(key, value))
+                print('Metric = {}, value = {:.6f}'.format(key, value))
             if window_step >= args.window_size:
                 break
         if window_step >= args.window_size:
@@ -119,5 +119,5 @@ for epoch_idx, epoch in enumerate(train_iterator):
         break
 print("Best dev result at {}".format(best_step))
 for key, value in best_metrics.items():
-    print('Metric = {}, value = {}'.format(key, value))
+    print('Metric = {}, value = {:.6f}'.format(key, value))
 print('*'*25)
