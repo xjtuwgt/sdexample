@@ -143,7 +143,9 @@ def rank_contain_ratio_score(pred_ids: list, ground_truth_ids: list):
     ratio_log = {}
     for k in topk:
         if k <= contain_idx:
-            ratio_log['Hit_{}'.format(k)] = 1.0
+            ratio_log['Hit@{}'.format(k)] = 1.0
+        else:
+            ratio_log['Hit@{}'.format(k)] = 0.0
     if contain_idx > len(pred_ids):
         ratio_log['MRR'] = 0.0
     else:
