@@ -71,9 +71,8 @@ dev_dataloader = dev_data_loader(args=args)
 ########################################################################################################################
 step = 0
 start_epoch = 0
-best_dev_f1 = -1
-test_f1 = -1
-best_metrics = (-1, -1)
+best_mrr = 0.0
+best_metrics = None
 best_step = None
 window_step = 0
 training_logs = []
@@ -94,15 +93,17 @@ for epoch_idx, epoch in enumerate(train_iterator):
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         optimizer.step()
         if (step + 1) % args.eval_batch_interval_num == 0:
-            dev_em, dev_f1 = probe_model_evaluation(model=model, data_loader=dev_dataloader, args=args)
-            if dev_f1 > best_dev_f1:
-                best_dev_f1 = dev_f1
-                best_metrics = (dev_em, dev_f1)
+            metrics = probe_model_evaluation(model=model, data_loader=dev_dataloader, args=args)
+            if metrics['mrr'] > best_mrr:
+                best_mrr = metrics['mrr']
+                best_metrics = metrics
                 best_step = (epoch + 1, step + 1)
                 window_step = 0
             else:
                 window_step = window_step + 1
-            print("Step {}: dev f1 ={:.6f}, current best dev f1={:.6f} and dev em = {:.6f}".format((epoch + 1, step + 1), dev_f1, best_dev_f1, best_metrics[0]), flush=True)
+            print('Metrics at step {}/{}:'.format(epoch_idx+1, batch_idx + 1))
+            for key, value in metrics.items():
+                print('Metric = {}, value = {}'.format(key, value))
             if window_step >= args.window_size:
                 break
         if window_step >= args.window_size:
@@ -116,5 +117,7 @@ for epoch_idx, epoch in enumerate(train_iterator):
 
     if window_step >= args.window_size:
         break
-print("Best dev result at {} dev f1 ={:.6f} best em = {:.6f}".format(best_step, best_dev_f1, best_metrics[0]))
+print("Best dev result at {}".format(best_step))
+for key, value in best_metrics.items():
+    print('Metric = {}, value = {}'.format(key, value))
 print('*'*25)
