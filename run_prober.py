@@ -115,6 +115,7 @@ for epoch_idx, epoch in enumerate(train_iterator):
             print('Train loss = {:.6f} at {}/{}'.format(avg_train_loss, epoch + 1, batch_idx + 1))
             training_logs=[]
 
+
     if window_step >= args.window_size:
         break
 print("Best dev result at {}".format(best_step))

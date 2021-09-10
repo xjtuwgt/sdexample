@@ -179,6 +179,6 @@ def f1_score(prediction_tokens, ground_truth_tokens):
 
 if __name__ == '__main__':
     target = [1,3,4]
-    sequence = [1, 4, 0, 1, 2,  5, 4, 4]
+    sequence = [0, 0, 0, 1, 4, 0, 1, 2,  5, 3, 4, 4]
     x = find_subsequence(target=target, sequence=sequence)
     print(x)
