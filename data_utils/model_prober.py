@@ -64,7 +64,7 @@ class ProberModel(nn.Module):
             self.model.load_state_dict(torch.load(self.config.pre_trained_file_name))
             print('Loading model from {}'.format(self.config.pre_trained_file_name))
         # self.model.bert.register_forward_hook(get_activation('bert'))
-        self.model.bert.register_forward_hook(get_activation('encoder'))
+        self.model.bert.encoder.register_forward_hook(get_activation('encoder'))
         for param in self.model.parameters():
             param.requires_grad = False
         self.dropout = nn.Dropout(self.config.dropout_prob)
