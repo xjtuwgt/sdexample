@@ -75,8 +75,8 @@ class ProberModel(nn.Module):
         self.model(input, attn_mask)
         # bert_output = activation['bert']
         bert_output = activation['encoder']
-        print(len(bert_output))
-        print(bert_output[0].shape)
+        # print(len(bert_output))
+        # print(bert_output[0].shape)
         seq_output = bert_output[0]
         seq_output = self.dropout(seq_output)
         seq_scores = self.classifier(seq_output)
