@@ -94,8 +94,8 @@ for epoch_idx, epoch in enumerate(train_iterator):
         optimizer.step()
         if (step + 1) % args.eval_batch_interval_num == 0:
             metrics = probe_model_evaluation(model=model, data_loader=dev_dataloader, args=args)
-            if metrics['mrr'] > best_mrr:
-                best_mrr = metrics['mrr']
+            if metrics['MRR'] > best_mrr:
+                best_mrr = metrics['MRR']
                 best_metrics = metrics
                 best_step = (epoch + 1, step + 1)
                 window_step = 0
