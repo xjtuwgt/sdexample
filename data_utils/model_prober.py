@@ -63,7 +63,8 @@ class ProberModel(nn.Module):
         if self.config.pre_trained_file_name is not None:
             self.model.load_state_dict(torch.load(self.config.pre_trained_file_name))
             print('Loading model from {}'.format(self.config.pre_trained_file_name))
-        self.model.bert.register_forward_hook(get_activation('bert'))
+        # self.model.bert.register_forward_hook(get_activation('bert'))
+        self.model.bert.register_forward_hook(get_activation('encoder'))
         for param in self.model.parameters():
             param.requires_grad = False
         self.dropout = nn.Dropout(self.config.dropout_prob)
@@ -72,7 +73,8 @@ class ProberModel(nn.Module):
 
     def forward(self, input, attn_mask, labels, label_mask):
         self.model(input, attn_mask)
-        bert_output = activation['bert']
+        # bert_output = activation['bert']
+        bert_output = activation['encoder']
         seq_output = bert_output[0]
         seq_output = self.dropout(seq_output)
         seq_scores = self.classifier(seq_output)
