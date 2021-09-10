@@ -112,7 +112,7 @@ for epoch_idx, epoch in enumerate(train_iterator):
         training_logs.append({'loss': loss.item()})
         if step % 100 == 0:
             avg_train_loss = sum([_['loss'] for _ in training_logs])/len(training_logs)
-            print('Train loss = {:.6f} at {}/{}'.format(avg_train_loss, epoch + 1, batch_idx))
+            print('Train loss = {:.6f} at {}/{}'.format(avg_train_loss, epoch + 1, batch_idx + 1))
             training_logs=[]
 
     if window_step >= args.window_size:
