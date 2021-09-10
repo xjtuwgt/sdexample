@@ -28,7 +28,7 @@ def prober_default_parser():
     parser.add_argument('--target_tokens', type=str, default='cat')
 
     parser.add_argument('--model_name', type=str, default='bert-base-uncased')
-    parser.add_argument('--train_file_name', type=str, default='train_fastsingle_cat_20000_42_300_0.5.pkl.gz')
+    parser.add_argument('--train_file_name', type=str, default='train_fastsingle_cat_10000_42_300_0.5.pkl.gz')
     parser.add_argument('--vocab_size', type=int, default=100) ## 100
     parser.add_argument('--epochs', type=int, default=500)
     parser.add_argument('--steps', type=int, default=1000)
