@@ -133,7 +133,7 @@ def contain_ratio_score(pred_ids: list, ground_truth_ids: list):
             contain_ratios[_] = 1
     ratio_log = {}
     for i, k in enumerate(topk):
-        ratio_log['ratio_@{}'.format(k)] = contain_ratios[i]
+        ratio_log['Hit_{}'.format(k)] = contain_ratios[i]
     return ratio_log
 
 def rank_contain_ratio_score(pred_ids: list, ground_truth_ids: list):
@@ -143,7 +143,7 @@ def rank_contain_ratio_score(pred_ids: list, ground_truth_ids: list):
     ratio_log = {}
     for k in topk:
         if k <= contain_idx:
-            ratio_log['ratio_@{}'.format(k)] = 1.0
+            ratio_log['Hit_{}'.format(k)] = 1.0
     if contain_idx > len(pred_ids):
         ratio_log['MRR'] = 0.0
     else:
