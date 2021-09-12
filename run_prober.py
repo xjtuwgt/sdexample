@@ -129,5 +129,11 @@ print("Best dev result at {}".format(best_step))
 for key, value in best_metrics.items():
     print('Metric = {}, value = {:.6f}'.format(key, value))
 print('*'*25)
+train_metrics = probe_model_evaluation(model=model, data_loader=train_dataloader, args=args)
+print('+' * 75)
+print('Training metrics:')
+for key, value in train_metrics.items():
+    print('Metric = {}, value = {:.6f}'.format(key, value))
+print('+' * 75)
 for key, value in vars(args).items():
     print(key, value)
