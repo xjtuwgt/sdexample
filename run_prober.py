@@ -115,6 +115,13 @@ for epoch_idx, epoch in enumerate(train_iterator):
             print('Train loss = {:.6f} at {}/{}'.format(avg_train_loss, epoch + 1, batch_idx + 1))
             training_logs=[]
 
+    if step % 10000 == 0:
+        train_metrics = probe_model_evaluation(model=model, data_loader=train_dataloader, args=args)
+        print('+' * 75)
+        print('Training metrics:')
+        for key, value in train_metrics.items():
+            print('Metric = {}, value = {:.6f}'.format(key, value))
+        print('+' * 75)
 
     if window_step >= args.window_size:
         break
