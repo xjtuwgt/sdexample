@@ -122,3 +122,5 @@ print("Best dev result at {}".format(best_step))
 for key, value in best_metrics.items():
     print('Metric = {}, value = {:.6f}'.format(key, value))
 print('*'*25)
+for key, value in vars(args).items():
+    print(key, value)
