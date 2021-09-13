@@ -68,8 +68,8 @@ class ProberModel(nn.Module):
         for param in self.model.parameters():
             param.requires_grad = False
         self.dropout = nn.Dropout(self.config.dropout_prob)
-        # self.classifier = nn.Linear(self.config.hidden_dim, self.config.num_labels)
-        self.classifier = OutputLayer(hidden_dim=self.config.hidden_dim, dropout=self.config.dropout_prob, num_answer=self.config.num_labels)
+        self.classifier = nn.Linear(self.config.hidden_dim, self.config.num_labels)
+        # self.classifier = OutputLayer(hidden_dim=self.config.hidden_dim, dropout=self.config.dropout_prob, num_answer=self.config.num_labels)
 
     def forward(self, input, attn_mask, labels, label_mask):
         self.model(input, attn_mask)
