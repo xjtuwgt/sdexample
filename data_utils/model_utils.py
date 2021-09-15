@@ -15,6 +15,7 @@ def model_evaluation(model, data_loader, args):
             pred = logits.max(1)[1]
             total += len(pred)
             correct += (pred == batch['labels']).sum()
+            del batch
     acc = correct * 1.0 / total
     return acc
 
@@ -29,10 +30,11 @@ def model_loss_computation(model, data_loader, args):
             input = batch['input'].clamp(min=0)
             attn_mask = (input >= 0)
             loss, logits = model(input, attention_mask=attn_mask, labels=batch['labels'])
-            loss_list.append(loss.item())
+            loss_list.append(loss.detach().item())
             pred = logits.max(1)[1]
             total += len(pred)
             correct += (pred == batch['labels']).sum()
+            del batch
     dev_acc = correct * 1.0 / total
     avg_loss = sum(loss_list)/len(loss_list)
     return avg_loss
