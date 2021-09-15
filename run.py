@@ -13,7 +13,7 @@ args = parser.parse_args()
 args = complete_default_parser(args=args)
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 if args.exp_name is None:
-    args.exp_name = args.train_file_name + '.model'
+    args.exp_name = args.train_file_name + '.models'
     args.exp_name = join(OUTPUT_FOLDER, args.exp_name)
     os.makedirs(args.exp_name, exist_ok=True)
 for key, value in vars(args).items():
