@@ -49,6 +49,11 @@ def model_builder(args):
     # print('*' * 75)
     return model
 
-def load_pretrained_model(model, args):
-
-    return
+def load_pretrained_model(args, pretrained_model_name):
+    model_config = transformers.AutoConfig.from_pretrained(args.model_name)
+    model_config.num_hidden_layers = 3
+    model_config.vocab_size = args.vocab_size
+    model = transformers.AutoModelForSequenceClassification.from_config(model_config)
+    model.load_state_dict(torch.load(pretrained_model_name))
+    print('Loading model from {}'.format(pretrained_model_name))
+    return model
