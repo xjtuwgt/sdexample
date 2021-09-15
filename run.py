@@ -5,6 +5,7 @@ import torch
 from envs import OUTPUT_FOLDER
 from tqdm import tqdm, trange
 from os.path import join
+import os
 
 parser = default_argparser()
 args = parser.parse_args()
@@ -14,6 +15,8 @@ args = complete_default_parser(args=args)
 if args.exp_name is None:
     args.exp_name = '_'.join([args.train_file_name,
                               '.dr.' + str(args.sent_dropout)])
+    args.exp_name = join(OUTPUT_FOLDER, args.exp_name)
+    os.makedirs(args.exp_name, exist_ok=True)
 for key, value in vars(args).items():
     print('{}\t{}'.format(key, value))
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -59,7 +62,7 @@ for epoch_idx, epoch in enumerate(train_iterator):
                 best_dev_acc = dev_acc
                 # test_acc = model_evaluation(model=model, data_loader=test_dataloader, args=args)
                 if args.save_model:
-                    model_name = join(OUTPUT_FOLDER, 'model_{}_{}_{}_{}_dev_{:.4f}.pkl'.format(args.beta_drop, args.sent_dropout,
+                    model_name = join(args.exp_name, 'model_{}_{}_{}_{}_dev_{:.4f}.pkl'.format(args.beta_drop, args.sent_dropout,
                                                                                                epoch_idx+1, batch_idx+1, dev_acc))
                     save_match_model(model=model, model_name=model_name)
                 best_step = (epoch + 1, step + 1)
