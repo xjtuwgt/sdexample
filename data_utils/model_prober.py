@@ -7,6 +7,7 @@ from torch.autograd import Variable
 from tqdm import tqdm
 from envs import OUTPUT_FOLDER
 from os.path import join
+from torch import Tensor
 import numpy as np
 from collections import Counter
 from data_utils.findcat_fast import contains_subsequence
@@ -108,41 +109,68 @@ def probe_model_evaluation(model, data_loader, args):
             batch_size = score.shape[0]
             for idx in range(batch_size):
                 sorted_idx_i = argsort[idx]
-                sorted_ids = input[idx][sorted_idx_i].tolist()
+                input_i = input[idx]
                 true_target_ids = input[idx][batch['seq_labels'][idx] == 1].tolist()
-                score_log = rank_contain_ratio_score(pred_ids=sorted_ids, ground_truth_ids=true_target_ids)
+                score_log = rank_contain_ratio_sorted_score(input=input_i, sorted_idx=sorted_idx_i, ground_truth_ids=true_target_ids)
+                # sorted_ids = input[idx][sorted_idx_i].tolist()
+                # true_target_ids = input[idx][batch['seq_labels'][idx] == 1].tolist()
+                # score_log = rank_contain_ratio_score(pred_ids=sorted_ids, ground_truth_ids=true_target_ids)
                 logs.append(score_log)
     metrics = {}
     for metric in logs[0].keys():
         metrics[metric] = sum([log[metric] for log in logs]) / len(logs)
     return metrics
 
-def em_f1_computation(pred_ids: list, true_ids: list):
-    em = em_score(prediction_tokens=pred_ids, groud_truth_tokens=true_ids)
-    f1, recall, prediction = f1_score(prediction_tokens=pred_ids, ground_truth_tokens=true_ids)
-    return em, f1
+# def em_f1_computation(pred_ids: list, true_ids: list):
+#     em = em_score(prediction_tokens=pred_ids, groud_truth_tokens=true_ids)
+#     f1, recall, prediction = f1_score(prediction_tokens=pred_ids, ground_truth_tokens=true_ids)
+#     return em, f1
 
-def contain_ratio_score(pred_ids: list, ground_truth_ids: list):
-    topk = [3, 5, 10, 20, 50]
-    flag = False
-    idx = 0
-    contain_ratios = np.zeros(len(topk))
-    while (not flag) and (idx < len(topk)):
-        topk_ids = pred_ids[:topk[idx]]
-        flag = contains_subsequence(target=ground_truth_ids, sequence=topk_ids)
-        contain_ratios[idx] = float(flag)
-        idx = idx + 1
-    if flag:
-        for _ in range(idx, len(topk)):
-            contain_ratios[_] = 1
-    ratio_log = {}
-    for i, k in enumerate(topk):
-        ratio_log['Hit_{}'.format(k)] = contain_ratios[i]
-    return ratio_log
+# def contain_ratio_score(pred_ids: list, ground_truth_ids: list):
+#     topk = [3, 5, 10, 20, 50]
+#     flag = False
+#     idx = 0
+#     contain_ratios = np.zeros(len(topk))
+#     while (not flag) and (idx < len(topk)):
+#         topk_ids = pred_ids[:topk[idx]]
+#         flag = contains_subsequence(target=ground_truth_ids, sequence=topk_ids)
+#         contain_ratios[idx] = float(flag)
+#         idx = idx + 1
+#     if flag:
+#         for _ in range(idx, len(topk)):
+#             contain_ratios[_] = 1
+#     ratio_log = {}
+#     for i, k in enumerate(topk):
+#         ratio_log['Hit_{}'.format(k)] = contain_ratios[i]
+#     return ratio_log
 
-def rank_contain_ratio_score(pred_ids: list, ground_truth_ids: list):
+# def rank_contain_ratio_score(pred_ids: list, ground_truth_ids: list):
+#     topk = [3, 5, 10, 20, 50]
+#     contain_idx = find_subsequence(target=ground_truth_ids, sequence=pred_ids)
+#     contain_idx = contain_idx + 1
+#     ratio_log = {}
+#     for k in topk:
+#         if k >= contain_idx:
+#             ratio_log['Hit@{}'.format(k)] = 1.0
+#         else:
+#             ratio_log['Hit@{}'.format(k)] = 0.0
+#     if contain_idx > len(pred_ids):
+#         ratio_log['MRR'] = 0.0
+#     else:
+#         ratio_log['MRR'] = 1.0/contain_idx
+#     ratio_log['MR'] = contain_idx
+#     return ratio_log
+
+def rank_contain_ratio_sorted_score(input: Tensor, sorted_idx: Tensor, ground_truth_ids: list):
     topk = [3, 5, 10, 20, 50]
-    contain_idx = find_subsequence(target=ground_truth_ids, sequence=pred_ids)
+    seq_len = input.shape[0]
+    contain_idx = seq_len
+    for rank in range(3, seq_len):
+        sorted_idx = sorted_idx[:rank]
+        sorted_sorted_idx = torch.sort(sorted_idx)
+        inp_seq = input[sorted_sorted_idx].tolist()
+        if contains_subsequence(target=ground_truth_ids, sequence=inp_seq):
+            contain_idx = rank
     contain_idx = contain_idx + 1
     ratio_log = {}
     for k in topk:
@@ -150,32 +178,32 @@ def rank_contain_ratio_score(pred_ids: list, ground_truth_ids: list):
             ratio_log['Hit@{}'.format(k)] = 1.0
         else:
             ratio_log['Hit@{}'.format(k)] = 0.0
-    if contain_idx > len(pred_ids):
+    if contain_idx > seq_len:
         ratio_log['MRR'] = 0.0
     else:
         ratio_log['MRR'] = 1.0/contain_idx
     ratio_log['MR'] = contain_idx
     return ratio_log
 
-def em_score(prediction_tokens, groud_truth_tokens):
-    if len(prediction_tokens) != len(groud_truth_tokens):
-        return 0.0
-    for idx in range(len(prediction_tokens)):
-        if prediction_tokens[idx] != groud_truth_tokens[idx]:
-            return 0.0
-    return 1.0
+# def em_score(prediction_tokens, groud_truth_tokens):
+#     if len(prediction_tokens) != len(groud_truth_tokens):
+#         return 0.0
+#     for idx in range(len(prediction_tokens)):
+#         if prediction_tokens[idx] != groud_truth_tokens[idx]:
+#             return 0.0
+#     return 1.0
 
 
-def f1_score(prediction_tokens, ground_truth_tokens):
-    ZERO_METRIC = (0, 0, 0)
-    common = Counter(prediction_tokens) & Counter(ground_truth_tokens)
-    num_same = sum(common.values())
-    if num_same == 0:
-        return ZERO_METRIC
-    precision = 1.0 * num_same / len(prediction_tokens)
-    recall = 1.0 * num_same / len(ground_truth_tokens)
-    f1 = (2 * precision * recall) / (precision + recall)
-    return f1, precision, recall
+# def f1_score(prediction_tokens, ground_truth_tokens):
+#     ZERO_METRIC = (0, 0, 0)
+#     common = Counter(prediction_tokens) & Counter(ground_truth_tokens)
+#     num_same = sum(common.values())
+#     if num_same == 0:
+#         return ZERO_METRIC
+#     precision = 1.0 * num_same / len(prediction_tokens)
+#     recall = 1.0 * num_same / len(ground_truth_tokens)
+#     f1 = (2 * precision * recall) / (precision + recall)
+#     return f1, precision, recall
 
 if __name__ == '__main__':
     target = [1,3,4]
