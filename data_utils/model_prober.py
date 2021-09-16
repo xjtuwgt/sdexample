@@ -171,6 +171,7 @@ def rank_contain_ratio_sorted_score(input: Tensor, sorted_idx: Tensor, ground_tr
         inp_seq = input[sorted_sorted_idx].tolist()
         if contains_subsequence(target=ground_truth_ids, sequence=inp_seq):
             contain_idx = rank
+            break
     contain_idx = contain_idx + 1
     ratio_log = {}
     for k in topk:
