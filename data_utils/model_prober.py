@@ -7,6 +7,7 @@ from torch.autograd import Variable
 from tqdm import tqdm
 from envs import OUTPUT_FOLDER
 from os.path import join
+import torch.nn.functional as F
 from torch import Tensor
 import numpy as np
 from collections import Counter
@@ -94,11 +95,14 @@ class ProberModel(nn.Module):
         seq_output = bert_output[0]
         seq_output = self.dropout(seq_output)
         seq_scores = self.classifier(seq_output)
-        seq_scores[label_mask==0] = -1e30
-        loss = loss_computation(scores=seq_scores, labels=labels)
+        if self.config.loss_type == 'bce':
+            loss = loss_computation(scores=seq_scores, labels=labels, label_mask=label_mask)
+        else:
+            loss = adversarial_loss_computation(scores=seq_scores, labels=labels, label_mask=label_mask)
         return loss, seq_scores
 
-def loss_computation(scores, labels):
+def loss_computation(scores, labels, label_mask):
+    scores[label_mask == 0] = -1e30
     criterion = nn.CrossEntropyLoss(reduction='mean')
     logits_aux = Variable(scores.data.new(scores.size(0), scores.size(1), 1).zero_())
     predictions = torch.cat([logits_aux, scores], dim=-1).contiguous()
@@ -107,9 +111,15 @@ def loss_computation(scores, labels):
     loss = criterion.forward(predictions, labels)
     return loss
 
-def adversarial_loss_computation(scores, labels, args):
-
-    return
+def adversarial_loss_computation(scores, labels, label_mask):
+    logsigmoid_scores = F.logsigmoid(scores)
+    positive_scores = logsigmoid_scores[labels==1]
+    pos_loss = -positive_scores.mean()
+    neg_label_mask = torch.logical_and(labels==0, label_mask==1)
+    negative_scores = logsigmoid_scores[neg_label_mask]
+    neg_loss = -negative_scores.mean()
+    loss = (pos_loss + neg_loss)/ 2
+    return loss
 
 def probe_model_evaluation(model, data_loader, args):
     model.eval()
@@ -121,6 +131,7 @@ def probe_model_evaluation(model, data_loader, args):
             seq_mask = batch['seq_mask']
             attn_mask = (input >= 0)
             _, score = model(input=input, attn_mask=attn_mask, labels=batch['seq_labels'], label_mask=seq_mask)
+            score[seq_mask == 0] = -1e30
             score = score.squeeze(-1)
             argsort = torch.argsort(score, dim=1, descending=True)
             batch_size = score.shape[0]
