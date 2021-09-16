@@ -107,6 +107,10 @@ def loss_computation(scores, labels):
     loss = criterion.forward(predictions, labels)
     return loss
 
+def adversarial_loss_computation(scores, labels, args):
+
+    return
+
 def probe_model_evaluation(model, data_loader, args):
     model.eval()
     logs = []

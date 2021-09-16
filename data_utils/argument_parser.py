@@ -46,6 +46,9 @@ def prober_default_parser():
     parser.add_argument('--topk', type=int, default=len('cat'))
     parser.add_argument('--threshold', type=float, default=0.5)
 
+    parser.add_argument('--adversarial', type=boolean_string, default='true')
+    parser.add_argument('--adversarial_temp', type=float, default=1.0)
+
     parser.add_argument('--batch_size', type=int, default=64)
     parser.add_argument('--test_batch_size', type=int, default=256)
     parser.add_argument('--eval_batch_interval_num', type=int, default=300)
