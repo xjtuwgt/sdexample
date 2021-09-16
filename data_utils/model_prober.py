@@ -164,7 +164,7 @@ def probe_model_evaluation(model, data_loader, args):
 def rank_contain_ratio_sorted_score(input: Tensor, sorted_idx: Tensor, ground_truth_ids: list):
     topk = [3, 5, 10, 20, 50]
     seq_len = input.shape[0]
-    contain_idx = seq_len
+    contain_idx = 300
     for rank in topk:
         sorted_idx = sorted_idx[:rank]
         # zero_seq = torch.zeros(seq_len, dtype=torch.long)
