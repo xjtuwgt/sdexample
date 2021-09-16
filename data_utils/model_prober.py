@@ -123,6 +123,8 @@ def adversarial_loss_computation(scores, labels, label_mask):
     return loss
 
 def rank_loss_computation(scores, labels, label_mask):
+    print(scores.shape)
+    print(labels.shape)
     positive_scores = scores[labels==1]
     print(positive_scores.shape)
     min_positive_scores = torch.min(positive_scores, dim=-1)[0]
