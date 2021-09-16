@@ -68,7 +68,7 @@ for epoch_idx, epoch in enumerate(train_iterator):
                 window_step = 0
             else:
                 window_step = window_step + 1
-            print("Step {}: dev accuracy={:.6f}, current best dev accuracy={:.6f} and test accuracy = {:.6f}".format((epoch + 1, step + 1), dev_acc, best_dev_acc, test_acc), flush=True)
+            print("Step {}: dev accuracy={:.6f}, current best dev accuracy={:.6f} and test accuracy = {:.6f}".format((epoch + 1, step + 1), dev_acc, best_dev_acc, test_acc))
             if window_step >= args.window_size:
                 break
         if window_step >= args.window_size:
