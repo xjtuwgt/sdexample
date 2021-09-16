@@ -167,11 +167,11 @@ def rank_contain_ratio_sorted_score(input: Tensor, sorted_idx: Tensor, ground_tr
     contain_idx = seq_len
     for rank in topk:
         sorted_idx = sorted_idx[:rank]
-        zero_seq = torch.zeros(seq_len, dtype=torch.long)
-        zero_seq[sorted_idx] = 1
-        inp_seq = input[zero_seq==1].tolist()
-        # sorted_sorted_idx = torch.sort(sorted_idx)[0]
-        # inp_seq = input[sorted_sorted_idx].tolist()
+        # zero_seq = torch.zeros(seq_len, dtype=torch.long)
+        # zero_seq[sorted_idx] = 1
+        # inp_seq = input[zero_seq==1].tolist()
+        sorted_sorted_idx = torch.sort(sorted_idx)[0]
+        inp_seq = input[sorted_sorted_idx].tolist()
         if contains_subsequence(target=ground_truth_ids, sequence=inp_seq):
             contain_idx = rank
             break
