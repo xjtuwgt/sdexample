@@ -137,6 +137,7 @@ def rank_loss_computation(scores, labels, label_mask):
     # print(negative_scores.shape)
     max_negative_scores = torch.max(negative_scores, dim=-1)[0]
     diff = max_negative_scores - min_positive_scores + 0.2
+    print(diff.shape)
     loss = F.relu(diff).mean()
     return loss
 
