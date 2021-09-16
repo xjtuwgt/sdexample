@@ -109,12 +109,11 @@ def probe_model_evaluation(model, data_loader, args):
             batch_size = score.shape[0]
             for idx in range(batch_size):
                 sorted_idx_i = argsort[idx]
-                input_i = input[idx]
+                # input_i = input[idx]
                 true_target_ids = input[idx][batch['seq_labels'][idx] == 1].tolist()
-                score_log = rank_contain_ratio_sorted_score(input=input_i, sorted_idx=sorted_idx_i, ground_truth_ids=true_target_ids)
-                # sorted_ids = input[idx][sorted_idx_i].tolist()
-                # true_target_ids = input[idx][batch['seq_labels'][idx] == 1].tolist()
-                # score_log = rank_contain_ratio_score(pred_ids=sorted_ids, ground_truth_ids=true_target_ids)
+                # score_log = rank_contain_ratio_sorted_score(input=input_i, sorted_idx=sorted_idx_i, ground_truth_ids=true_target_ids)
+                sorted_ids = input[idx][sorted_idx_i].tolist()
+                score_log = rank_contain_ratio_score(pred_ids=sorted_ids, ground_truth_ids=true_target_ids)
                 logs.append(score_log)
     metrics = {}
     for metric in logs[0].keys():
@@ -144,49 +143,49 @@ def probe_model_evaluation(model, data_loader, args):
 #         ratio_log['Hit_{}'.format(k)] = contain_ratios[i]
 #     return ratio_log
 
-# def rank_contain_ratio_score(pred_ids: list, ground_truth_ids: list):
-#     topk = [3, 5, 10, 20, 50]
-#     contain_idx = find_subsequence(target=ground_truth_ids, sequence=pred_ids)
-#     contain_idx = contain_idx + 1
-#     ratio_log = {}
-#     for k in topk:
-#         if k >= contain_idx:
-#             ratio_log['Hit@{}'.format(k)] = 1.0
-#         else:
-#             ratio_log['Hit@{}'.format(k)] = 0.0
-#     if contain_idx > len(pred_ids):
-#         ratio_log['MRR'] = 0.0
-#     else:
-#         ratio_log['MRR'] = 1.0/contain_idx
-#     ratio_log['MR'] = contain_idx
-#     return ratio_log
-
-def rank_contain_ratio_sorted_score(input: Tensor, sorted_idx: Tensor, ground_truth_ids: list):
+def rank_contain_ratio_score(pred_ids: list, ground_truth_ids: list):
     topk = [3, 5, 10, 20, 50]
-    seq_len = input.shape[0]
-    contain_idx = 300
-    for rank in topk:
-        sorted_idx = sorted_idx[:rank]
-        # zero_seq = torch.zeros(seq_len, dtype=torch.long)
-        # zero_seq[sorted_idx] = 1
-        # inp_seq = input[zero_seq==1].tolist()
-        sorted_sorted_idx = torch.sort(sorted_idx)[0]
-        inp_seq = input[sorted_sorted_idx].tolist()
-        if contains_subsequence(target=ground_truth_ids, sequence=inp_seq):
-            contain_idx = rank
-            break
+    contain_idx = find_subsequence(target=ground_truth_ids, sequence=pred_ids)
+    contain_idx = contain_idx + 1
     ratio_log = {}
     for k in topk:
         if k >= contain_idx:
             ratio_log['Hit@{}'.format(k)] = 1.0
         else:
             ratio_log['Hit@{}'.format(k)] = 0.0
-    if contain_idx > seq_len:
+    if contain_idx > len(pred_ids):
         ratio_log['MRR'] = 0.0
     else:
         ratio_log['MRR'] = 1.0/contain_idx
     ratio_log['MR'] = contain_idx
     return ratio_log
+
+# def rank_contain_ratio_sorted_score(input: Tensor, sorted_idx: Tensor, ground_truth_ids: list):
+#     topk = [3, 5, 10, 20, 50]
+#     seq_len = input.shape[0]
+#     contain_idx = 300
+#     for rank in topk:
+#         sorted_idx = sorted_idx[:rank]
+#         # zero_seq = torch.zeros(seq_len, dtype=torch.long)
+#         # zero_seq[sorted_idx] = 1
+#         # inp_seq = input[zero_seq==1].tolist()
+#         sorted_sorted_idx = torch.sort(sorted_idx)[0]
+#         inp_seq = input[sorted_sorted_idx].tolist()
+#         if contains_subsequence(target=ground_truth_ids, sequence=inp_seq):
+#             contain_idx = rank
+#             break
+#     ratio_log = {}
+#     for k in topk:
+#         if k >= contain_idx:
+#             ratio_log['Hit@{}'.format(k)] = 1.0
+#         else:
+#             ratio_log['Hit@{}'.format(k)] = 0.0
+#     if contain_idx > seq_len:
+#         ratio_log['MRR'] = 0.0
+#     else:
+#         ratio_log['MRR'] = 1.0/contain_idx
+#     ratio_log['MR'] = contain_idx
+#     return ratio_log
 
 # def em_score(prediction_tokens, groud_truth_tokens):
 #     if len(prediction_tokens) != len(groud_truth_tokens):
