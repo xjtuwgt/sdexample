@@ -98,8 +98,8 @@ class ProberModel(nn.Module):
         if self.config.loss_type == 'bce':
             loss = loss_computation(scores=seq_scores, labels=labels, label_mask=label_mask)
         else:
-            # loss = adversarial_loss_computation(scores=seq_scores, labels=labels, label_mask=label_mask)
-            loss = rank_loss_computation(scores=seq_scores, labels=labels, label_mask=label_mask)
+            loss = adversarial_loss_computation(scores=seq_scores, labels=labels, label_mask=label_mask)
+            # loss = rank_loss_computation(scores=seq_scores, labels=labels, label_mask=label_mask)
         return loss, seq_scores
 
 def loss_computation(scores, labels, label_mask):
@@ -113,6 +113,7 @@ def loss_computation(scores, labels, label_mask):
     return loss
 
 def adversarial_loss_computation(scores, labels, label_mask):
+    scores = scores.suqeeze(dim=-1)
     logsigmoid_scores = F.logsigmoid(scores)
     positive_scores = logsigmoid_scores[labels==1]
     pos_loss = -positive_scores.mean()
@@ -123,8 +124,9 @@ def adversarial_loss_computation(scores, labels, label_mask):
     return loss
 
 def rank_loss_computation(scores, labels, label_mask):
-    print(scores.shape)
-    print(labels.shape)
+    # print(scores.shape)
+    # print(labels.shape)
+    scores = scores.squeeze(dim=-1)
     positive_scores = scores[labels==1]
     print(positive_scores.shape)
     min_positive_scores = torch.min(positive_scores, dim=-1)[0]
