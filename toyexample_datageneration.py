@@ -29,8 +29,8 @@ if __name__ == '__main__':
     parser.add_argument('--multi_target', type=str, default='single')
     parser.add_argument('--fast_mode', type=boolean_string, default='true')
     parser.add_argument('--train_data_size', type=int, default=10000, help='train data size')
-    # parser.add_argument('--train_pos_label_ratio', type=float, default=0.5, help='label distribution')
-    parser.add_argument('--train_pos_label_ratio', type=float, default=1.0, help='label distribution')
+    parser.add_argument('--train_pos_label_ratio', type=float, default=0.5, help='label distribution')
+    # parser.add_argument('--train_pos_label_ratio', type=float, default=1.0, help='label distribution')
     parser.add_argument('--train_target_tokens', type=str, default='cat')
     parser.add_argument('--zero_shot', type=boolean_string, default='false')
     parser.add_argument('--train_seq_len', type=str, default='300')
@@ -41,14 +41,14 @@ if __name__ == '__main__':
     parser.add_argument('--test_data_size', type=int, default=10000, help='test data size')
     parser.add_argument('--test_target_tokens', type=str, default='cat')
     parser.add_argument('--test_seq_len', type=str, default='300')
-    # parser.add_argument('--test_pos_label_ratio', type=float, default=0.5, help='test label distribution')
-    parser.add_argument('--test_pos_label_ratio', type=float, default=1.0, help='test label distribution')
+    parser.add_argument('--test_pos_label_ratio', type=float, default=0.5, help='test label distribution')
+    # parser.add_argument('--test_pos_label_ratio', type=float, default=1.0, help='test label distribution')
     parser.add_argument("--test_seed", type=int, default=1234, help='random seed for testing data generation')
 
     parser.add_argument('--eval_data_size', type=int, default=10000, help='eval data size')
     parser.add_argument('--eval_seq_len', type=str, default='300')
-    # parser.add_argument('--eval_pos_label_ratio', type=float, default=0.5, help='eval label distribution')
-    parser.add_argument('--eval_pos_label_ratio', type=float, default=1.0, help='eval label distribution')
+    parser.add_argument('--eval_pos_label_ratio', type=float, default=0.5, help='eval label distribution')
+    # parser.add_argument('--eval_pos_label_ratio', type=float, default=1.0, help='eval label distribution')
     parser.add_argument("--eval_seed", type=int, default=2345, help='random seed for evaluation data generation')
 
     ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -96,28 +96,28 @@ if __name__ == '__main__':
     train_data_file_name = train_data_file_name + '.pkl.gz'
     train_data_set.save_data_into_file(data_file_name=train_data_file_name)
     ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    # test_seq_len = args.test_seq_len
-    # test_seq_len = tuple([int(x) for x in test_seq_len.split(',')])
-    # test_data_set = FindCatDataset(total_examples=args.test_data_size,
-    #                                target_tokens=args.test_target_tokens,
-    #                                seqlen=test_seq_len,
-    #                                prob=args.test_pos_label_ratio,
-    #                                multi_target=args.multi_target in ['multi'],
-    #                                seed=args.test_seed)
-    # test_data_file_name = join(args.data_dir, 'test_' + fast_mode + args.multi_target + '_' + args.test_target_tokens + '_' + str(args.test_data_size)
-    #                             + '_' + str(args.test_seed) + '_' + args.test_seq_len + '_' +
-    #                            str(args.test_pos_label_ratio) + '.pkl.gz')
-    # test_data_set.save_data_into_file(data_file_name=test_data_file_name)
-    # #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    # eval_seq_len = args.eval_seq_len
-    # eval_seq_len = tuple([int(x) for x in eval_seq_len.split(',')])
-    # eval_data_set = FindCatDataset(total_examples=args.eval_data_size,
-    #                                target_tokens=args.test_target_tokens,
-    #                                seqlen=eval_seq_len,
-    #                                prob=args.eval_pos_label_ratio,
-    #                                multi_target=args.multi_target in ['multi'],
-    #                                seed=args.eval_seed)
-    # eval_data_file_name = join(args.data_dir, 'eval_' + fast_mode + args.multi_target + '_' + args.test_target_tokens + '_' + str(args.eval_data_size)
-    #                             + '_' + str(args.eval_seed) + '_' + args.eval_seq_len + '_' +
-    #                            str(args.eval_pos_label_ratio) + '.pkl.gz')
-    # eval_data_set.save_data_into_file(data_file_name=eval_data_file_name)
+    test_seq_len = args.test_seq_len
+    test_seq_len = tuple([int(x) for x in test_seq_len.split(',')])
+    test_data_set = FindCatDataset(total_examples=args.test_data_size,
+                                   target_tokens=args.test_target_tokens,
+                                   seqlen=test_seq_len,
+                                   prob=args.test_pos_label_ratio,
+                                   multi_target=args.multi_target in ['multi'],
+                                   seed=args.test_seed)
+    test_data_file_name = join(args.data_dir, 'test_' + fast_mode + args.multi_target + '_' + args.test_target_tokens + '_' + str(args.test_data_size)
+                                + '_' + str(args.test_seed) + '_' + args.test_seq_len + '_' +
+                               str(args.test_pos_label_ratio) + '.pkl.gz')
+    test_data_set.save_data_into_file(data_file_name=test_data_file_name)
+    #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    eval_seq_len = args.eval_seq_len
+    eval_seq_len = tuple([int(x) for x in eval_seq_len.split(',')])
+    eval_data_set = FindCatDataset(total_examples=args.eval_data_size,
+                                   target_tokens=args.test_target_tokens,
+                                   seqlen=eval_seq_len,
+                                   prob=args.eval_pos_label_ratio,
+                                   multi_target=args.multi_target in ['multi'],
+                                   seed=args.eval_seed)
+    eval_data_file_name = join(args.data_dir, 'eval_' + fast_mode + args.multi_target + '_' + args.test_target_tokens + '_' + str(args.eval_data_size)
+                                + '_' + str(args.eval_seed) + '_' + args.eval_seq_len + '_' +
+                               str(args.eval_pos_label_ratio) + '.pkl.gz')
+    eval_data_set.save_data_into_file(data_file_name=eval_data_file_name)
