@@ -125,14 +125,16 @@ def adversarial_loss_computation(scores, labels, label_mask):
 
 def rank_loss_computation(scores, labels, label_mask):
     scores = scores.squeeze(dim=-1)
-    print(scores.shape)
-    print(labels.shape)
-    positive_scores = scores[labels==1]
-    print(positive_scores.shape)
+    # print(scores.shape)
+    # print(labels.shape)
+    batch_size = scores.shape[0]
+    positive_scores = scores[labels==1].view(batch_size, -1)
+
+    # print(positive_scores.shape)
     min_positive_scores = torch.min(positive_scores, dim=-1)[0]
     neg_label_mask = torch.logical_and(labels==0, label_mask==1)
-    negative_scores = scores[neg_label_mask]
-    print(negative_scores.shape)
+    negative_scores = scores[neg_label_mask].view(batch_size, -1)
+    # print(negative_scores.shape)
     max_negative_scores = torch.max(negative_scores, dim=-1)[0]
     diff = max_negative_scores - min_positive_scores + 0.2
     loss = F.relu(diff).mean()
