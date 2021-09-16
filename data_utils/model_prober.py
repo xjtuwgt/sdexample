@@ -98,8 +98,8 @@ class ProberModel(nn.Module):
         if self.config.loss_type == 'bce':
             loss = loss_computation(scores=seq_scores, labels=labels, label_mask=label_mask)
         else:
-            loss = adversarial_loss_computation(scores=seq_scores, labels=labels, label_mask=label_mask)
-            # loss = rank_loss_computation(scores=seq_scores, labels=labels, label_mask=label_mask)
+            # loss = adversarial_loss_computation(scores=seq_scores, labels=labels, label_mask=label_mask)
+            loss = rank_loss_computation(scores=seq_scores, labels=labels, label_mask=label_mask)
         return loss, seq_scores
 
 def loss_computation(scores, labels, label_mask):
