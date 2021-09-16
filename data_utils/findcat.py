@@ -194,6 +194,7 @@ def find_cat_probe_collate_fn(examples):
 
         target_position = [_ + ex_mask_len for _ in ex.positions]
         batched_seq_labels[ex_i, target_position] = 1
+        assert batched_seq_labels[ex_i].sum() == len(ex.target_tokens)
         batched_seq_mask[ex_i, mask_position] = 0
 
     retval = {
