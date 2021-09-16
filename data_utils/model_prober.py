@@ -98,7 +98,8 @@ class ProberModel(nn.Module):
         if self.config.loss_type == 'bce':
             loss = loss_computation(scores=seq_scores, labels=labels, label_mask=label_mask)
         else:
-            loss = adversarial_loss_computation(scores=seq_scores, labels=labels, label_mask=label_mask)
+            # loss = adversarial_loss_computation(scores=seq_scores, labels=labels, label_mask=label_mask)
+            loss = rank_loss_computation(scores=seq_scores, labels=labels, label_mask=label_mask)
         return loss, seq_scores
 
 def loss_computation(scores, labels, label_mask):
@@ -119,6 +120,18 @@ def adversarial_loss_computation(scores, labels, label_mask):
     negative_scores = logsigmoid_scores[neg_label_mask]
     neg_loss = -negative_scores.mean()
     loss = (pos_loss + neg_loss)/ 2
+    return loss
+
+def rank_loss_computation(scores, labels, label_mask):
+    positive_scores = scores[labels==1]
+    print(positive_scores.shape)
+    min_positive_scores = torch.min(positive_scores, dim=-1)[0]
+    neg_label_mask = torch.logical_and(labels==0, label_mask==1)
+    negative_scores = scores[neg_label_mask]
+    print(negative_scores.shape)
+    max_negative_scores = torch.max(negative_scores, dim=-1)[0]
+    diff = max_negative_scores - min_positive_scores + 0.2
+    loss = F.relu(diff).mean()
     return loss
 
 def probe_model_evaluation(model, data_loader, args):
