@@ -32,6 +32,19 @@ def find_subsequence(target: list, sequence: list):
             else:
                 start_idx = idx + 1
 
+
+def find_subsequence_unorder(target: list, sequence: list):
+    if len(target) == 0:
+        return len(sequence)
+    seq_len = len(sequence)
+    target_len = len(target)
+    target_set = set(target)
+    for i in range(target_len, seq_len+1):
+        sub_seq = set(sequence[:i])
+        if target_set.issubset(sub_seq):
+            return i
+
+
 ORIG_PROBE_MODEL_NAME = join(OUTPUT_FOLDER, 'model_False_0.0_384_221_dev_0.9792.pkl')
 DROP_PROBE_MODEL_NAME = join(OUTPUT_FOLDER, 'model_True_0.1_97_52_dev_0.9901.pkl')
 
@@ -113,7 +126,7 @@ def probe_model_evaluation(model, data_loader, args):
                 true_target_ids = input[idx][batch['seq_labels'][idx] == 1].tolist()
                 # score_log = rank_contain_ratio_sorted_score(input=input_i, sorted_idx=sorted_idx_i, ground_truth_ids=true_target_ids)
                 sorted_ids = input[idx][sorted_idx_i].tolist()
-                score_log = rank_contain_ratio_score(pred_ids=sorted_ids, ground_truth_ids=true_target_ids)
+                score_log = rank_contain_ratio_score(pred_ids=sorted_ids, ground_truth_ids=true_target_ids, order=args.order)
                 logs.append(score_log)
     metrics = {}
     for metric in logs[0].keys():
@@ -143,10 +156,13 @@ def probe_model_evaluation(model, data_loader, args):
 #         ratio_log['Hit_{}'.format(k)] = contain_ratios[i]
 #     return ratio_log
 
-def rank_contain_ratio_score(pred_ids: list, ground_truth_ids: list):
+def rank_contain_ratio_score(pred_ids: list, ground_truth_ids: list, order=True):
     topk = [3, 5, 10, 20, 50]
-    contain_idx = find_subsequence(target=ground_truth_ids, sequence=pred_ids)
-    contain_idx = contain_idx + 1
+    if order:
+        contain_idx = find_subsequence(target=ground_truth_ids, sequence=pred_ids)
+        contain_idx = contain_idx + 1
+    else:
+        contain_idx = find_subsequence_unorder(target=ground_truth_ids, sequence=pred_ids)
     ratio_log = {}
     for k in topk:
         if k >= contain_idx:
@@ -159,6 +175,8 @@ def rank_contain_ratio_score(pred_ids: list, ground_truth_ids: list):
         ratio_log['MRR'] = 1.0/contain_idx
     ratio_log['MR'] = contain_idx
     return ratio_log
+
+
 
 # def rank_contain_ratio_sorted_score(input: Tensor, sorted_idx: Tensor, ground_truth_ids: list):
 #     topk = [3, 5, 10, 20, 50]
