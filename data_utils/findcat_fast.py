@@ -137,10 +137,12 @@ class FindCatDataset(TokenizedDataset):
                 positions = self.fixed_positions
             else:
                 if self.top_position is None:
-                    positions = sorted(random.choices(list(range(exam_seq_len)), k=len(target_tokens)))
+                    # positions = sorted(random.choices(list(range(exam_seq_len)), k=len(target_tokens)))
+                    positions = sorted(random.sample(list(range(exam_seq_len)), k=len(target_tokens)))
                 else:
                     top_len = self.top_position if self.top_position < exam_seq_len else exam_seq_len
-                    positions = sorted(random.choices(list(range(top_len)), k=len(target_tokens)))
+                    # positions = sorted(random.choices(list(range(top_len)), k=len(target_tokens)))
+                    positions = sorted(random.sample(list(range(top_len)), k=len(target_tokens)))
 
             for p_i, p in enumerate(positions):
                 retval[p] = target_tokens[p_i]

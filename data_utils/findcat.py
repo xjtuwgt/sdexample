@@ -97,10 +97,10 @@ class FindCatDataset(TokenizedDataset):
 
     def _generate_example(self):
         target = int(random.random() < self.prob)
-        target_tokens = random.choice(self.target_tokens)
+        # target_tokens = random.choice(self.target_tokens)
+        target_tokens = random.sample(self.target_tokens, k=1)
         ##=========
         exam_seq_len = np.random.choice(self.seqlen, 1)[0]
-
         ##=========
         positions = []
         retval = neg_example_generation(target_tokens=target_tokens, exam_seq_len=exam_seq_len, vocab=self.vocab)
@@ -112,10 +112,12 @@ class FindCatDataset(TokenizedDataset):
                 positions = self.fixed_positions
             else:
                 if self.top_position is None:
-                    positions = sorted(random.choices(list(range(exam_seq_len)), k=len(target_tokens)))
+                    # positions = sorted(random.choices(list(range(exam_seq_len)), k=len(target_tokens)))
+                    positions = sorted(random.sample(list(range(exam_seq_len)), k=len(target_tokens)))
                 else:
                     top_len = self.top_position if self.top_position < exam_seq_len else exam_seq_len
-                    positions = sorted(random.choices(list(range(top_len)), k=len(target_tokens)))
+                    # positions = sorted(random.choices(list(range(top_len)), k=len(target_tokens)))
+                    positions = sorted(random.sample(list(range(top_len)), k=len(target_tokens)))
 
             for p_i, p in enumerate(positions):
                 retval[p] = target_tokens[p_i]
