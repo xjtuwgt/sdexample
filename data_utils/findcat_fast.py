@@ -12,6 +12,7 @@ from data_utils.dataset import TokenizedDataset, SentenceDropDataset
 from data_utils.sentence import Sentence
 from data_utils.example import ExampleWithSentences
 
+##random.sample vs random.choice
 
 @dataclass
 class FindCatSentence(Sentence):
