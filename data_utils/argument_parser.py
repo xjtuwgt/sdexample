@@ -30,7 +30,7 @@ def prober_default_parser():
     parser.add_argument('--target_tokens', type=str, default='cat')
 
     parser.add_argument('--lstm_hidden_dim', type=int, default=300)
-    parser.add_argument('--lstm_layers', type=int, default=1)
+    parser.add_argument('--lstm_layers', type=int, default=2)
 
 
     parser.add_argument('--model_name', type=str, default='bert-base-uncased')
@@ -64,6 +64,7 @@ def prober_default_parser():
 
 def data_aug_default_parser():
     parser = ArgumentParser()
+    parser.add_argument('--exp_name', type=str, default=None)
     parser.add_argument('--train_examples', type=int, default=800)
     parser.add_argument('--multi_target', type=str, default='multi')
     parser.add_argument('--train_seq_len', type=str, default='300')
