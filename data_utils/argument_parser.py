@@ -72,6 +72,8 @@ def data_aug_default_parser():
     parser.add_argument('--eval_test_seq_len', type=str, default='300')
     parser.add_argument('--target_tokens', type=str, default='cat')
 
+    parser.add_argument('--sent_dropout', type=float, default=0.1)
+
     parser.add_argument('--model_name', type=str, default='bert-base-uncased')
     parser.add_argument('--orig_model_name', type=str, default=None)
     parser.add_argument('--drop_model_name', type=str, default=None)
