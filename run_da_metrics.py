@@ -1,5 +1,5 @@
 from data_utils.argument_parser import data_aug_default_parser, complete_default_parser
-from toyexample_experiments import orig_da_train_data_loader, orig_da_dev_data_loader, drop_da_train_data_loader, drop_da_dev_data_loader
+from data_utils.da_metrics_utils import orig_da_train_data_loader, orig_da_dev_data_loader, drop_da_train_data_loader, drop_da_dev_data_loader
 from toyexample_experiments import seed_everything
 from data_utils.da_metrics_utils import affinity_metrics_computation, diversity_metrics_computation
 import torch

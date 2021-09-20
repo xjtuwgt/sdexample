@@ -1,5 +1,11 @@
 ###Tradeoffs in Data Augmentation: An Empirical Study, https://openreview.net/pdf?id=ZcKPWuhG6wy
 from data_utils.model_utils import model_loss_computation, model_evaluation
+from torch.utils.data import DataLoader
+from os.path import join
+from envs import HOME_DATA_FOLDER
+
+from data_utils.findcat import FindCatDataset, find_cat_validation_fn, find_cat_collate_fn
+from data_utils.dataset import SentenceDropDataset
 
 MODEL_NAMES = [('train_fastsingle_cat_100_42_300_0.5.pkl.gz.models', {'orig': 'model_False_0.0_50_2_dev_0.5585.pkl',
                                                                       'drop': 'model_False_0.1_800_2_dev_0.5948.pkl',
@@ -55,4 +61,97 @@ def diversity_metrics_computation(model, train_data_loader, drop_model, drop_tra
     loss = model_loss_computation(model=model, data_loader=train_data_loader, args=args)
     diversity  = drop_loss / loss
     return diversity
+
+
+
+def orig_da_train_data_loader(args):
+    train_seq_len = args.train_seq_len
+    train_seq_len = [int(_) for _ in train_seq_len.split(',')]
+    if args.train_file_name is not None:
+        train_file_name = join(HOME_DATA_FOLDER, 'toy_data', args.train_file_name)
+    else:
+        train_file_name = None
+    dataset = FindCatDataset(seed=args.seed,
+                             target_tokens=args.target_tokens,
+                             seqlen=train_seq_len,
+                             total_examples=args.train_examples,
+                             multi_target=args.multi_target in ['multi'],
+                             data_file_name=train_file_name)
+    dataloader = DataLoader(dataset,
+                            shuffle=False,
+                            batch_size=args.batch_size,
+                            collate_fn=find_cat_collate_fn)
+    print('Original training data loader')
+    return dataloader
+
+def drop_da_train_data_loader(args):
+    train_seq_len = args.train_seq_len
+    train_seq_len = [int(_) for _ in train_seq_len.split(',')]
+    if args.train_file_name is not None:
+        train_file_name = join(HOME_DATA_FOLDER, 'toy_data', args.train_file_name)
+    else:
+        train_file_name = None
+    dataset = FindCatDataset(seed=args.seed,
+                             target_tokens=args.target_tokens,
+                             seqlen=train_seq_len,
+                             total_examples=args.train_examples,
+                             multi_target=args.multi_target in ['multi'],
+                             data_file_name=train_file_name)
+    validation_fn = find_cat_validation_fn if args.validate_examples else lambda ex: True
+    sdrop_dataset = SentenceDropDataset(dataset=dataset,
+                                        sent_drop_prob=args.sent_dropout,
+                                        beta_drop=args.beta_drop,
+                                        mask=args.mask,
+                                        mask_id=args.mask_id,
+                                        example_validate_fn=validation_fn)
+    dataloader = DataLoader(sdrop_dataset,
+                            shuffle=False,
+                            batch_size=args.batch_size,
+                            collate_fn=find_cat_collate_fn)
+    print('Training data loader with sentdrop')
+    return dataloader
+
+def orig_da_dev_data_loader(args):
+    dev_seq_len = args.eval_test_seq_len
+    dev_seq_len = [int(_) for _ in dev_seq_len.split(',')]
+    if args.test_file_name is not None:
+        dev_file_name = join(HOME_DATA_FOLDER, 'toy_data', args.eval_file_name)
+        print('Dev data file name = {}'.format(dev_file_name))
+    else:
+        dev_file_name = None
+    dataset = FindCatDataset(seed=2345,
+                             seqlen=dev_seq_len,
+                             total_examples=args.test_examples,
+                             multi_target=args.multi_target in ['multi'],
+                             data_file_name=dev_file_name)
+    dev_dataloader = DataLoader(dataset, batch_size=args.batch_size, collate_fn=find_cat_collate_fn)
+    print('Original dev data loader')
+    return dev_dataloader
+
+def drop_da_dev_data_loader(args):
+    dev_seq_len = args.eval_test_seq_len
+    dev_seq_len = [int(_) for _ in dev_seq_len.split(',')]
+    if args.test_file_name is not None:
+        dev_file_name = join(HOME_DATA_FOLDER, 'toy_data', args.eval_file_name)
+        print('Dev data file name = {}'.format(dev_file_name))
+    else:
+        dev_file_name = None
+    dataset = FindCatDataset(seed=2345,
+                             seqlen=dev_seq_len,
+                             total_examples=args.test_examples,
+                             multi_target=args.multi_target in ['multi'],
+                             data_file_name=dev_file_name)
+    validation_fn = find_cat_validation_fn if args.validate_examples else lambda ex: True
+    sdrop_dataset = SentenceDropDataset(dataset=dataset,
+                                        sent_drop_prob=args.sent_dropout,
+                                        beta_drop=args.beta_drop,
+                                        mask=args.mask,
+                                        mask_id=args.mask_id,
+                                        example_validate_fn=validation_fn)
+    dataloader = DataLoader(sdrop_dataset,
+                            shuffle=False,
+                            batch_size=args.batch_size,
+                            collate_fn=find_cat_collate_fn)
+    print('Dev data loader with sentdrop')
+    return dataloader
 
