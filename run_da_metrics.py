@@ -24,6 +24,11 @@ if args.exp_name is None:
     os.makedirs(args.exp_name, exist_ok=True)
 for key, value in vars(args).items():
     print('{}\t{}'.format(key, value))
+print('*' * 50)
+for key, value in model_dict.items():
+    for k, v in value.items():
+        print(key, k, v)
+print('*' * 50)
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 orig_train_dataloader = orig_da_train_data_loader(args=args)
 orig_dev_dataloader = orig_da_dev_data_loader(args=args)
