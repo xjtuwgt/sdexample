@@ -48,8 +48,8 @@ def find_subsequence_unorder(target: list, sequence: list):
             return i
 
 
-ORIG_PROBE_MODEL_NAME = join(OUTPUT_FOLDER, 'model_False_0.0_384_221_dev_0.9792.pkl')
-DROP_PROBE_MODEL_NAME = join(OUTPUT_FOLDER, 'model_True_0.1_97_52_dev_0.9901.pkl')
+ORIG_PROBE_MODEL_NAME = join(OUTPUT_FOLDER, 'train_fastsingle_cat_20000_42_300_0.5.pkl.gz.models', 'model_False_0.0_365_168_dev_0.9797.pkl')
+DROP_PROBE_MODEL_NAME = join(OUTPUT_FOLDER, 'train_fastsingle_cat_20000_42_300_0.5.pkl.gz.models', 'model_True_0.1_488_169_dev_0.9992.pkl')
 
 activation = {}
 def get_activation(name):
