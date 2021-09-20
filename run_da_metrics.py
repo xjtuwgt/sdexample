@@ -61,5 +61,5 @@ else:
 # for key, value in vars(args).items():
 #     print(key, value)
 #
-# print('Affinity metrics: {}'.format(affinity_metrics))
+print('Affinity metrics: {}'.format(affinity_metrics))
 # print('Diversity metrics: {}'.format(diversity_metrics))
