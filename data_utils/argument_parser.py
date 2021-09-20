@@ -87,6 +87,8 @@ def data_aug_default_parser():
     parser.add_argument('--hidden_dim', type=int, default=768)
     parser.add_argument('--num_labels', type=int, default=1)
     parser.add_argument('--topk', type=int, default=len('cat'))
+
+    parser.add_argument('--seed', type=int, default=1234)
     return parser
 
 
