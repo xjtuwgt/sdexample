@@ -74,6 +74,8 @@ def data_aug_default_parser():
 
     parser.add_argument('--sent_dropout', type=float, default=0.1)
     parser.add_argument('--beta_drop', type=boolean_string, default='false')
+    parser.add_argument('--mask', type=boolean_string, default='false')
+    parser.add_argument('--mask_id', type=int, default=MASK)
 
     parser.add_argument('--model_name', type=str, default='bert-base-uncased')
     parser.add_argument('--orig_model_name', type=str, default=None)
