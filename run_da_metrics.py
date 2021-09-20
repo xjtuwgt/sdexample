@@ -19,15 +19,20 @@ args = complete_default_parser(args=args)
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 if args.exp_name is None:
     args.exp_name = args.train_file_name + '.models'
-    model_names = model_dict[args.exp_name]
+    model_name_dict = model_dict[args.exp_name]
     args.exp_name = join(OUTPUT_FOLDER, args.exp_name)
     os.makedirs(args.exp_name, exist_ok=True)
+    args.orig_model_name = join(args.exp_name, model_dict['orig'])
+    if args.beta_drop:
+        args.drop_model_name = join(args.exp_name, model_dict['beta_drop'])
+    else:
+        args.drop_model_name = join(args.exp_name, model_dict['drop'])
 for key, value in vars(args).items():
     print('{}\t{}'.format(key, value))
 print('*' * 50)
 for idx, (key, value) in enumerate(model_dict.items()):
     for k, v in value.items():
-        print(idx, key, k, v)
+        print(idx + 1, key, k, v)
 print('*' * 50)
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 orig_train_dataloader = orig_da_train_data_loader(args=args)
@@ -36,17 +41,16 @@ orig_dev_dataloader = orig_da_dev_data_loader(args=args)
 drop_train_dataloader = drop_da_train_data_loader(args=args)
 drop_dev_data_loader = drop_da_dev_data_loader(args=args)
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# torch.cuda.manual_seed_all(args.seed)
 seed_everything(seed=args.seed)
-# if args.orig_model_name is not None:
-#     orig_model = load_pretrained_model(args=args, pretrained_model_name=args.orig_model_name)
-#     affinity_metrics = affinity_metrics_computation(model=orig_model, dev_data_loader=orig_dev_dataloader,
-#                                                     drop_dev_data_loader=drop_dev_data_loader, args=args)
-# else:
-#     affinity_metrics = 0.0
-#
+if args.orig_model_name is not None:
+    orig_model = load_pretrained_model(args=args, pretrained_model_name=args.orig_model_name)
+    affinity_metrics = affinity_metrics_computation(model=orig_model, dev_data_loader=orig_dev_dataloader,
+                                                    drop_dev_data_loader=drop_dev_data_loader, args=args)
+else:
+    affinity_metrics = 0.0
+
 # if args.drop_model_name is not None and args.orig_model_name is not None:
-#     drop_model = load_pretrained_model(args=args, pretrained_model_name=args.orig_model_name)
+#     drop_model = load_pretrained_model(args=args, pretrained_model_name=args.drop_model_name)
 #     orig_model = load_pretrained_model(args=args, pretrained_model_name=args.orig_model_name)
 #     diversity_metrics = diversity_metrics_computation(model=orig_model, drop_model=drop_model,
 #                                                       train_data_loader=orig_train_dataloader,
