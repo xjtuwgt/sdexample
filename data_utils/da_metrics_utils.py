@@ -43,6 +43,7 @@ def affinity_metrics_computation(model, dev_data_loader, drop_dev_data_loader, a
     model = model.to(args.device)
     drop_acc = model_evaluation(model=model, data_loader=drop_dev_data_loader, args=args)
     acc = model_evaluation(model=model, data_loader=dev_data_loader, args=args)
+    print('Drop accuracy: {}, orig accuracy = {}'.format(drop_acc, acc))
     affinity = drop_acc/acc
     return affinity
 
