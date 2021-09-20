@@ -40,7 +40,7 @@ if __name__ == '__main__':
     print()
     ORIG_MODEL = 'model_False_0.0'
     DROP_MODEL = 'model_False_0.1'
-    BETA_DROP_MODEL = 'model_True_0.0'
+    BETA_DROP_MODEL = 'model_True_0.1'
     folder_names = list_all_folders(d=OUTPUT_FOLDER, model_type='.models')
     for folder in folder_names:
         print(folder)
@@ -73,17 +73,14 @@ if __name__ == '__main__':
                     best_beta_metric = model_metric
                     best_beta_model = model_name
 
-        print(ORIG_MODEL)
+        print(ORIG_MODEL, best_orig_metric)
         print(best_orig_model)
-        print(best_orig_metric)
 
-        print(DROP_MODEL)
+        print(DROP_MODEL, best_drop_metric)
         print(best_drop_model)
-        print(best_drop_metric)
 
-        print(BETA_DROP_MODEL)
+        print(BETA_DROP_MODEL, best_beta_metric)
         print(best_beta_model)
-        print(best_beta_metric)
 
         print('*' * 50)
     # parser = prober_default_parser()
