@@ -52,13 +52,38 @@ if __name__ == '__main__':
         best_beta_model = ''
         model_names = list_all_extension_files(path=folder, extension='.pkl')
         for model_name in model_names:
-            print(model_name)
+            # print(model_name)
             start_idx = model_name.rindex('_')
             end_idx = model_name.rindex('.')
             model_metric = model_name[(start_idx + 1):end_idx]
-            print(model_metric)
-            # if model_name.startswith(ORIG_MODEL):
+            model_metric = float(model_metric)
+            # print(model_metric)
+            if model_name.startswith(ORIG_MODEL):
+                if model_metric > best_orig_metric:
+                    best_orig_metric = model_metric
+                    best_orig_model = model_name
 
+            if model_name.startswith(DROP_MODEL):
+                if model_metric > best_drop_metric:
+                    best_drop_metric = model_metric
+                    best_drop_model = model_name
+
+            if model_name.startswith(BETA_DROP_MODEL):
+                if model_metric > best_beta_metric:
+                    best_beta_metric = model_metric
+                    best_beta_model = model_name
+
+        print(ORIG_MODEL)
+        print(best_orig_model)
+        print(best_orig_metric)
+
+        print(DROP_MODEL)
+        print(best_drop_model)
+        print(best_drop_metric)
+
+        print(BETA_DROP_MODEL)
+        print(best_beta_model)
+        print(best_beta_metric)
 
         print('*' * 50)
     # parser = prober_default_parser()
