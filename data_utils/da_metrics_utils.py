@@ -1,6 +1,31 @@
 ###Tradeoffs in Data Augmentation: An Empirical Study, https://openreview.net/pdf?id=ZcKPWuhG6wy
 from data_utils.model_utils import model_loss_computation, model_evaluation
 
+MODEL_NAMES = [('train_fastsingle_cat_100_42_300_0.5.pkl.gz.models', {'orig': 'model_False_0.0_50_2_dev_0.5585.pkl',
+                                                                      'drop': 'model_False_0.1_800_2_dev_0.5948.pkl',
+                                                                      'beta_drop': 'model_True_0.1_800_2_dev_0.6133.pkl'}),
+               ('train_fastsingle_cat_200_42_300_0.5.pkl.gz.models', {'orig': 'model_False_0.0_75_4_dev_0.5624.pkl',
+                                                                      'drop': '',
+                                                                      'beta_drop': ''}),
+               ('train_fastsingle_cat_500_42_300_0.5.pkl.gz.models', {'orig': '',
+                                                                      'drop': '',
+                                                                      'beta_drop': ''}),
+               ('train_fastsingle_cat_1000_42_300_0.5.pkl.gz.models', {'orig': '',
+                                                                       'drop': '',
+                                                                       'beta_drop': ''}),
+               ('train_fastsingle_cat_2000_42_300_0.5.pkl.gz.models', {'orig': '',
+                                                                       'drop': '',
+                                                                       'beta_drop': ''}),
+               ('train_fastsingle_cat_5000_42_300_0.5.pkl.gz.models', {'orig': '',
+                                                                       'drop': '',
+                                                                       'beta_drop': ''}),
+               ('train_fastsingle_cat_10000_42_300_0.5.pkl.gz.models', {'orig': '',
+                                                                        'drop': '',
+                                                                        'beta_drop': ''}),
+               ('train_fastsingle_cat_20000_42_300_0.5.pkl.gz.models', {'orig': '',
+                                                                        'drop': '',
+                                                                        'beta_drop': ''})]
+
 def affinity_metrics_computation(model, dev_data_loader, drop_dev_data_loader, args):
     """
     :param model: train over clean data

@@ -7,6 +7,7 @@ from data_utils.model_utils import load_pretrained_model, model_builder
 from data_utils.argument_parser import prober_default_parser, complete_default_parser
 from data_utils.model_prober import ProberModel
 import torch
+import os
 from envs import OUTPUT_FOLDER, HOME_DATA_FOLDER
 from tqdm import tqdm, trange
 from toyexample_experiments import seed_everything
@@ -15,26 +16,41 @@ from data_utils.findcat import FindCatDataset, find_cat_probe_collate_fn
 from torch.utils.data import DataLoader
 from data_utils.model_prober import probe_model_evaluation
 from data_utils.model_prober import DROP_PROBE_MODEL_NAME, ORIG_PROBE_MODEL_NAME
+from envs import OUTPUT_FOLDER
 ########################################################################################################################
 
-activation = {}
-def get_activation(name):
-    def hook(model, input, output):
-        activation[name] = output
-    return hook
+# activation = {}
+# def get_activation(name):
+#     def hook(model, input, output):
+#         activation[name] = output
+#     return hook
+
+def list_all_folders(d, model_type: str):
+    folder_names = [os.path.join(d, o) for o in os.listdir(d)
+     if os.path.isdir(os.path.join(d, o))]
+    folder_names = [i for i in folder_names if model_type in i]
+    return folder_names
+
+def list_all_extension_files(path, extension='.log'):
+    files = os.listdir(path)
+    files = [i for i in files if i.endswith(extension)]
+    return files
 
 if __name__ == '__main__':
     print()
-    parser = prober_default_parser()
-    args = parser.parse_args()
-    args = complete_default_parser(args=args)
-    args.pre_trained_file_name = None
-    for key, value in vars(args).items():
-        print('{}\t{}'.format(key, value))
-
-    model = ProberModel(config=args)
-    model.bert.register_forward_hook(get_activation('encoder'))
-    print(model)
+    folder_names = list_all_folders(d=OUTPUT_FOLDER, model_type='.models')
+    for folder in folder_names:
+        print(folder)
+    # parser = prober_default_parser()
+    # args = parser.parse_args()
+    # args = complete_default_parser(args=args)
+    # args.pre_trained_file_name = None
+    # for key, value in vars(args).items():
+    #     print('{}\t{}'.format(key, value))
+    #
+    # model = ProberModel(config=args)
+    # model.bert.register_forward_hook(get_activation('encoder'))
+    # print(model)
 
 
     # cat_data_set = FindCatDataset(total_examples=5)
