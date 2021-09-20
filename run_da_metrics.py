@@ -44,8 +44,8 @@ drop_dev_data_loader = drop_da_dev_data_loader(args=args)
 seed_everything(seed=args.seed)
 if args.orig_model_name is not None:
     orig_model = load_pretrained_model(args=args, pretrained_model_name=args.orig_model_name)
-    affinity_metrics = affinity_metrics_computation(model=orig_model, dev_data_loader=orig_dev_dataloader,
-                                                    drop_dev_data_loader=drop_dev_data_loader, args=args)
+    # affinity_metrics = affinity_metrics_computation(model=orig_model, dev_data_loader=orig_dev_dataloader,
+    #                                                 drop_dev_data_loader=drop_dev_data_loader, args=args)
 else:
     affinity_metrics = 0.0
 
