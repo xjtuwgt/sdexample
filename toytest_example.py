@@ -38,12 +38,26 @@ def list_all_extension_files(path, extension='.log'):
 
 if __name__ == '__main__':
     print()
+    ORIG_MODEL = 'model_False_0.0'
+    DROP_MODEL = 'model_False_0.1'
+    BETA_DROP_MODEL = 'model_True_0.0'
     folder_names = list_all_folders(d=OUTPUT_FOLDER, model_type='.models')
     for folder in folder_names:
         print(folder)
+        best_orig_metric = 0.0
+        best_orig_model = ''
+        best_drop_metric = 0.0
+        best_drop_model = ''
+        best_beta_metric = 0.0
+        best_beta_model = ''
         model_names = list_all_extension_files(path=folder, extension='.pkl')
         for model_name in model_names:
             print(model_name)
+            if model_name.startswith(ORIG_MODEL):
+                start_idx = model_name.rindex('_')
+                end_idx = model_name.rindex('.')
+                model_metric = model_name[start_idx:end_idx]
+                print(model_metric)
         print('*' * 50)
     # parser = prober_default_parser()
     # args = parser.parse_args()
