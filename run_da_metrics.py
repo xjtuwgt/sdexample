@@ -58,8 +58,8 @@ else:
 #                                                       args=args)
 # else:
 #     diversity_metrics = 0.0
-# for key, value in vars(args).items():
-#     print(key, value)
-#
+
+for key, value in vars(args).items():
+    print(key, value)
 print('Affinity metrics: {}'.format(affinity_metrics))
 # print('Diversity metrics: {}'.format(diversity_metrics))
