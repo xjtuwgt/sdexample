@@ -36,7 +36,7 @@ def prober_default_parser():
     parser.add_argument('--model_name', type=str, default='bert-base-uncased')
     parser.add_argument('--train_file_name', type=str, default='train_fastsingle_cat_5000_42_300_1.0.pkl.gz')
     parser.add_argument('--vocab_size', type=int, default=100) ## 100
-    parser.add_argument('--epochs', type=int, default=300)
+    parser.add_argument('--epochs', type=int, default=200)
     parser.add_argument('--steps', type=int, default=1000)
     parser.add_argument('--eval_every', type=int, default=300)
     parser.add_argument('--eval_file_name', type=str, default='eval_fastsingle_cat_10000_2345_300_1.0.pkl.gz')
