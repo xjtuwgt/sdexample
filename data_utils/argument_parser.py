@@ -81,7 +81,7 @@ def data_aug_default_parser():
     parser.add_argument('--orig_model_name', type=str, default=None)
     parser.add_argument('--drop_model_name', type=str, default=None)
     parser.add_argument('--validate_examples', action='store_true')
-    parser.add_argument('--train_file_name', type=str, default='train_fastsingle_cat_2000_42_300_0.5.pkl.gz')
+    parser.add_argument('--train_file_name', type=str, default='train_fastsingle_cat_20000_42_300_0.5.pkl.gz')
     # parser.add_argument('--train_file_name', type=str, default='train_single_ant_bear_cat_dog_eagle_fox_goat_horse_indri_jaguar_koala_lion_moose_numbat_otter_pig_quail_rabbit_shark_tiger_uguisu_wolf_xerus_yak_zebra_30000_42_300_0.5.pkl.gz')
     parser.add_argument('--vocab_size', type=int, default=100) ## 100
     parser.add_argument('--epochs', type=int, default=500)
