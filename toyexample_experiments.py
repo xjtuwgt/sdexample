@@ -107,7 +107,7 @@ def orig_da_dev_data_loader(args):
                              total_examples=args.test_examples,
                              multi_target=args.multi_target in ['multi'],
                              data_file_name=dev_file_name)
-    dev_dataloader = DataLoader(dataset, batch_size=args.test_batch_size, collate_fn=find_cat_collate_fn)
+    dev_dataloader = DataLoader(dataset, batch_size=args.batch_size, collate_fn=find_cat_collate_fn)
     return dev_dataloader
 
 def drop_da_dev_data_loader(args):
