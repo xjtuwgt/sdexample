@@ -29,6 +29,10 @@ def prober_default_parser():
     parser.add_argument('--eval_test_seq_len', type=str, default='300')
     parser.add_argument('--target_tokens', type=str, default='cat')
 
+    parser.add_argument('--lstm_hidden_dim', type=int, default=300)
+    parser.add_argument('--lstm_layers', type=int, default=1)
+
+
     parser.add_argument('--model_name', type=str, default='bert-base-uncased')
     parser.add_argument('--train_file_name', type=str, default='train_fastsingle_cat_5000_42_300_1.0.pkl.gz')
     parser.add_argument('--vocab_size', type=int, default=100) ## 100
