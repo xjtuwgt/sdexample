@@ -57,22 +57,6 @@ def get_activation(name):
         activation[name] = output
     return hook
 
-class OutputLayer(nn.Module):
-    def __init__(self, hidden_dim, dropout=0.25, num_answer=1):
-        super(OutputLayer, self).__init__()
-
-        self.output = nn.Sequential(
-            nn.Linear(hidden_dim, hidden_dim*2),
-            nn.ReLU(),
-            nn.LayerNorm(hidden_dim*2, eps=1e-12),
-            nn.Dropout(dropout),
-            nn.Linear(hidden_dim*2, num_answer),
-        )
-
-    def forward(self, hidden_states):
-        return self.output(hidden_states)
-
-
 class LSTMWrapper(nn.Module):
     def __init__(self, input_dim: int, hidden_dim: int, n_layer:int, concat=False, bidir=True, dropout=0.3, return_last=True):
         """
@@ -139,7 +123,6 @@ class ProberModel(nn.Module):
                                         n_layer=self.config.lstm_layers)
         self.dropout = nn.Dropout(self.config.dropout_prob)
         self.classifier = nn.Linear(2 * self.config.lstm_hidden_dim, self.config.num_labels)
-        # self.classifier = OutputLayer(hidden_dim=self.config.hidden_dim, dropout=self.config.dropout_prob, num_answer=self.config.num_labels)
 
     def forward(self, input, attn_mask, labels, label_mask):
         self.model(input, attn_mask)
