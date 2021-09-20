@@ -41,6 +41,10 @@ if __name__ == '__main__':
     folder_names = list_all_folders(d=OUTPUT_FOLDER, model_type='.models')
     for folder in folder_names:
         print(folder)
+        model_names = list_all_extension_files(path=folder, extension='.pkl')
+        for model_name in model_names:
+            print(model_name)
+        print('*' * 50)
     # parser = prober_default_parser()
     # args = parser.parse_args()
     # args = complete_default_parser(args=args)
