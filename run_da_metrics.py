@@ -67,6 +67,7 @@ if __name__ == '__main__':
         args.train_file_name = train_name
         aff_metric = da_affinity_metrics_collection(args=args)
         da_metric_list.append((train_name, aff_metric))
+        print('+' * 100)
     for name, metric in da_metric_list:
         print(name, metric)
 
