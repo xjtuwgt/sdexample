@@ -12,54 +12,129 @@ from data_utils.da_metrics_utils import MODEL_NAMES
 
 model_dict = {_[0]: _[1] for _ in MODEL_NAMES}
 
-parser = data_aug_default_parser()
-args = parser.parse_args()
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-args = complete_default_parser(args=args)
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-if args.exp_name is None:
-    args.exp_name = args.train_file_name + '.models'
-    model_name_dict = model_dict[args.exp_name]
-    args.exp_name = join(OUTPUT_FOLDER, args.exp_name)
-    os.makedirs(args.exp_name, exist_ok=True)
-    args.orig_model_name = join(args.exp_name, model_name_dict['orig'])
-    if args.beta_drop:
-        args.drop_model_name = join(args.exp_name, model_name_dict['beta_drop'])
+def da_affinity_metrics_collection(train_file_name, args):
+    # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    args = complete_default_parser(args=args)
+    args.train_file_name = train_file_name
+    # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    if args.exp_name is None:
+        args.exp_name = args.train_file_name + '.models'
+        model_name_dict = model_dict[args.exp_name]
+        args.exp_name = join(OUTPUT_FOLDER, args.exp_name)
+        os.makedirs(args.exp_name, exist_ok=True)
+        args.orig_model_name = join(args.exp_name, model_name_dict['orig'])
+        if args.beta_drop:
+            args.drop_model_name = join(args.exp_name, model_name_dict['beta_drop'])
+        else:
+            args.drop_model_name = join(args.exp_name, model_name_dict['drop'])
+    for key, value in vars(args).items():
+        print('{}\t{}'.format(key, value))
+    print('*' * 50)
+    for idx, (key, value) in enumerate(model_dict.items()):
+        for k, v in value.items():
+            print(idx + 1, key, k, v)
+    print('*' * 50)
+    # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    # orig_train_dataloader = orig_da_train_data_loader(args=args)
+    orig_dev_dataloader = orig_da_dev_data_loader(args=args)
+
+    # drop_train_dataloader = drop_da_train_data_loader(args=args)
+    drop_dev_data_loader = drop_da_dev_data_loader(args=args)
+    # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    seed_everything(seed=args.seed)
+    if args.orig_model_name is not None:
+        orig_model = load_pretrained_model(args=args, pretrained_model_name=args.orig_model_name)
+        affinity_metrics = affinity_metrics_computation(model=orig_model, dev_data_loader=orig_dev_dataloader,
+                                                        drop_dev_data_loader=drop_dev_data_loader, args=args)
     else:
-        args.drop_model_name = join(args.exp_name, model_name_dict['drop'])
-for key, value in vars(args).items():
-    print('{}\t{}'.format(key, value))
-print('*' * 50)
-for idx, (key, value) in enumerate(model_dict.items()):
-    for k, v in value.items():
-        print(idx + 1, key, k, v)
-print('*' * 50)
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-orig_train_dataloader = orig_da_train_data_loader(args=args)
-orig_dev_dataloader = orig_da_dev_data_loader(args=args)
+        affinity_metrics = 0.0
 
-drop_train_dataloader = drop_da_train_data_loader(args=args)
-drop_dev_data_loader = drop_da_dev_data_loader(args=args)
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-seed_everything(seed=args.seed)
-if args.orig_model_name is not None:
-    orig_model = load_pretrained_model(args=args, pretrained_model_name=args.orig_model_name)
-    affinity_metrics = affinity_metrics_computation(model=orig_model, dev_data_loader=orig_dev_dataloader,
-                                                    drop_dev_data_loader=drop_dev_data_loader, args=args)
-else:
-    affinity_metrics = 0.0
+    return affinity_metrics
 
-if args.drop_model_name is not None and args.orig_model_name is not None:
-    drop_model = load_pretrained_model(args=args, pretrained_model_name=args.drop_model_name)
-    orig_model = load_pretrained_model(args=args, pretrained_model_name=args.orig_model_name)
-    diversity_metrics = diversity_metrics_computation(model=orig_model, drop_model=drop_model,
-                                                      train_data_loader=orig_train_dataloader,
-                                                      drop_train_data_loader=drop_train_dataloader,
-                                                      args=args)
-else:
-    diversity_metrics = 0.0
 
-for key, value in vars(args).items():
-    print(key, value)
-print('Affinity metrics: {}'.format(affinity_metrics))
+if __name__ == '__main__':
+    train_file_names = ['train_fastsingle_cat_100_42_300_0.5.pkl.gz',
+                        'train_fastsingle_cat_200_42_300_0.5.pkl.gz',
+                        'train_fastsingle_cat_500_42_300_0.5.pkl.gz',
+                        'train_fastsingle_cat_1000_42_300_0.5.pkl.gz',
+                        'train_fastsingle_cat_2000_42_300_0.5.pkl.gz',
+                        'train_fastsingle_cat_5000_42_300_0.5.pkl.gz',
+                        'train_fastsingle_cat_10000_42_300_0.5.pkl.gz',
+                        'train_fastsingle_cat_20000_42_300_0.5.pkl.gz']
+    parser = data_aug_default_parser()
+    args = parser.parse_args()
+    da_metric_list = []
+    for train_name in train_file_names:
+        aff_metirc  = da_affinity_metrics_collection(train_file_name=train_name, args=args)
+        da_metric_list.append((train_name, aff_metirc))
+
+    for name, metric in da_metric_list:
+        print(name, metric)
+
+    # if args.drop_model_name is not None and args.orig_model_name is not None:
+    #     drop_model = load_pretrained_model(args=args, pretrained_model_name=args.drop_model_name)
+    #     orig_model = load_pretrained_model(args=args, pretrained_model_name=args.orig_model_name)
+    #     diversity_metrics = diversity_metrics_computation(model=orig_model, drop_model=drop_model,
+    #                                                       train_data_loader=orig_train_dataloader,
+    #                                                       drop_train_data_loader=drop_train_dataloader,
+    #                                                       args=args)
+    # else:
+    #     diversity_metrics = 0.0
+
+    # for key, value in vars(args).items():
+    #     print(key, value)
+    # print('Affinity metrics: {}'.format(affinity_metrics))
+    # print('Diversity metrics: {}'.format(diversity_metrics))
+
+
+# parser = data_aug_default_parser()
+# args = parser.parse_args()
+# # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# args = complete_default_parser(args=args)
+# # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# if args.exp_name is None:
+#     args.exp_name = args.train_file_name + '.models'
+#     model_name_dict = model_dict[args.exp_name]
+#     args.exp_name = join(OUTPUT_FOLDER, args.exp_name)
+#     os.makedirs(args.exp_name, exist_ok=True)
+#     args.orig_model_name = join(args.exp_name, model_name_dict['orig'])
+#     if args.beta_drop:
+#         args.drop_model_name = join(args.exp_name, model_name_dict['beta_drop'])
+#     else:
+#         args.drop_model_name = join(args.exp_name, model_name_dict['drop'])
+# for key, value in vars(args).items():
+#     print('{}\t{}'.format(key, value))
+# print('*' * 50)
+# for idx, (key, value) in enumerate(model_dict.items()):
+#     for k, v in value.items():
+#         print(idx + 1, key, k, v)
+# print('*' * 50)
+# # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# orig_train_dataloader = orig_da_train_data_loader(args=args)
+# orig_dev_dataloader = orig_da_dev_data_loader(args=args)
+#
+# drop_train_dataloader = drop_da_train_data_loader(args=args)
+# drop_dev_data_loader = drop_da_dev_data_loader(args=args)
+# #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# seed_everything(seed=args.seed)
+# if args.orig_model_name is not None:
+#     orig_model = load_pretrained_model(args=args, pretrained_model_name=args.orig_model_name)
+#     affinity_metrics = affinity_metrics_computation(model=orig_model, dev_data_loader=orig_dev_dataloader,
+#                                                     drop_dev_data_loader=drop_dev_data_loader, args=args)
+# else:
+#     affinity_metrics = 0.0
+#
+# if args.drop_model_name is not None and args.orig_model_name is not None:
+#     drop_model = load_pretrained_model(args=args, pretrained_model_name=args.drop_model_name)
+#     orig_model = load_pretrained_model(args=args, pretrained_model_name=args.orig_model_name)
+#     diversity_metrics = diversity_metrics_computation(model=orig_model, drop_model=drop_model,
+#                                                       train_data_loader=orig_train_dataloader,
+#                                                       drop_train_data_loader=drop_train_dataloader,
+#                                                       args=args)
+# else:
+#     diversity_metrics = 0.0
+#
+# for key, value in vars(args).items():
+#     print(key, value)
+# print('Affinity metrics: {}'.format(affinity_metrics))
 # print('Diversity metrics: {}'.format(diversity_metrics))
