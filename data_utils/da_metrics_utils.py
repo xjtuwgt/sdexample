@@ -50,9 +50,10 @@ def affinity_metrics_computation(model, dev_data_loader, drop_dev_data_loader, a
     acc = model_evaluation(model=model, data_loader=dev_data_loader, args=args)
     acc = acc.data.item()
     print('Drop accuracy: {}, orig accuracy = {}'.format(drop_acc_list, acc))
-    # drop_acc = sum(drop_acc_list)/len(drop_acc_list)
+    drop_acc = sum(drop_acc_list)/len(drop_acc_list)
     # print(drop_acc_list)
-    affinity = sum([drop_acc/acc for drop_acc in drop_acc_list])/len(drop_acc_list)
+    # affinity = sum([drop_acc/acc for drop_acc in drop_acc_list])/len(drop_acc_list)
+    affinity = drop_acc
     return affinity
 
 def diversity_metrics_computation(model, train_data_loader, drop_model, drop_train_data_loader, args):
@@ -71,10 +72,11 @@ def diversity_metrics_computation(model, train_data_loader, drop_model, drop_tra
         drop_loss_list.append(drop_loss)
     model = model.to(args.device)
     loss = model_loss_computation(model=model, data_loader=train_data_loader, args=args)
+    drop_loss = sum(drop_loss_list)/len(drop_loss_list)
     print(drop_loss_list)
     print(loss)
-    # diversity  = drop_loss / loss
-    diversity = sum([drop_loss / loss for drop_loss in drop_loss_list])/len(drop_loss_list)
+    diversity  = drop_loss / loss
+    # diversity = sum([drop_loss / loss for drop_loss in drop_loss_list])/len(drop_loss_list)
     return diversity
 
 
