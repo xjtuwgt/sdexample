@@ -53,7 +53,7 @@ def affinity_metrics_computation(model, dev_data_loader, drop_dev_data_loader, a
     drop_acc = sum(drop_acc_list)/len(drop_acc_list)
     # print(drop_acc_list)
     # affinity = sum([drop_acc/acc for drop_acc in drop_acc_list])/len(drop_acc_list)
-    affinity = drop_acc
+    affinity = drop_acc/acc
     return affinity
 
 def diversity_metrics_computation(model, train_data_loader, drop_model, drop_train_data_loader, args):
