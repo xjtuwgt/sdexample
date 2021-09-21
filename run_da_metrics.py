@@ -49,15 +49,15 @@ if args.orig_model_name is not None:
 else:
     affinity_metrics = 0.0
 
-# if args.drop_model_name is not None and args.orig_model_name is not None:
-#     drop_model = load_pretrained_model(args=args, pretrained_model_name=args.drop_model_name)
-#     orig_model = load_pretrained_model(args=args, pretrained_model_name=args.orig_model_name)
-#     diversity_metrics = diversity_metrics_computation(model=orig_model, drop_model=drop_model,
-#                                                       train_data_loader=orig_train_dataloader,
-#                                                       drop_train_data_loader=drop_train_dataloader,
-#                                                       args=args)
-# else:
-#     diversity_metrics = 0.0
+if args.drop_model_name is not None and args.orig_model_name is not None:
+    drop_model = load_pretrained_model(args=args, pretrained_model_name=args.drop_model_name)
+    orig_model = load_pretrained_model(args=args, pretrained_model_name=args.orig_model_name)
+    diversity_metrics = diversity_metrics_computation(model=orig_model, drop_model=drop_model,
+                                                      train_data_loader=orig_train_dataloader,
+                                                      drop_train_data_loader=drop_train_dataloader,
+                                                      args=args)
+else:
+    diversity_metrics = 0.0
 
 for key, value in vars(args).items():
     print(key, value)
