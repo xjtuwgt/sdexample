@@ -96,18 +96,18 @@ if __name__ == '__main__':
     # train_data_file_name = train_data_file_name + '.pkl.gz'
     # train_data_set.save_data_into_file(data_file_name=train_data_file_name)
     # ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    test_seq_len = args.test_seq_len
-    test_seq_len = tuple([int(x) for x in test_seq_len.split(',')])
-    test_data_set = FindCatDataset(total_examples=args.test_data_size,
-                                   target_tokens=args.test_target_tokens,
-                                   seqlen=test_seq_len,
-                                   prob=args.test_pos_label_ratio,
-                                   multi_target=args.multi_target in ['multi'],
-                                   seed=args.test_seed)
-    test_data_file_name = join(args.data_dir, 'test_' + fast_mode + args.multi_target + '_' + args.test_target_tokens + '_' + str(args.test_data_size)
-                                + '_' + str(args.test_seed) + '_' + args.test_seq_len + '_' +
-                               str(args.test_pos_label_ratio) + '.pkl.gz')
-    test_data_set.save_data_into_file(data_file_name=test_data_file_name)
+    # test_seq_len = args.test_seq_len
+    # test_seq_len = tuple([int(x) for x in test_seq_len.split(',')])
+    # test_data_set = FindCatDataset(total_examples=args.test_data_size,
+    #                                target_tokens=args.test_target_tokens,
+    #                                seqlen=test_seq_len,
+    #                                prob=args.test_pos_label_ratio,
+    #                                multi_target=args.multi_target in ['multi'],
+    #                                seed=args.test_seed)
+    # test_data_file_name = join(args.data_dir, 'test_' + fast_mode + args.multi_target + '_' + args.test_target_tokens + '_' + str(args.test_data_size)
+    #                             + '_' + str(args.test_seed) + '_' + args.test_seq_len + '_' +
+    #                            str(args.test_pos_label_ratio) + '.pkl.gz')
+    # test_data_set.save_data_into_file(data_file_name=test_data_file_name)
     #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     eval_seq_len = args.eval_seq_len
     eval_seq_len = tuple([int(x) for x in eval_seq_len.split(',')])
