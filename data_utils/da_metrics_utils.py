@@ -3,6 +3,7 @@ from data_utils.model_utils import model_loss_computation, model_evaluation
 from torch.utils.data import DataLoader
 from os.path import join
 from envs import HOME_DATA_FOLDER
+from utils.env_utils import seed_everything
 
 from data_utils.findcat import FindCatDataset, find_cat_validation_fn, find_cat_collate_fn
 from data_utils.dataset import SentenceDropDataset
@@ -43,6 +44,7 @@ def affinity_metrics_computation(model, dev_data_loader, drop_dev_data_loader, a
     model = model.to(args.device)
     drop_acc_list = []
     for i in range(10):
+        seed_everything(seed=i)
         drop_acc = model_evaluation(model=model, data_loader=drop_dev_data_loader, args=args)
         drop_acc_list.append(drop_acc)
     drop_acc = sum(drop_acc_list)/len(drop_acc_list)
