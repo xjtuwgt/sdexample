@@ -47,11 +47,11 @@ def affinity_metrics_computation(model, dev_data_loader, drop_dev_data_loader, a
         seed_everything(seed=i)
         drop_acc = model_evaluation(model=model, data_loader=drop_dev_data_loader, args=args)
         drop_acc_list.append(drop_acc)
-    drop_acc = sum(drop_acc_list)/len(drop_acc_list)
-    print(drop_acc_list)
     acc = model_evaluation(model=model, data_loader=dev_data_loader, args=args)
-    print('Drop accuracy: {}, orig accuracy = {}'.format(drop_acc, acc))
-    affinity = drop_acc/acc
+    print('Drop accuracy: {}, orig accuracy = {}'.format(drop_acc_list, acc))
+    # drop_acc = sum(drop_acc_list)/len(drop_acc_list)
+    # print(drop_acc_list)
+    affinity = sum([drop_acc/acc for drop_acc in drop_acc_list])/len(drop_acc_list)
     return affinity
 
 def diversity_metrics_computation(model, train_data_loader, drop_model, drop_train_data_loader, args):
