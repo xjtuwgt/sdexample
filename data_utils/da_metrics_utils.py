@@ -65,12 +65,17 @@ def diversity_metrics_computation(model, train_data_loader, drop_model, drop_tra
     Diversity: Loss(drop_model, drop_train) / Loss(model, train)
     """
     drop_model = drop_model.to(args.device)
-    drop_loss = model_loss_computation(model=drop_model, data_loader=drop_train_data_loader, args=args)
+    drop_loss_list = []
+    for i in range(10):
+        drop_loss = model_loss_computation(model=drop_model, data_loader=drop_train_data_loader, args=args)
+        drop_loss_list.append(drop_loss)
     model = model.to(args.device)
     loss = model_loss_computation(model=model, data_loader=train_data_loader, args=args)
-    diversity  = drop_loss / loss
+    print(drop_loss_list)
+    print(loss)
+    # diversity  = drop_loss / loss
+    diversity = sum([drop_loss / loss for drop_loss in drop_loss_list])/len(drop_loss_list)
     return diversity
-
 
 
 def orig_da_train_data_loader(args):
