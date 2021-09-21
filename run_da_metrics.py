@@ -12,10 +12,8 @@ from data_utils.da_metrics_utils import MODEL_NAMES
 
 model_dict = {_[0]: _[1] for _ in MODEL_NAMES}
 
-def da_affinity_metrics_collection(train_file_name, args):
+def da_affinity_metrics_collection(args):
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    args = complete_default_parser(args=args)
-    args.train_file_name = train_file_name
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     if args.exp_name is None:
         args.exp_name = args.train_file_name + '.models'
@@ -63,11 +61,12 @@ if __name__ == '__main__':
                         'train_fastsingle_cat_20000_42_300_0.5.pkl.gz']
     parser = data_aug_default_parser()
     args = parser.parse_args()
+    args = complete_default_parser(args=args)
     da_metric_list = []
     for train_name in train_file_names:
-        aff_metirc  = da_affinity_metrics_collection(train_file_name=train_name, args=args)
-        da_metric_list.append((train_name, aff_metirc))
-
+        args.train_file_name = train_name
+        aff_metric = da_affinity_metrics_collection(args=args)
+        da_metric_list.append((train_name, aff_metric))
     for name, metric in da_metric_list:
         print(name, metric)
 
