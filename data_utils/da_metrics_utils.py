@@ -46,8 +46,9 @@ def affinity_metrics_computation(model, dev_data_loader, drop_dev_data_loader, a
     for i in range(10):
         seed_everything(seed=i)
         drop_acc = model_evaluation(model=model, data_loader=drop_dev_data_loader, args=args)
-        drop_acc_list.append(drop_acc)
+        drop_acc_list.append(drop_acc.data.item())
     acc = model_evaluation(model=model, data_loader=dev_data_loader, args=args)
+    acc = acc.data.item()
     print('Drop accuracy: {}, orig accuracy = {}'.format(drop_acc_list, acc))
     # drop_acc = sum(drop_acc_list)/len(drop_acc_list)
     # print(drop_acc_list)
