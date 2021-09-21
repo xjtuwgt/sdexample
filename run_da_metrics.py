@@ -98,13 +98,22 @@ if __name__ == '__main__':
     parser = data_aug_default_parser()
     args = parser.parse_args()
     args = complete_default_parser(args=args)
-    da_metric_list = []
+    # da_metric_list = []
+    # for train_name in train_file_names:
+    #     args.train_file_name = train_name
+    #     aff_metric = da_affinity_metrics_collection(args=args)
+    #     da_metric_list.append((train_name, aff_metric))
+    #     print('+' * 100)
+    # for name, metric in da_metric_list:
+    #     print(name, metric)
+
+    di_metric_list = []
     for train_name in train_file_names:
         args.train_file_name = train_name
-        aff_metric = da_affinity_metrics_collection(args=args)
-        da_metric_list.append((train_name, aff_metric))
+        div_metric = da_diversity_metrics_collection(args=args)
+        di_metric_list.append((train_name, div_metric))
         print('+' * 100)
-    for name, metric in da_metric_list:
+    for name, metric in di_metric_list:
         print(name, metric)
 
     # if args.drop_model_name is not None and args.orig_model_name is not None:
