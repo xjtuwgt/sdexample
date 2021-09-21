@@ -15,16 +15,16 @@ model_dict = {_[0]: _[1] for _ in MODEL_NAMES}
 def da_affinity_metrics_collection(args):
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    if args.exp_name is None:
-        args.exp_name = args.train_file_name + '.models'
-        model_name_dict = model_dict[args.exp_name]
-        args.exp_name = join(OUTPUT_FOLDER, args.exp_name)
-        os.makedirs(args.exp_name, exist_ok=True)
-        args.orig_model_name = join(args.exp_name, model_name_dict['orig'])
-        if args.beta_drop:
-            args.drop_model_name = join(args.exp_name, model_name_dict['beta_drop'])
-        else:
-            args.drop_model_name = join(args.exp_name, model_name_dict['drop'])
+    # if args.exp_name is None:
+    args.exp_name = args.train_file_name + '.models'
+    model_name_dict = model_dict[args.exp_name]
+    args.exp_name = join(OUTPUT_FOLDER, args.exp_name)
+    os.makedirs(args.exp_name, exist_ok=True)
+    args.orig_model_name = join(args.exp_name, model_name_dict['orig'])
+    if args.beta_drop:
+        args.drop_model_name = join(args.exp_name, model_name_dict['beta_drop'])
+    else:
+        args.drop_model_name = join(args.exp_name, model_name_dict['drop'])
     for key, value in vars(args).items():
         print('{}\t{}'.format(key, value))
     print('*' * 50)
