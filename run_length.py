@@ -8,13 +8,49 @@ from tqdm import tqdm, trange
 from os.path import join
 import os
 from data_utils.da_metrics_utils import MODEL_NAMES
+from data_utils.da_metrics_utils import DROP_MODEL_NAMES
 model_dict = {_[0]: _[1] for _ in MODEL_NAMES}
+drop_model_dict = {DROP_MODEL_NAMES[i][0]: DROP_MODEL_NAMES[i][1] for i in range(1, len(DROP_MODEL_NAMES))}
 
 def accuracy_collection(args):
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # if args.exp_name is None:
     args.exp_name = args.train_file_name + '.models'
+    model_name_dict = model_dict[args.exp_name]
+    args.exp_name = join(OUTPUT_FOLDER, args.exp_name)
+    os.makedirs(args.exp_name, exist_ok=True)
+    orig_model_name = join(args.exp_name, model_name_dict['orig'])
+    beta_drop_model_name = join(args.exp_name, model_name_dict['beta_drop'])
+    drop_model_name = join(args.exp_name, model_name_dict['drop'])
+    for key, value in vars(args).items():
+        print('{}\t{}'.format(key, value))
+    print('*' * 50)
+    for idx, (key, value) in enumerate(model_dict.items()):
+        for k, v in value.items():
+            print(idx + 1, key, k, v)
+    print('*' * 50)
+    # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    dev_dataloader = dev_data_loader(args=args)
+    # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    seed_everything(seed=args.seed)
+    orig_model = load_pretrained_model(args=args, pretrained_model_name=orig_model_name)
+    orig_model = orig_model.to(args.device)
+    orig_acc = model_evaluation(model=orig_model, data_loader=dev_dataloader, args=args)
+    drop_model = load_pretrained_model(args=args, pretrained_model_name=drop_model_name)
+    drop_model = drop_model.to(args.device)
+    drop_acc = model_evaluation(model=drop_model, data_loader=dev_dataloader, args=args)
+    beta_drop_model = load_pretrained_model(args=args, pretrained_model_name=beta_drop_model_name)
+    beta_drop_model = beta_drop_model.to(args.device)
+    beta_acc = model_evaluation(model=beta_drop_model, data_loader=dev_dataloader, args=args)
+    return orig_acc, drop_acc, beta_acc
+
+
+def dropratio_accuracy_collection(args, drop_ratio):
+    # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    # if args.exp_name is None:
+    args.exp_name = DROP_MODEL_NAMES[0] + '.models'
     model_name_dict = model_dict[args.exp_name]
     args.exp_name = join(OUTPUT_FOLDER, args.exp_name)
     os.makedirs(args.exp_name, exist_ok=True)
@@ -69,6 +105,7 @@ if __name__ == '__main__':
                       'eval_fastsingle_cat_10000_2345_275_0.5.pkl.gz',
                       'eval_fastsingle_cat_10000_2345_250_0.5.pkl.gz',
                       'eval_fastsingle_cat_10000_2345_225_0.5.pkl.gz',
+                      'eval_fastsingle_cat_10000_2345_200_0.5.pkl.gz',
                       'eval_fastsingle_cat_10000_2345_175_0.5.pkl.gz',
                       'eval_fastsingle_cat_10000_2345_150_0.5.pkl.gz',
                       'eval_fastsingle_cat_10000_2345_125_0.5.pkl.gz',
