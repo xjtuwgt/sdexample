@@ -46,18 +46,22 @@ def accuracy_collection(args):
 
 
 if __name__ == '__main__':
-    train_file_names = ['train_fastsingle_cat_100_42_300_0.5.pkl.gz',
-                        'train_fastsingle_cat_200_42_300_0.5.pkl.gz',
-                        'train_fastsingle_cat_500_42_300_0.5.pkl.gz',
-                        'train_fastsingle_cat_1000_42_300_0.5.pkl.gz',
-                        'train_fastsingle_cat_2000_42_300_0.5.pkl.gz',
-                        'train_fastsingle_cat_5000_42_300_0.5.pkl.gz',
+    # train_file_names = ['train_fastsingle_cat_100_42_300_0.5.pkl.gz',
+    #                     'train_fastsingle_cat_200_42_300_0.5.pkl.gz',
+    #                     'train_fastsingle_cat_500_42_300_0.5.pkl.gz',
+    #                     'train_fastsingle_cat_1000_42_300_0.5.pkl.gz',
+    #                     'train_fastsingle_cat_2000_42_300_0.5.pkl.gz',
+    #                     'train_fastsingle_cat_5000_42_300_0.5.pkl.gz',
+    #                     'train_fastsingle_cat_10000_42_300_0.5.pkl.gz',
+    #                     'train_fastsingle_cat_20000_42_300_0.5.pkl.gz']
+
+    # train_file_names = ['train_fastsingle_cat_500_42_300_0.5.pkl.gz',
+    #                     'train_fastsingle_cat_1000_42_300_0.5.pkl.gz',
+    #                     'train_fastsingle_cat_2000_42_300_0.5.pkl.gz']
+
+    train_file_names = ['train_fastsingle_cat_5000_42_300_0.5.pkl.gz',
                         'train_fastsingle_cat_10000_42_300_0.5.pkl.gz',
                         'train_fastsingle_cat_20000_42_300_0.5.pkl.gz']
-
-    train_file_names = ['train_fastsingle_cat_500_42_300_0.5.pkl.gz',
-                        'train_fastsingle_cat_1000_42_300_0.5.pkl.gz',
-                        'train_fastsingle_cat_2000_42_300_0.5.pkl.gz']
 
     dev_file_names = ['eval_fastsingle_cat_10000_2345_350_0.5.pkl.gz',
                       'eval_fastsingle_cat_10000_2345_325_0.5.pkl.gz',
@@ -82,8 +86,9 @@ if __name__ == '__main__':
         for eval_file_name in dev_file_names:
             args.eval_file_name = eval_file_name
             orig_acc, drop_acc, beta_acc = accuracy_collection(args=args)
-            accuracy_sub_list.append((eval_file_name, orig_acc, drop_acc, beta_acc))
-            print(eval_file_name, orig_acc, drop_acc, beta_acc)
+            res = (eval_file_name, orig_acc.data.item(), drop_acc.data.item(), beta_acc.data.item())
+            accuracy_sub_list.append(res)
+            print(res)
         accuracy_list.append((train_file_name, accuracy_sub_list))
 
     for _ in accuracy_list:
