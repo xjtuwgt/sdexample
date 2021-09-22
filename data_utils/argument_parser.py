@@ -87,6 +87,7 @@ def data_aug_default_parser():
     parser.add_argument('--epochs', type=int, default=500)
     parser.add_argument('--steps', type=int, default=1000)
     parser.add_argument('--batch_size', type=int, default=256)
+    parser.add_argument('--test_batch_size', type=int, default=256)
     parser.add_argument('--eval_every', type=int, default=300)
     parser.add_argument('--eval_file_name', type=str, default='eval_fastsingle_cat_10000_2345_300_0.5.pkl.gz')
     parser.add_argument('--test_file_name', type=str, default='test_fastsingle_cat_10000_1234_300_0.5.pkl.gz')
