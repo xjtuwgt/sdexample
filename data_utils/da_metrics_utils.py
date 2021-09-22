@@ -33,6 +33,19 @@ MODEL_NAMES = [('train_fastsingle_cat_100_42_300_0.5.pkl.gz.models', {'orig': 'm
                                                                         'drop': 'model_False_0.1_454_11_dev_0.8711.pkl',
                                                                         'beta_drop': 'model_True_0.1_488_169_dev_0.9992.pkl'})]
 
+DROP_MODEL_NAMES = ['train_fastsingle_cat_500_42_300_0.5.pkl.gz.models', (0.2, {'orig': 'model_False_0.0_350_8_dev_0.6249.pkl',
+                           'drop': 'model_False_0.2_263_4_dev_0.6755.pkl',
+                           'beta_drop': 'model_True_0.2_338_4_dev_0.8267.pkl'}),
+                    (0.3, {'orig': 'model_False_0.0_350_8_dev_0.6249.pkl',
+                           'drop': 'model_False_0.3_350_8_dev_0.6366.pkl',
+                           'beta_drop': 'model_True_0.3_338_4_dev_0.7938.pkl'}),
+                    (0.5, {'orig': 'model_False_0.0_350_8_dev_0.6249.pkl',
+                           'drop': 'model_False_0.5_88_4_dev_0.5917.pkl',
+                           'beta_drop': 'model_True_0.5_363_4_dev_0.7812.pkl'}),
+                    (0.75, {'orig': 'model_False_0.0_350_8_dev_0.6249.pkl',
+                           'drop': 'model_False_0.75_113_4_dev_0.5827.pkl',
+                           'beta_drop': 'model_True_0.75_488_4_dev_0.6345.pkl'})]
+
 def affinity_metrics_computation(model, dev_data_loader, drop_dev_data_loader, args):
     """
     :param model: train over clean data
