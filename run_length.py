@@ -51,7 +51,7 @@ def dropratio_accuracy_collection(args, drop_ratio):
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # if args.exp_name is None:
     args.exp_name = DROP_MODEL_NAMES[0] + '.models'
-    model_name_dict = model_dict[args.exp_name]
+    model_name_dict = drop_model_dict[drop_ratio]
     args.exp_name = join(OUTPUT_FOLDER, args.exp_name)
     os.makedirs(args.exp_name, exist_ok=True)
     orig_model_name = join(args.exp_name, model_name_dict['orig'])
@@ -95,9 +95,9 @@ if __name__ == '__main__':
     #                     'train_fastsingle_cat_1000_42_300_0.5.pkl.gz',
     #                     'train_fastsingle_cat_2000_42_300_0.5.pkl.gz']
 
-    train_file_names = ['train_fastsingle_cat_5000_42_300_0.5.pkl.gz',
-                        'train_fastsingle_cat_10000_42_300_0.5.pkl.gz',
-                        'train_fastsingle_cat_20000_42_300_0.5.pkl.gz']
+    # train_file_names = ['train_fastsingle_cat_5000_42_300_0.5.pkl.gz',
+    #                     'train_fastsingle_cat_10000_42_300_0.5.pkl.gz',
+    #                     'train_fastsingle_cat_20000_42_300_0.5.pkl.gz']
 
     dev_file_names = ['eval_fastsingle_cat_10000_2345_350_0.5.pkl.gz',
                       'eval_fastsingle_cat_10000_2345_325_0.5.pkl.gz',
@@ -115,18 +115,31 @@ if __name__ == '__main__':
     args = parser.parse_args()
     args = complete_default_parser(args=args)
 
+    # accuracy_list = []
+    # for train_file_name in train_file_names:
+    #     args.train_file_name = train_file_name
+    #     accuracy_sub_list = []
+    #     print(train_file_name)
+    #     for eval_file_name in dev_file_names:
+    #         args.eval_file_name = eval_file_name
+    #         orig_acc, drop_acc, beta_acc = accuracy_collection(args=args)
+    #         res = (eval_file_name, orig_acc.data.item(), drop_acc.data.item(), beta_acc.data.item())
+    #         accuracy_sub_list.append(res)
+    #         print(res)
+    #     accuracy_list.append((train_file_name, accuracy_sub_list))
+
     accuracy_list = []
-    for train_file_name in train_file_names:
-        args.train_file_name = train_file_name
+    drop_ratios = [0.2, 0.3, 0.5, 0.75]
+    for drop_ratio in drop_ratios:
         accuracy_sub_list = []
-        print(train_file_name)
+        print(drop_ratio)
         for eval_file_name in dev_file_names:
             args.eval_file_name = eval_file_name
-            orig_acc, drop_acc, beta_acc = accuracy_collection(args=args)
+            orig_acc, drop_acc, beta_acc = dropratio_accuracy_collection(args=args, drop_ratio=drop_ratio)
             res = (eval_file_name, orig_acc.data.item(), drop_acc.data.item(), beta_acc.data.item())
             accuracy_sub_list.append(res)
             print(res)
-        accuracy_list.append((train_file_name, accuracy_sub_list))
+        accuracy_list.append((drop_ratio, accuracy_sub_list))
 
     for _ in accuracy_list:
         print(_[0])
