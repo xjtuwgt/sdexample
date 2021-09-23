@@ -99,7 +99,12 @@ if __name__ == '__main__':
     #                     'train_fastsingle_cat_10000_42_300_0.5.pkl.gz',
     #                     'train_fastsingle_cat_20000_42_300_0.5.pkl.gz']
 
-    train_file_names = ['train_fastsingle_cat_5000_42_300_0.5.pkl.gz']
+    train_file_names = ['train_fastsingle_cat_500_42_300_0.5.pkl.gz',
+                        'train_fastsingle_cat_500_43_300_0.5.pkl.gz',
+                        'train_fastsingle_cat_500_44_300_0.5.pkl.gz',
+                        'train_fastsingle_cat_500_45_300_0.5.pkl.gz',
+                        'train_fastsingle_cat_500_46_300_0.5.pkl.gz']
+
     dev_file_names = ['eval_fastsingle_cat_10000_2345_350_0.5.pkl.gz',
                       'eval_fastsingle_cat_10000_2345_325_0.5.pkl.gz',
                       'eval_fastsingle_cat_10000_2345_315_0.5.pkl.gz',
@@ -130,7 +135,7 @@ if __name__ == '__main__':
         print(train_file_name)
         for eval_file_name in dev_file_names:
             args.eval_file_name = eval_file_name
-            orig_acc, drop_acc, beta_acc = accuracy_collection(args=args)
+            orig_acc, drop_acc, beta_acc = accuracy_collection(args=args, trained_model_dict=model_500_dict)
             res = (eval_file_name, orig_acc.data.item(), drop_acc.data.item(), beta_acc.data.item())
             accuracy_sub_list.append(res)
             print(res)
