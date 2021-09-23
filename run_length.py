@@ -27,7 +27,7 @@ def accuracy_collection(args, trained_model_dict: dict):
     for key, value in vars(args).items():
         print('{}\t{}'.format(key, value))
     print('*' * 50)
-    for idx, (key, value) in enumerate(model_dict.items()):
+    for idx, (key, value) in enumerate(trained_model_dict.items()):
         for k, v in value.items():
             print(idx + 1, key, k, v)
     print('*' * 50)
