@@ -49,7 +49,6 @@ def accuracy_collection(args, trained_model_dict: dict):
 
 def dropratio_accuracy_collection(args, drop_ratio, drop_trained_model_dict: dict):
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # if args.exp_name is None:
     args.exp_name = DROP_MODEL_NAMES[0] + '.models'
     model_name_dict = drop_trained_model_dict[drop_ratio]
