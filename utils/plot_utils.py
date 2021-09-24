@@ -36,29 +36,47 @@ accuracy_500 = np.array([[0.5832,0.6502,0.6845],
 # [64.75,71.99,71.00]])
 
 def plot_length(accuracy, lengths):
-    range_min_max = np.array([accuracy.min()-3, accuracy.max() + 3])
-
-    plt.plot(lengths, accuracy[:,0], 'o-', label='orig')
-    plt.plot(lengths, accuracy[:,1], 's-', label='drop')
-    plt.plot(lengths, accuracy[:,2], 'x-',label='beta_drop')
-    plt.plot(np.array([300, 300]), range_min_max, label='Test length=Train length')
+    pos_offset = 1
+    range_min_max = np.array([accuracy.min()-pos_offset, accuracy.max() + pos_offset])
+    n = len(lengths)
+    x = np.arange(n, 0, -1)
+    print(x)
+    idx = np.where(lengths == 300)[0][0]
+    print(idx)
+    idx = x[idx]
+    plt.plot(x, accuracy[:,0], 'o-', label='Baseline')
+    plt.plot(x, accuracy[:,1], 's-', label='SpanDrop')
+    plt.plot(x, accuracy[:,2], 'x-',label='Beta-SpanDrop')
+    plt.plot(np.array([idx, idx]), range_min_max, label='Test length = Train length')
     plt.xlabel("Length of sequences")
     plt.ylabel("Accuracy (%)")
-    plt.ylim([accuracy.min()-3,  accuracy.max() + 3])
+    plt.xticks(ticks=x, labels=lengths)
+    plt.ylim([accuracy.min()-pos_offset,  accuracy.max() + pos_offset])
     plt.legend()
     plt.show()
 
 def plot_length_error(error, lengths):
-    range_min_max = np.array([error.min()-3, error.max() + 3])
-    plt.plot(lengths, error[:,0], 'o-', label='orig')
-    plt.plot(lengths, error[:,1], 's-', label='drop')
-    plt.plot(lengths, error[:,2], 'x-',label='beta_drop')
-    plt.plot(np.array([300, 300]), range_min_max, label='Test length=Train length')
-    plt.xlabel("Length of sequences")
+    pos_offset = 1
+    n = len(lengths)
+    x = np.arange(n, 0, -1)
+    print(x)
+    idx = np.where(lengths == 300)[0][0]
+    print(idx)
+    idx = x[idx]
+    line_width = 2.5
+    range_min_max = np.array([error.min()-pos_offset, error.max() + pos_offset])
+    plt.plot(x, error[:,0], 'o-', label='Baseline', linewidth=line_width)
+    plt.plot(x, error[:,1], 's-', label='SpanDrop', linewidth=line_width)
+    plt.plot(x, error[:,2], 'x-', label='Beta-SpanDrop', linewidth=line_width)
+    plt.plot(np.array([idx, idx]), range_min_max, '--', linewidth=line_width, label='Test length=Train length')
+    plt.xlabel("Length of sequences in test stage")
     plt.ylabel("Error (%)")
-    plt.ylim([error.min()-3,  error.max() + 3])
+    plt.xticks(ticks=x, labels=lengths)
+    plt.ylim([error.min()-pos_offset,  error.max() + pos_offset])
     plt.legend()
+    plt.savefig('eror_vs_length.pdf', dpi=300)
     plt.show()
+
 
 # accuracy_20000 = np.array([[71.05,68.9,67.42],
 # [79.64,75.81,77.45],
@@ -87,5 +105,6 @@ def plot_length_error(error, lengths):
 # print(accuracy_500.shape)
 # print(accuracy_20000.shape)
 #
-plot_length(accuracy=accuracy_500[3:] * 100, lengths=lengths[3:])
-# plot_length_error(error=100 - accuracy_500, lengths=lengths)
+# plot_length(accuracy=accuracy_500[:-5] * 100, lengths=lengths[:-5])
+error = 100 - 100 * accuracy_500
+plot_length_error(error=error[:-5][3:], lengths=lengths[:-5][3:])
