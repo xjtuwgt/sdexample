@@ -55,7 +55,7 @@ for epoch_idx, epoch in enumerate(train_iterator):
         pred = logits.max(1)[1]
         train_total = train_total + pred.shape[0]
         train_correct += (pred == batch['labels']).sum()
-        if (step + 1) % args.eval_batch_interval_num == 0:
+        if (step + 1) % args.eval_batch_interval_num == 0 and epoch_idx > 3:
             dev_acc = model_evaluation(model=model, data_loader=dev_dataloader, args=args)
             if dev_acc > best_dev_acc:
                 best_dev_acc = dev_acc
