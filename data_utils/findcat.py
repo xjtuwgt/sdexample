@@ -177,7 +177,8 @@ def find_cat_collate_fn(examples):
     batched_labels = np.zeros((len(examples),), dtype=np.int64)
 
     for ex_i, ex in enumerate(examples):
-        print(ex)
+        print([CLS] + ex.target_tokens + [SEP] + [s.token_ids[0] for s in
+                                                                                  ex.tokenized_sentences] + [SEP])
         batched_input[ex_i, :ex_lens[ex_i]] = [CLS] + ex.target_tokens + [SEP] + [s.token_ids[0] for s in
                                                                                   ex.tokenized_sentences] + [SEP]
         batched_labels[ex_i] = ex.label
