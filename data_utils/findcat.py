@@ -106,8 +106,8 @@ class FindCatDataset(TokenizedDataset):
         positions = []
         retval = neg_example_generation(target_tokens=target_tokens, exam_seq_len=exam_seq_len, vocab=self.vocab)
         if target == 1:
-            if self.multi_target:
-                retval = random.choices(self.vocab, k=exam_seq_len)
+            # if self.multi_target:
+            #     retval = random.choices(self.vocab, k=exam_seq_len)
             if self.fixed_positions is not None:
                 assert len(self.fixed_positions) == len(target_tokens)
                 positions = self.fixed_positions
