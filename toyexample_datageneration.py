@@ -76,7 +76,7 @@ if __name__ == '__main__':
         fast_mode = 'fast'
     else:
         from data_utils.findcat import FindCatDataset
-        fast_mode = ''
+        fast_mode = 'slow'
     ##++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     train_data_set = FindCatDataset(total_examples=args.train_data_size,
                                     target_tokens=args.train_target_tokens,
