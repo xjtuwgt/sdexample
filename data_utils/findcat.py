@@ -102,12 +102,9 @@ class FindCatDataset(TokenizedDataset):
         target_tokens = random.sample(self.target_tokens, k=1)
         ##=========
         exam_seq_len = np.random.choice(self.seqlen, 1)[0]
-        print(target_tokens)
-        print(exam_seq_len)
         ##=========
         # positions = []
         retval = neg_example_generation(target_tokens=target_tokens, exam_seq_len=exam_seq_len, vocab=self.vocab)
-        print(retval)
         # if target == 1:
         #     # if self.multi_target:
         #     #     retval = random.choices(self.vocab, k=exam_seq_len)
@@ -180,6 +177,7 @@ def find_cat_collate_fn(examples):
     batched_labels = np.zeros((len(examples),), dtype=np.int64)
 
     for ex_i, ex in enumerate(examples):
+        print(ex)
         batched_input[ex_i, :ex_lens[ex_i]] = [CLS] + ex.target_tokens + [SEP] + [s.token_ids[0] for s in
                                                                                   ex.tokenized_sentences] + [SEP]
         batched_labels[ex_i] = ex.label
