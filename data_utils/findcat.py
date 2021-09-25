@@ -105,9 +105,26 @@ class FindCatDataset(TokenizedDataset):
         ##=========
         positions = []
         retval = neg_example_generation(target_tokens=target_tokens, exam_seq_len=exam_seq_len, vocab=self.vocab)
+        # if target == 1:
+        #     # if self.multi_target:
+        #     #     retval = random.choices(self.vocab, k=exam_seq_len)
+        #     if self.fixed_positions is not None:
+        #         assert len(self.fixed_positions) == len(target_tokens)
+        #         positions = self.fixed_positions
+        #     else:
+        #         if self.top_position is None:
+        #             # positions = sorted(random.choices(list(range(exam_seq_len)), k=len(target_tokens)))
+        #             positions = sorted(random.sample(list(range(exam_seq_len)), k=len(target_tokens)))
+        #         else:
+        #             top_len = self.top_position if self.top_position < exam_seq_len else exam_seq_len
+        #             # positions = sorted(random.choices(list(range(top_len)), k=len(target_tokens)))
+        #             positions = sorted(random.sample(list(range(top_len)), k=len(target_tokens)))
+        #
+        #     for p_i, p in enumerate(positions):
+        #         retval[p] = target_tokens[p_i]
+
+        positions = []
         if target == 1:
-            # if self.multi_target:
-            #     retval = random.choices(self.vocab, k=exam_seq_len)
             if self.fixed_positions is not None:
                 assert len(self.fixed_positions) == len(target_tokens)
                 positions = self.fixed_positions
@@ -123,6 +140,9 @@ class FindCatDataset(TokenizedDataset):
             for p_i, p in enumerate(positions):
                 retval[p] = target_tokens[p_i]
 
+        # return FindCatExample(
+        #     tokenized_sentences=[FindCatSentence(sentence_idx=s_i, token_ids=[s]) for s_i, s in enumerate(retval)],
+        #     target_tokens=target_tokens, positions=positions, label=target)
         return FindCatExample(
             tokenized_sentences=[FindCatSentence(sentence_idx=s_i, token_ids=[s]) for s_i, s in enumerate(retval)],
             target_tokens=target_tokens, positions=positions, label=target)
