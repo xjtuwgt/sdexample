@@ -120,7 +120,7 @@ def default_argparser():
     parser.add_argument('--test_examples', type=int, default=10000)
     parser.add_argument('--vocab_size', type=int, default=100) ## 100
     parser.add_argument('--eval_test_seq_len', type=str, default='300')
-    parser.add_argument('--epochs', type=int, default=400)
+    parser.add_argument('--epochs', type=int, default=500)
     parser.add_argument('--steps', type=int, default=1000)
     parser.add_argument('--eval_every', type=int, default=300)
     parser.add_argument('--eval_file_name', type=str, default='eval_fastsingle_cat_10000_2345_300_0.5.pkl.gz')
@@ -139,7 +139,7 @@ def default_argparser():
                         type=boolean_string,
                         help="use data parallel or not")
     parser.add_argument('--model_name', type=str, default='bert-base-uncased')
-    parser.add_argument('--validate_examples', action='store_true')
+    parser.add_argument('--validate_examples', type=str, default='false')
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--lr', type=float, default=1e-5)
     parser.add_argument('--save_model', type=boolean_string, default='true')
