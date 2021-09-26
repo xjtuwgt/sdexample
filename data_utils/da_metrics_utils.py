@@ -69,6 +69,19 @@ MODEL_1000_NAMES = [
                                                            'beta_drop': 'model_True_0.1_332_4_dev_0.8944.pkl'}),
                 ]
 
+MODEL_1000_EVAL_NAMES = [
+               ('train_fastsingle_cat_1000_42_300_0.5.pkl.gz.models', {'drop': 'model_True_0.1_119_12_mask_False_val_true_42_dev_0.8236.pkl',
+                                                                      'beta_drop': 'model_True_0.1_450_16_mask_False_val_true_42_dev_0.9206.pkl'}),
+               ('train_fastsingle_cat_1000_43_300_0.5.pkl.gz.models', {
+                                                           'drop': 'mmodel_False_0.1_388_8_mask_False_val_true_42_dev_0.7789.pkl',
+                                                           'beta_drop': 'model_True_0.1_488_8_mask_False_val_true_42_dev_0.8955.pkl'}),
+               ('train_fastsingle_cat_1000_44_300_0.5.pkl.gz.models', {
+                                                           'drop': 'model_False_0.1_388_8_mask_False_val_true_42_dev_0.8063.pkl',
+                                                           'beta_drop': 'model_True_0.1_350_16_mask_False_val_true_42_dev_0.9156.pkl'}),
+               ('train_fastsingle_cat_1000_45_300_0.5.pkl.gz.models', {
+                                                           'drop': 'model_False_0.1_475_16_mask_False_val_true_42_dev_0.7914.pkl',
+                                                           'beta_drop': 'model_True_0.1_463_8_mask_False_val_true_42_dev_0.8961.pkl'})]
+
 DROP_MODEL_NAMES = ['train_fastsingle_cat_500_42_300_0.5.pkl.gz', (0.2, {'orig': 'model_False_0.0_350_8_dev_0.6249.pkl',
                            'drop': 'model_False_0.2_263_4_dev_0.6755.pkl',
                            'beta_drop': 'model_True_0.2_338_4_dev_0.8267.pkl'}),
