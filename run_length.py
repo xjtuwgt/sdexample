@@ -106,27 +106,30 @@ if __name__ == '__main__':
                         'train_fastsingle_cat_1000_45_300_0.5.pkl.gz',
                         'train_fastsingle_cat_1000_46_300_0.5.pkl.gz']
 
-    dev_file_names = ['eval_fastsingle_cat_10000_2345_325_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_315_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_310_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_305_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_300_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_295_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_290_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_285_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_280_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_275_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_265_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_260_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_255_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_250_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_225_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_200_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_175_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_150_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_125_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_100_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_50_0.5.pkl.gz']
+    # dev_file_names = ['eval_fastsingle_cat_10000_2345_325_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_315_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_310_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_305_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_300_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_295_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_290_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_285_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_280_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_275_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_270_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_265_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_260_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_255_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_250_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_225_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_200_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_175_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_150_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_125_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_100_0.5.pkl.gz',
+    #                   'eval_fastsingle_cat_10000_2345_50_0.5.pkl.gz']
+    dev_file_names = [
+                      'eval_fastsingle_cat_10000_2345_270_0.5.pkl.gz']
     parser = data_aug_default_parser()
     args = parser.parse_args()
     args = complete_default_parser(args=args)
