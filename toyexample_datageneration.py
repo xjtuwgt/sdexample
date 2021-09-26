@@ -10,6 +10,8 @@ animal_vocab = ['ant', 'bear', 'cat', 'dog', 'eagle', 'fox', 'goat', 'horse',
 
 test_animals = ['snake', 'robin', 'puma', 'oyster', 'ibis']
 
+# test_animals = ['snake', 'robin', 'puma', 'oyster', 'ibis']
+
 def boolean_string(s):
     if s.lower() not in {'false', 'true'}:
         raise ValueError('Not a valid boolean string')
