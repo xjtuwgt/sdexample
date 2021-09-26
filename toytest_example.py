@@ -44,6 +44,8 @@ if __name__ == '__main__':
     folder_names = list_all_folders(d=OUTPUT_FOLDER, model_type='.models')
     for folder in folder_names:
         print(folder)
+        if 'cat_1000' not in folder:
+            continue
         best_orig_metric = 0.0
         best_orig_model = ''
         best_drop_metric = 0.0
@@ -53,8 +55,6 @@ if __name__ == '__main__':
         model_names = list_all_extension_files(path=folder, extension='.pkl')
         for model_name in model_names:
             # print(model_name)
-            if 'cat_1000' not in model_name:
-                continue
             start_idx = model_name.rindex('_')
             end_idx = model_name.rindex('.')
             model_metric = model_name[(start_idx + 1):end_idx]
