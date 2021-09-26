@@ -104,8 +104,7 @@ if __name__ == '__main__':
                         'train_fastsingle_cat_500_45_300_0.5.pkl.gz',
                         'train_fastsingle_cat_500_46_300_0.5.pkl.gz']
 
-    dev_file_names = ['eval_fastsingle_cat_10000_2345_350_0.5.pkl.gz',
-                      'eval_fastsingle_cat_10000_2345_325_0.5.pkl.gz',
+    dev_file_names = ['eval_fastsingle_cat_10000_2345_325_0.5.pkl.gz',
                       'eval_fastsingle_cat_10000_2345_315_0.5.pkl.gz',
                       'eval_fastsingle_cat_10000_2345_310_0.5.pkl.gz',
                       'eval_fastsingle_cat_10000_2345_305_0.5.pkl.gz',
@@ -115,6 +114,9 @@ if __name__ == '__main__':
                       'eval_fastsingle_cat_10000_2345_285_0.5.pkl.gz',
                       'eval_fastsingle_cat_10000_2345_280_0.5.pkl.gz',
                       'eval_fastsingle_cat_10000_2345_275_0.5.pkl.gz',
+                      'eval_fastsingle_cat_10000_2345_265_0.5.pkl.gz',
+                      'eval_fastsingle_cat_10000_2345_260_0.5.pkl.gz',
+                      'eval_fastsingle_cat_10000_2345_255_0.5.pkl.gz',
                       'eval_fastsingle_cat_10000_2345_250_0.5.pkl.gz',
                       'eval_fastsingle_cat_10000_2345_225_0.5.pkl.gz',
                       'eval_fastsingle_cat_10000_2345_200_0.5.pkl.gz',
