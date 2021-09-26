@@ -33,19 +33,19 @@ def accuracy_collection(args, trained_model_dict: dict):
             print(idx + 1, key, k, v)
     print('*' * 50)
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    dev_dataloader = dev_data_loader(args=args)
-    # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    seed_everything(seed=args.seed)
-    orig_model = load_pretrained_model(args=args, pretrained_model_name=orig_model_name)
-    orig_model = orig_model.to(args.device)
-    orig_acc = model_evaluation(model=orig_model, data_loader=dev_dataloader, args=args)
-    drop_model = load_pretrained_model(args=args, pretrained_model_name=drop_model_name)
-    drop_model = drop_model.to(args.device)
-    drop_acc = model_evaluation(model=drop_model, data_loader=dev_dataloader, args=args)
-    beta_drop_model = load_pretrained_model(args=args, pretrained_model_name=beta_drop_model_name)
-    beta_drop_model = beta_drop_model.to(args.device)
-    beta_acc = model_evaluation(model=beta_drop_model, data_loader=dev_dataloader, args=args)
-    return orig_acc, drop_acc, beta_acc
+    # dev_dataloader = dev_data_loader(args=args)
+    # # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    # seed_everything(seed=args.seed)
+    # orig_model = load_pretrained_model(args=args, pretrained_model_name=orig_model_name)
+    # orig_model = orig_model.to(args.device)
+    # orig_acc = model_evaluation(model=orig_model, data_loader=dev_dataloader, args=args)
+    # drop_model = load_pretrained_model(args=args, pretrained_model_name=drop_model_name)
+    # drop_model = drop_model.to(args.device)
+    # drop_acc = model_evaluation(model=drop_model, data_loader=dev_dataloader, args=args)
+    # beta_drop_model = load_pretrained_model(args=args, pretrained_model_name=beta_drop_model_name)
+    # beta_drop_model = beta_drop_model.to(args.device)
+    # beta_acc = model_evaluation(model=beta_drop_model, data_loader=dev_dataloader, args=args)
+    # return orig_acc, drop_acc, beta_acc
 
 
 def dropratio_accuracy_collection(args, drop_ratio, drop_trained_model_dict: dict):
@@ -68,17 +68,17 @@ def dropratio_accuracy_collection(args, drop_ratio, drop_trained_model_dict: dic
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     dev_dataloader = dev_data_loader(args=args)
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    # seed_everything(seed=args.seed)
-    # orig_model = load_pretrained_model(args=args, pretrained_model_name=orig_model_name)
-    # orig_model = orig_model.to(args.device)
-    # orig_acc = model_evaluation(model=orig_model, data_loader=dev_dataloader, args=args)
-    # drop_model = load_pretrained_model(args=args, pretrained_model_name=drop_model_name)
-    # drop_model = drop_model.to(args.device)
-    # drop_acc = model_evaluation(model=drop_model, data_loader=dev_dataloader, args=args)
-    # beta_drop_model = load_pretrained_model(args=args, pretrained_model_name=beta_drop_model_name)
-    # beta_drop_model = beta_drop_model.to(args.device)
-    # beta_acc = model_evaluation(model=beta_drop_model, data_loader=dev_dataloader, args=args)
-    # return orig_acc, drop_acc, beta_acc
+    seed_everything(seed=args.seed)
+    orig_model = load_pretrained_model(args=args, pretrained_model_name=orig_model_name)
+    orig_model = orig_model.to(args.device)
+    orig_acc = model_evaluation(model=orig_model, data_loader=dev_dataloader, args=args)
+    drop_model = load_pretrained_model(args=args, pretrained_model_name=drop_model_name)
+    drop_model = drop_model.to(args.device)
+    drop_acc = model_evaluation(model=drop_model, data_loader=dev_dataloader, args=args)
+    beta_drop_model = load_pretrained_model(args=args, pretrained_model_name=beta_drop_model_name)
+    beta_drop_model = beta_drop_model.to(args.device)
+    beta_acc = model_evaluation(model=beta_drop_model, data_loader=dev_dataloader, args=args)
+    return orig_acc, drop_acc, beta_acc
 
 
 if __name__ == '__main__':
