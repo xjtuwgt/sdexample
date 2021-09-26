@@ -7,10 +7,11 @@ from envs import OUTPUT_FOLDER
 from tqdm import tqdm, trange
 from os.path import join
 import os
-from data_utils.da_metrics_utils import MODEL_NAMES, MODEL_500_NAMES
+from data_utils.da_metrics_utils import MODEL_NAMES, MODEL_500_NAMES, MODEL_1000_NAMES
 from data_utils.da_metrics_utils import DROP_MODEL_NAMES
 model_dict = {_[0]: _[1] for _ in MODEL_NAMES}
 model_500_dict = {_[0]: _[1] for _ in MODEL_500_NAMES}
+model_1000_dict = {_[0]: _[1] for _ in MODEL_1000_NAMES}
 drop_model_dict = {DROP_MODEL_NAMES[i][0]: DROP_MODEL_NAMES[i][1] for i in range(1, len(DROP_MODEL_NAMES))}
 
 def accuracy_collection(args, trained_model_dict: dict):
@@ -136,7 +137,7 @@ if __name__ == '__main__':
         print(train_file_name)
         for eval_file_name in dev_file_names:
             args.eval_file_name = eval_file_name
-            orig_acc, drop_acc, beta_acc = accuracy_collection(args=args, trained_model_dict=model_500_dict)
+            orig_acc, drop_acc, beta_acc = accuracy_collection(args=args, trained_model_dict=model_1000_dict)
             res = (eval_file_name, orig_acc.data.item(), drop_acc.data.item(), beta_acc.data.item())
             accuracy_sub_list.append(res)
             print(res)
