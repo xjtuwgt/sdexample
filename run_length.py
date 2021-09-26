@@ -98,11 +98,11 @@ if __name__ == '__main__':
     #                     'train_fastsingle_cat_10000_42_300_0.5.pkl.gz',
     #                     'train_fastsingle_cat_20000_42_300_0.5.pkl.gz']
 
-    train_file_names = ['train_fastsingle_cat_500_42_300_0.5.pkl.gz',
-                        'train_fastsingle_cat_500_43_300_0.5.pkl.gz',
-                        'train_fastsingle_cat_500_44_300_0.5.pkl.gz',
-                        'train_fastsingle_cat_500_45_300_0.5.pkl.gz',
-                        'train_fastsingle_cat_500_46_300_0.5.pkl.gz']
+    train_file_names = ['train_fastsingle_cat_1000_42_300_0.5.pkl.gz',
+                        'train_fastsingle_cat_1000_43_300_0.5.pkl.gz',
+                        'train_fastsingle_cat_1000_44_300_0.5.pkl.gz',
+                        'train_fastsingle_cat_1000_45_300_0.5.pkl.gz',
+                        'train_fastsingle_cat_1000_46_300_0.5.pkl.gz']
 
     dev_file_names = ['eval_fastsingle_cat_10000_2345_325_0.5.pkl.gz',
                       'eval_fastsingle_cat_10000_2345_315_0.5.pkl.gz',

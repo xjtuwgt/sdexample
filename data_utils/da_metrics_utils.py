@@ -51,6 +51,24 @@ MODEL_500_NAMES = [
                                                            'beta_drop': 'model_True_0.1_400_8_dev_0.8384.pkl'}),
                 ]
 
+MODEL_1000_NAMES = [
+               ('train_fastsingle_cat_1000_42_300_0.5.pkl.gz.models', {'orig': 'model_False_0.0_350_8_dev_0.6249.pkl',
+                                                                      'drop': 'model_False_0.1_500_8_dev_0.7750.pkl',
+                                                                      'beta_drop': 'model_True_0.1_500_8_dev_0.8518.pkl'}),
+               ('train_fastsingle_cat_1000_43_300_0.5.pkl.gz.models', {'orig': 'model_False_0.0_375_8_dev_0.5770.pkl',
+                                                           'drop': 'model_False_0.1_375_8_dev_0.7201.pkl',
+                                                           'beta_drop': 'model_True_0.1_375_8_dev_0.8289.pkl'}),
+               ('train_fastsingle_cat_1000_44_300_0.5.pkl.gz.models', {'orig': 'model_False_0.0_213_4_dev_0.6202.pkl',
+                                                           'drop': 'model_False_0.1_388_4_dev_0.7675.pkl',
+                                                           'beta_drop': 'model_True_0.1_300_8_dev_0.8502.pkl'}),
+               ('train_fastsingle_cat_1000_45_300_0.5.pkl.gz.models', {'orig': 'model_False_0.0_213_4_dev_0.5795.pkl',
+                                                           'drop': 'model_False_0.1_363_4_dev_0.7111.pkl',
+                                                           'beta_drop': 'model_True_0.1_363_4_dev_0.8194.pkl'}),
+                ('train_fastsingle_cat_1000_46_300_0.5.pkl.gz.models', {'orig': 'model_False_0.0_338_4_dev_0.6250.pkl',
+                                                           'drop': 'model_False_0.1_400_8_dev_0.7483.pkl',
+                                                           'beta_drop': 'model_True_0.1_400_8_dev_0.8384.pkl'}),
+                ]
+
 DROP_MODEL_NAMES = ['train_fastsingle_cat_500_42_300_0.5.pkl.gz', (0.2, {'orig': 'model_False_0.0_350_8_dev_0.6249.pkl',
                            'drop': 'model_False_0.2_263_4_dev_0.6755.pkl',
                            'beta_drop': 'model_True_0.2_338_4_dev_0.8267.pkl'}),

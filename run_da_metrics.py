@@ -95,6 +95,11 @@ if __name__ == '__main__':
                         'train_fastsingle_cat_5000_42_300_0.5.pkl.gz',
                         'train_fastsingle_cat_10000_42_300_0.5.pkl.gz',
                         'train_fastsingle_cat_20000_42_300_0.5.pkl.gz']
+    # train_file_names = ['train_fastsingle_cat_1000_42_300_0.5.pkl.gz',
+    #                     'train_fastsingle_cat_1000_43_300_0.5.pkl.gz',
+    #                     'train_fastsingle_cat_1000_44_300_0.5.pkl.gz',
+    #                     'train_fastsingle_cat_1000_45_300_0.5.pkl.gz',
+    #                     'train_fastsingle_cat_1000_4_300_0.5.pkl.gz',]
     parser = data_aug_default_parser()
     args = parser.parse_args()
     args = complete_default_parser(args=args)
