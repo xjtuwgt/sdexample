@@ -17,6 +17,11 @@ def complete_default_parser(args):
         device = torch.device("cuda:{}".format(idx) if torch.cuda.is_available() else "cpu")
     else:
         device = torch.device("cpu")
+
+    if args.zero_shot:
+        args.train_file_name = 'train_slowsingle_ant_bear_cat_dog_eagle_fox_goat_horse_indri_jaguar_koala_lion_moose_numbat_otter_pig_quail_rabbit_shark_tiger_uguisu_vulture_wolf_xerus_yak_zebra_26000_42_300_1.0.pkl.gz'
+        args.eval_file_name = 'eval_slowsingle_snake_robin_puma_oyster_ibis_10000_2345_300_1.0.pkl.gz'
+        args.test_file_name = 'eval_slowsingle_snake_robin_puma_oyster_ibis_10000_2345_300_1.0.pkl.gz'
     args.device = device
     return args
 
@@ -28,6 +33,7 @@ def prober_default_parser():
     parser.add_argument('--test_examples', type=int, default=10000)
     parser.add_argument('--eval_test_seq_len', type=str, default='300')
     parser.add_argument('--target_tokens', type=str, default='cat')
+    parser.add_argument('--zero_shot', type=boolean_string, default='false')
 
     parser.add_argument('--lstm_hidden_dim', type=int, default=300)
     parser.add_argument('--lstm_layers', type=int, default=2)
@@ -67,6 +73,7 @@ def data_aug_default_parser():
     parser.add_argument('--exp_name', type=str, default=None)
     parser.add_argument('--train_examples', type=int, default=800)
     parser.add_argument('--multi_target', type=str, default='multi')
+    parser.add_argument('--zero_shot', type=boolean_string, default='false')
     parser.add_argument('--train_seq_len', type=str, default='300')
     parser.add_argument('--test_examples', type=int, default=10000)
     parser.add_argument('--eval_test_seq_len', type=str, default='300')
@@ -110,6 +117,7 @@ def default_argparser():
     parser.add_argument('--beta_drop', type=boolean_string, default='false')
     parser.add_argument('--mask', type=boolean_string, default='false')
     parser.add_argument('--mask_id', type=int, default=MASK)
+    parser.add_argument('--zero_shot', type=boolean_string, default='false')
     parser.add_argument('--train_examples', type=int, default=800)
     parser.add_argument('--multi_target', type=str, default='multi')
     parser.add_argument('--train_seq_len', type=str, default='300')
