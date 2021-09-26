@@ -5,7 +5,7 @@ import argparse
 
 animal_vocab = ['ant', 'bear', 'cat', 'dog', 'eagle', 'fox', 'goat', 'horse',
                 'indri', 'jaguar', 'koala', 'lion', 'moose', 'numbat', 'otter',
-                'pig', 'quail', 'rabbit', 'shark', 'tiger', 'uguisu', 'wolf',
+                'pig', 'quail', 'rabbit', 'shark', 'tiger', 'uguisu', 'vulture', 'wolf',
                 'xerus', 'yak', 'zebra']
 
 test_animals = ['snake', 'robin', 'puma', 'oyster', 'ibis']
