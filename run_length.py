@@ -46,7 +46,7 @@ def accuracy_collection(args, trained_model_dict: dict):
     # beta_drop_model = beta_drop_model.to(args.device)
     # beta_acc = model_evaluation(model=beta_drop_model, data_loader=dev_dataloader, args=args)
     # return orig_acc, drop_acc, beta_acc
-    return 0, 0, 0
+    return torch.as_tensor(0), torch.as_tensor(0), torch.as_tensor(0)
 
 
 def dropratio_accuracy_collection(args, drop_ratio, drop_trained_model_dict: dict):
